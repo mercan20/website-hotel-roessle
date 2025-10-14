@@ -712,12 +712,25 @@ section {
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 0.9rem;
+    padding: 0.9rem 1.2rem;
     border: 2px solid var(--border);
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 1rem;
     font-family: var(--font-main);
     transition: var(--transition);
+    background: var(--white);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.form-group select {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23c0936d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 20px;
+    padding-right: 3rem;
+    cursor: pointer;
 }
 
 .form-group input:focus,
@@ -725,6 +738,24 @@ section {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(192, 147, 109, 0.1);
+}
+
+.form-group select:hover {
+    border-color: var(--accent);
+}
+
+/* Custom Select Styling for better UX */
+.form-group select option {
+    padding: 1rem;
+    background: var(--white);
+    color: var(--dark);
+}
+
+.form-group select option:hover,
+.form-group select option:checked {
+    background: var(--accent);
+    color: var(--white);
 }
 
 .form-checkbox {
