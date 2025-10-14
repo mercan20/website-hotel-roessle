@@ -17,8 +17,8 @@ Eine moderne, responsive Website für Hotel Rössle in Tuttlingen.
 ```
 Website/
 ├── index.html          # Startseite
-├── zimmer.html         # Zimmer & Preise
-├── events.html         # Events & Räumlichkeiten
+├── zimmer.html         # Preise
+├── events.html         # Räumlichkeiten
 ├── freizeit.html       # Freizeitaktivitäten
 ├── kontakt.html        # Kontaktseite mit Formular
 ├── buchung.html        # Buchungsformular
