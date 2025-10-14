@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Buchen Sie jetzt Ihr Zimmer im Hotel Rössle Tuttlingen - Einfache Online-Buchungsanfrage">
+    <title>Zimmer Buchen - Hotel Rössle Tuttlingen</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                🏨 Hotel Rössle
+            </a>
+            <nav>
+                <button class="mobile-menu-toggle" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="zimmer.html">Wohnen & Preise</a></li>
+                    <li><a href="events.html">Events & Räumlichkeiten</a></li>
+                    <li><a href="freizeit.html">Freizeit</a></li>
+                    <li><a href="kontakt.html">Kontakt</a></li>
+                    <li><a href="buchung.html" class="btn btn-primary" style="padding: 0.5rem 1rem;">Jetzt Buchen</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="hero" style="height: 40vh; min-height: 300px;">
+        <div class="hero-content">
+            <h1>Buchungsanfrage</h1>
+            <p>Senden Sie uns Ihre Buchungsanfrage und wir melden uns umgehend</p>
+        </div>
+    </section>
+
+    <!-- Booking Form Section -->
+    <section class="section section-light">
+        <div class="container">
+            <div style="max-width: 900px; margin: 0 auto;">
+                <div style="background: var(--accent-color); color: var(--white); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg); text-align: center;">
+                    <h3 style="color: var(--white); margin-bottom: var(--spacing-xs);">📧 Unverbindliche Buchungsanfrage</h3>
+                    <p style="margin: 0; color: rgba(255,255,255,0.95);">
+                        Füllen Sie das Formular aus und wir prüfen die Verfügbarkeit für Ihren gewünschten Zeitraum.
+                        Sie erhalten schnellstmöglich eine Rückmeldung per E-Mail.
+                    </p>
+                </div>
+
+                <form id="bookingForm" style="background: var(--white); padding: var(--spacing-lg); border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
+
+                    <!-- Room Selection -->
+                    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-md); border-bottom: 2px solid var(--border-color); padding-bottom: var(--spacing-xs);">
+                        1. Zimmerauswahl
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="roomType" class="form-label">Zimmertyp *</label>
+                        <select id="roomType" name="roomType" class="form-select" required>
+                            <option value="">Bitte wählen Sie ein Zimmer...</option>
+                            <option value="einzelzimmer" data-price="56">Einzelzimmer - 56,00 € pro Nacht</option>
+                            <option value="doppelzimmer" data-price="80">Doppelzimmer - 80,00 € pro Nacht</option>
+                            <option value="familienzimmer" data-price="109">Familienzimmer - 109,00 € pro Nacht</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="numberOfGuests" class="form-label">Anzahl der Gäste *</label>
+                        <select id="numberOfGuests" name="numberOfGuests" class="form-select" required>
+                            <option value="">Bitte wählen...</option>
+                            <option value="1">1 Person</option>
+                            <option value="2">2 Personen</option>
+                            <option value="3">3 Personen</option>
+                            <option value="4">4 Personen</option>
+                        </select>
+                    </div>
+
+                    <!-- Date Selection -->
+                    <h3 style="color: var(--primary-color); margin-top: var(--spacing-lg); margin-bottom: var(--spacing-md); border-bottom: 2px solid var(--border-color); padding-bottom: var(--spacing-xs);">
+                        2. Reisezeitraum
+                    </h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="checkIn" class="form-label">Anreise (Check-In) *</label>
+                            <input type="date" id="checkIn" name="checkIn" class="form-input" required>
+                            <p style="font-size: 0.85rem; color: var(--text-light); margin-top: var(--spacing-xs); margin-bottom: 0;">
+                                Check-In: 14:00 - 21:00 Uhr
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="checkOut" class="form-label">Abreise (Check-Out) *</label>
+                            <input type="date" id="checkOut" name="checkOut" class="form-input" required>
+                            <p style="font-size: 0.85rem; color: var(--text-light); margin-top: var(--spacing-xs); margin-bottom: 0;">
+                                Check-Out: Bis 11:00 Uhr
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Price Calculation Display -->
+                    <div id="priceCalculation" style="display: none; background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-top: var(--spacing-md); border-left: 4px solid var(--accent-color);">
+                        <h4 style="color: var(--primary-color); margin-bottom: var(--spacing-sm);">📊 Preisübersicht</h4>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
+                            <span>Anzahl Nächte:</span>
+                            <strong id="numberOfNights">-</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: var(--spacing-xs);">
+                            <span>Preis pro Nacht:</span>
+                            <strong id="pricePerNight">-</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding-top: var(--spacing-xs); border-top: 2px solid var(--border-color); font-size: 1.2rem;">
+                            <span>Gesamtpreis:</span>
+                            <strong id="totalPrice" style="color: var(--accent-color);">-</strong>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: var(--spacing-xs); margin-bottom: 0;">
+                            * Preise ohne Frühstück
+                        </p>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <h3 style="color: var(--primary-color); margin-top: var(--spacing-lg); margin-bottom: var(--spacing-md); border-bottom: 2px solid var(--border-color); padding-bottom: var(--spacing-xs);">
+                        3. Ihre persönlichen Daten
+                    </h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName" class="form-label">Vorname *</label>
+                            <input type="text" id="firstName" name="firstName" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName" class="form-label">Nachname *</label>
+                            <input type="text" id="lastName" name="lastName" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">E-Mail *</label>
+                        <input type="email" id="email" name="email" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Telefon *</label>
+                        <input type="tel" id="phone" name="phone" class="form-input" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="street" class="form-label">Straße & Hausnummer</label>
+                            <input type="text" id="street" name="street" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city" class="form-label">Stadt</label>
+                            <input type="text" id="city" name="city" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="postalCode" class="form-label">PLZ</label>
+                            <input type="text" id="postalCode" name="postalCode" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country" class="form-label">Land</label>
+                            <input type="text" id="country" name="country" class="form-input" value="Deutschland">
+                        </div>
+                    </div>
+
+                    <!-- Special Requests -->
+                    <h3 style="color: var(--primary-color); margin-top: var(--spacing-lg); margin-bottom: var(--spacing-md); border-bottom: 2px solid var(--border-color); padding-bottom: var(--spacing-xs);">
+                        4. Besondere Wünsche (optional)
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="specialRequests" class="form-label">Besondere Wünsche oder Anmerkungen</label>
+                        <textarea id="specialRequests" name="specialRequests" class="form-textarea" placeholder="z.B. Babybett gewünscht, späte Anreise, etc."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="arrivalTime" class="form-label">Voraussichtliche Ankunftszeit</label>
+                        <input type="time" id="arrivalTime" name="arrivalTime" class="form-input">
+                        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: var(--spacing-xs); margin-bottom: 0;">
+                            Bitte beachten Sie: Check-In ist von 14:00 - 21:00 Uhr möglich
+                        </p>
+                    </div>
+
+                    <!-- Privacy & Submit -->
+                    <div style="margin-top: var(--spacing-lg); padding-top: var(--spacing-md); border-top: 2px solid var(--border-color);">
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <label style="display: flex; align-items: flex-start; gap: var(--spacing-xs); cursor: pointer;">
+                                <input type="checkbox" id="privacy" required style="margin-top: 4px;">
+                                <span style="font-size: 0.9rem; color: var(--text-light);">
+                                    Ich habe die <a href="datenschutz.html" style="color: var(--primary-color);">Datenschutzerklärung</a>
+                                    gelesen und akzeptiert. Meine Daten werden ausschließlich zur Bearbeitung meiner Buchungsanfrage verwendet. *
+                                </span>
+                            </label>
+                        </div>
+
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <label style="display: flex; align-items: flex-start; gap: var(--spacing-xs); cursor: pointer;">
+                                <input type="checkbox" id="terms" required style="margin-top: 4px;">
+                                <span style="font-size: 0.9rem; color: var(--text-light);">
+                                    Ich akzeptiere die <a href="impressum.html#agb" style="color: var(--primary-color);">AGB</a> des Hotels. *
+                                </span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem;">
+                            📧 Buchungsanfrage senden
+                        </button>
+
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-top: var(--spacing-sm); text-align: center; margin-bottom: 0;">
+                            * Pflichtfelder | Dies ist eine unverbindliche Buchungsanfrage
+                        </p>
+                    </div>
+                </form>
+
+                <div id="bookingMessage" style="display: none; margin-top: var(--spacing-md); padding: var(--spacing-md); border-radius: var(--border-radius);"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Information Boxes -->
+    <section class="section section-gray">
+        <div class="container">
+            <h2 class="section-title">Wichtige Informationen</h2>
+            <div class="info-boxes">
+                <div class="info-box">
+                    <div class="info-box-icon">✅</div>
+                    <h3>Buchungsbestätigung</h3>
+                    <p>Sie erhalten innerhalb von 24 Stunden eine Rückmeldung zu Ihrer Anfrage per E-Mail</p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-icon">💳</div>
+                    <h3>Zahlung</h3>
+                    <p>Die Zahlung erfolgt bei Anreise im Hotel. Wir akzeptieren Barzahlung und EC-Karte</p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-icon">🔄</div>
+                    <h3>Stornierung</h3>
+                    <p>Kostenlose Stornierung bis 24 Stunden vor Anreise möglich</p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-icon">📞</div>
+                    <h3>Fragen?</h3>
+                    <p>Bei Fragen rufen Sie uns gerne an: <a href="tel:+4974612913" style="color: var(--primary-color);">+49 (0) 7461 2913</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Room Overview -->
+    <section class="section section-light">
+        <div class="container">
+            <h2 class="section-title">Unsere Zimmer im Überblick</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--spacing-md); max-width: 1000px; margin: 0 auto;">
+
+                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); border-top: 4px solid var(--primary-color);">
+                    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-sm);">🛏️ Einzelzimmer</h3>
+                    <p style="font-size: 1.3rem; font-weight: bold; color: var(--accent-color); margin-bottom: var(--spacing-sm);">56,00 €</p>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="padding: 0.25rem 0; color: var(--text-light);">✓ 1 Person</li>
+                        <li style="padding: 0.25rem 0; color: var(--text-light);">✓ TV, Dusche, WC, Föhn</li>
+                        <li style="padding: 0.25rem 0; color: var(--text-light);">✓ WLAN auf Anfrage</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); border-top: 4px solid var(--primary-color);">
+                    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-sm);">🛏️🛏️ Doppelzimmer</h3>
+                    <p style="font-size: 1.3rem; font-weight: bold; color: var(--accent-color); margin-bottom: var(--spacing-sm);">80,00 €</p>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="padding: 0.25rem 0; color: var(--text-light);">✓ 2 Personen</li>
+                        <li style="padding: 0.25rem 0; color: var(--text-light);">✓ TV, Dusche, WC, Föhn</li>
+                        <li style="padding: 0.25rem 0; color: var(--text-light);">✓ WLAN auf Anfrage</li>
+                    </ul>
+                </div>
+
+                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); border-top: 4px solid var(--primary-color);">
+                    <h3 style="color: var(--primary-color); margin-bottom: var(--spacing-sm);">👨‍👩‍👧‍👦 Familienzimmer</h3>
+                    <p style="font-size: 1.3rem; font-weight: bold; color: var(--accent-color); margin-bottom: var(--spacing-sm);">109,00 €</p>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="padding: 0.25rem 0; color: var(--text-light);">✓ Bis zu 4 Personen</li>
+                        <li style="padding: 0.25rem 0; color: var(--text-light);">✓ TV, Dusche, WC, Föhn</li>
+                        <li style="padding: 0.25rem 0; color: var(--text-light);">✓ WLAN, Babybett verfügbar</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="zimmer.html" class="btn btn-secondary">Mehr über unsere Zimmer</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Hotel Rössle</h3>
+                <p>Ihr komfortables Hotel im Herzen von Tuttlingen</p>
+                <p><strong>Inhaber:</strong> Osman Kücük</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook">f</a>
+                    <a href="#" aria-label="Instagram">📷</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Kontakt</h3>
+                <p>📍 Honbergstrasse 8<br>78532 Tuttlingen, Deutschland</p>
+                <p>📞 <a href="tel:+4974612913">+49 (0) 7461 2913</a></p>
+                <p>📠 +49 (0) 7461 9697524</p>
+                <p>✉️ <a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Öffnungszeiten</h3>
+                <p><strong>Check-In:</strong><br>Täglich 14:00 - 21:00 Uhr</p>
+                <p><strong>Rezeption:</strong><br>Täglich 9:00 - 22:00 Uhr</p>
+            </div>
+            <div class="footer-section">
+                <h3>Schnelllinks</h3>
+                <a href="zimmer.html">Zimmer & Preise</a>
+                <a href="events.html">Events & Räumlichkeiten</a>
+                <a href="freizeit.html">Freizeitangebote</a>
+                <a href="buchung.html">Online Buchen</a>
+                <a href="impressum.html">Impressum</a>
+                <a href="datenschutz.html">Datenschutz</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Hotel Rössle Tuttlingen. Alle Rechte vorbehalten.</p>
+            <p style="margin-top: 0.5rem;">
+                <span class="badge">Bett & Bike</span>
+                <span class="badge">DEHOGA Mitglied</span>
+            </p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/booking.js"></script>
+</body>
+</html>

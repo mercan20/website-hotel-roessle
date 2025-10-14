@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Unsere Zimmer im Hotel Rössle - Einzelzimmer, Doppelzimmer und Familienzimmer mit moderner Ausstattung">
+    <title>Wohnen & Preise - Hotel Rössle Tuttlingen</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                🏨 Hotel Rössle
+            </a>
+            <nav>
+                <button class="mobile-menu-toggle" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="zimmer.html" class="active">Wohnen & Preise</a></li>
+                    <li><a href="events.html">Events & Räumlichkeiten</a></li>
+                    <li><a href="freizeit.html">Freizeit</a></li>
+                    <li><a href="kontakt.html">Kontakt</a></li>
+                    <li><a href="buchung.html" class="btn btn-primary" style="padding: 0.5rem 1rem;">Jetzt Buchen</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="hero" style="height: 40vh; min-height: 300px;">
+        <div class="hero-content">
+            <h1>Wohnen & Preise</h1>
+            <p>Komfortable Zimmer für jeden Bedarf</p>
+        </div>
+    </section>
+
+    <!-- Rooms Section -->
+    <section class="section section-light">
+        <div class="container">
+            <h2 class="section-title">Unsere Zimmer</h2>
+            <p class="text-center mb-3" style="max-width: 700px; margin-left: auto; margin-right: auto; font-size: 1.1rem;">
+                Alle Zimmer sind mit modernen Annehmlichkeiten ausgestattet und bieten Ihnen einen komfortablen Aufenthalt in Tuttlingen.
+            </p>
+
+            <!-- Einzelzimmer -->
+            <div class="card" style="margin-bottom: var(--spacing-lg); display: grid; grid-template-columns: 1fr 1fr; gap: 0;">
+                <div class="card-image" style="height: 100%; min-height: 350px; background: linear-gradient(135deg, #d4e4d5 0%, #e8f0e9 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem;">
+                    🛏️
+                </div>
+                <div class="card-content" style="display: flex; flex-direction: column; justify-content: center;">
+                    <h3 class="card-title" style="font-size: 2rem;">Einzelzimmer</h3>
+                    <p class="card-text" style="font-size: 1.1rem;">
+                        Unser gemütliches Einzelzimmer ist perfekt für Alleinreisende.
+                        Genießen Sie die Ruhe und den Komfort in modern ausgestatteten Räumen.
+                    </p>
+                    <ul class="card-features" style="font-size: 1.05rem;">
+                        <li>1 Schlafzimmer & 1 Badezimmer</li>
+                        <li>Für 1 Person</li>
+                        <li>TV mit Kabelanschluss</li>
+                        <li>Dusche & WC</li>
+                        <li>Föhn</li>
+                        <li>WLAN auf Anfrage</li>
+                    </ul>
+                    <p class="card-price">56,00 € <span style="font-size: 1rem; color: var(--text-light);">pro Nacht (ohne Frühstück)</span></p>
+                    <a href="buchung.html?zimmer=einzelzimmer" class="btn btn-primary" style="width: fit-content;">Einzelzimmer buchen</a>
+                </div>
+            </div>
+
+            <!-- Doppelzimmer -->
+            <div class="card" style="margin-bottom: var(--spacing-lg); display: grid; grid-template-columns: 1fr 1fr; gap: 0;">
+                <div class="card-content" style="display: flex; flex-direction: column; justify-content: center; order: 1;">
+                    <h3 class="card-title" style="font-size: 2rem;">Doppelzimmer</h3>
+                    <p class="card-text" style="font-size: 1.1rem;">
+                        Unser komfortables Doppelzimmer bietet Platz für zwei Personen.
+                        Ideal für Paare oder Geschäftsreisende, die gemeinsam reisen.
+                    </p>
+                    <ul class="card-features" style="font-size: 1.05rem;">
+                        <li>1 Schlafzimmer & 1 Badezimmer</li>
+                        <li>Für 2 Personen</li>
+                        <li>TV mit Kabelanschluss</li>
+                        <li>Dusche & WC</li>
+                        <li>Föhn</li>
+                        <li>WLAN auf Anfrage</li>
+                    </ul>
+                    <p class="card-price">80,00 € <span style="font-size: 1rem; color: var(--text-light);">pro Nacht (ohne Frühstück)</span></p>
+                    <a href="buchung.html?zimmer=doppelzimmer" class="btn btn-primary" style="width: fit-content;">Doppelzimmer buchen</a>
+                </div>
+                <div class="card-image" style="height: 100%; min-height: 350px; background: linear-gradient(135deg, #d4e4d5 0%, #e8f0e9 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem; order: 2;">
+                    🛏️🛏️
+                </div>
+            </div>
+
+            <!-- Familienzimmer -->
+            <div class="card" style="margin-bottom: var(--spacing-lg); display: grid; grid-template-columns: 1fr 1fr; gap: 0;">
+                <div class="card-image" style="height: 100%; min-height: 350px; background: linear-gradient(135deg, #d4e4d5 0%, #e8f0e9 100%); display: flex; align-items: center; justify-content: center; font-size: 5rem;">
+                    👨‍👩‍👧‍👦
+                </div>
+                <div class="card-content" style="display: flex; flex-direction: column; justify-content: center;">
+                    <h3 class="card-title" style="font-size: 2rem;">Familienzimmer</h3>
+                    <p class="card-text" style="font-size: 1.1rem;">
+                        Unser geräumiges Familienzimmer bietet Platz für bis zu 4 Personen.
+                        Perfekt für Familien, die gemeinsam reisen möchten.
+                    </p>
+                    <ul class="card-features" style="font-size: 1.05rem;">
+                        <li>1 Schlafzimmer & 1 Badezimmer</li>
+                        <li>Für bis zu 4 Personen (3 empfohlen)</li>
+                        <li>TV mit Kabelanschluss</li>
+                        <li>Dusche & WC</li>
+                        <li>Föhn</li>
+                        <li>WLAN auf Anfrage</li>
+                        <li>Babybett auf Anfrage verfügbar</li>
+                    </ul>
+                    <p class="card-price">109,00 € <span style="font-size: 1rem; color: var(--text-light);">pro Nacht (ohne Frühstück)</span></p>
+                    <a href="buchung.html?zimmer=familienzimmer" class="btn btn-primary" style="width: fit-content;">Familienzimmer buchen</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Important Information -->
+    <section class="section section-gray">
+        <div class="container">
+            <h2 class="section-title">Wichtige Informationen</h2>
+            <div class="info-boxes">
+                <div class="info-box">
+                    <div class="info-box-icon">⏰</div>
+                    <h3>Check-In / Check-Out</h3>
+                    <p><strong>Check-In:</strong> Täglich 14:00 - 21:00 Uhr</p>
+                    <p><strong>Check-Out:</strong> Bis 11:00 Uhr</p>
+                </div>
+                <div class="info-box">
+                    <div class="info-box-icon">🍳</div>
+                    <h3>Frühstück</h3>
+                    <p>Aufgrund der momentanen Situation sind wir nicht in der Lage, das Frühstück anbieten zu können.</p>
+                </div>
+                <div class="info-box">
+                    <div class="info-box-icon">📱</div>
+                    <h3>WLAN</h3>
+                    <p>Kostenloses WLAN ist in allen Zimmern auf Anfrage verfügbar.</p>
+                </div>
+                <div class="info-box">
+                    <div class="info-box-icon">🚴</div>
+                    <h3>Bett & Bike</h3>
+                    <p>Als zertifiziertes Fahrradhotel bieten wir spezielle Services für Radfahrer.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Additional Services -->
+    <section class="section section-light">
+        <div class="container">
+            <h2 class="section-title">Zusätzliche Leistungen</h2>
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-md); margin-bottom: var(--spacing-md);">
+                    <div style="padding: var(--spacing-md); background: var(--bg-light); border-radius: var(--border-radius); border-left: 4px solid var(--primary-color);">
+                        <h4 style="color: var(--primary-color); margin-bottom: var(--spacing-xs);">✓ Kostenlose Parkplätze</h4>
+                        <p style="margin: 0; font-size: 0.95rem;">Begrenzte Anzahl an Parkplätzen in der Nähe</p>
+                    </div>
+                    <div style="padding: var(--spacing-md); background: var(--bg-light); border-radius: var(--border-radius); border-left: 4px solid var(--primary-color);">
+                        <h4 style="color: var(--primary-color); margin-bottom: var(--spacing-xs);">✓ Zentrale Lage</h4>
+                        <p style="margin: 0; font-size: 0.95rem;">Fußläufig zum Stadtzentrum und allen Sehenswürdigkeiten</p>
+                    </div>
+                    <div style="padding: var(--spacing-md); background: var(--bg-light); border-radius: var(--border-radius); border-left: 4px solid var(--primary-color);">
+                        <h4 style="color: var(--primary-color); margin-bottom: var(--spacing-xs);">✓ Ruhige Umgebung</h4>
+                        <p style="margin: 0; font-size: 0.95rem;">Trotz zentraler Lage sehr ruhig gelegen</p>
+                    </div>
+                    <div style="padding: var(--spacing-md); background: var(--bg-light); border-radius: var(--border-radius); border-left: 4px solid var(--primary-color);">
+                        <h4 style="color: var(--primary-color); margin-bottom: var(--spacing-xs);">✓ Familienfreundlich</h4>
+                        <p style="margin: 0; font-size: 0.95rem;">Babybett auf Anfrage verfügbar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section section-gray">
+        <div class="container text-center">
+            <h2>Bereit zu buchen?</h2>
+            <p style="font-size: 1.1rem; max-width: 600px; margin: var(--spacing-sm) auto var(--spacing-md);">
+                Buchen Sie jetzt Ihr Zimmer oder kontaktieren Sie uns für weitere Informationen
+            </p>
+            <div style="display: flex; gap: var(--spacing-sm); justify-content: center; flex-wrap: wrap;">
+                <a href="buchung.html" class="btn btn-primary">Online Buchung</a>
+                <a href="kontakt.html" class="btn btn-secondary">Kontakt aufnehmen</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Hotel Rössle</h3>
+                <p>Ihr komfortables Hotel im Herzen von Tuttlingen</p>
+                <p><strong>Inhaber:</strong> Osman Kücük</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook">f</a>
+                    <a href="#" aria-label="Instagram">📷</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Kontakt</h3>
+                <p>📍 Honbergstrasse 8<br>78532 Tuttlingen, Deutschland</p>
+                <p>📞 <a href="tel:+4974612913">+49 (0) 7461 2913</a></p>
+                <p>📠 +49 (0) 7461 9697524</p>
+                <p>✉️ <a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Öffnungszeiten</h3>
+                <p><strong>Check-In:</strong><br>Täglich 14:00 - 21:00 Uhr</p>
+                <p><strong>Rezeption:</strong><br>Täglich 9:00 - 22:00 Uhr</p>
+            </div>
+            <div class="footer-section">
+                <h3>Schnelllinks</h3>
+                <a href="zimmer.html">Zimmer & Preise</a>
+                <a href="events.html">Events & Räumlichkeiten</a>
+                <a href="freizeit.html">Freizeitangebote</a>
+                <a href="buchung.html">Online Buchen</a>
+                <a href="impressum.html">Impressum</a>
+                <a href="datenschutz.html">Datenschutz</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Hotel Rössle Tuttlingen. Alle Rechte vorbehalten.</p>
+            <p style="margin-top: 0.5rem;">
+                <span class="badge">Bett & Bike</span>
+                <span class="badge">DEHOGA Mitglied</span>
+            </p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+
+    <style>
+        @media (max-width: 768px) {
+            .card {
+                grid-template-columns: 1fr !important;
+            }
+            .card-content {
+                order: 2 !important;
+            }
+            .card-image {
+                order: 1 !important;
+                min-height: 200px !important;
+            }
+        }
+    </style>
+</body>
+</html>
