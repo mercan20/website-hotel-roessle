@@ -649,6 +649,15 @@ section {
     margin-bottom: var(--spacing-lg);
 }
 
+/* Link wrapper for clickable cards */
+.leisure-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
 .leisure-card {
     background: var(--white);
     border-radius: 20px;
@@ -657,9 +666,12 @@ section {
     transition: var(--transition);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
-.leisure-card:hover {
+.leisure-card-link:hover .leisure-card {
     transform: translateY(-10px);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
 }
@@ -672,18 +684,6 @@ section {
     position: relative;
 }
 
-/*
-.leisure-image {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    padding: 1.5rem 1rem 1rem;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-*/
 .leisure-image img {
     width: 100%;
     height: 100%;
@@ -691,65 +691,75 @@ section {
     transition: transform 0.4s ease;
 }
 
-.leisure-card:hover .leisure-image img {
+.leisure-card-link:hover .leisure-image img {
     transform: scale(1.1);
 }
 
-.leisure-content {
-    padding: 1.5rem;
+/* Pinterest-style overlay */
+.leisure-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.leisure-card-link:hover .leisure-overlay {
+    opacity: 1;
+}
+
+/* "Besuchen" button */
+.visit-button {
+    background: white;
+    color: var(--primary);
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(10px);
+    transition: transform 0.3s ease;
+}
+
+.leisure-card-link:hover .visit-button {
+    transform: translateY(0);
 }
 
 .leisure-card h3 {
     font-size: 1.3rem;
-    margin-bottom: 0.5rem;
+    margin: 1.5rem 1.5rem 0.5rem 1.5rem;
     color: var(--primary);
+    min-height: 2.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .leisure-card p {
     color: var(--gray);
+    margin: 0 1.5rem 1rem 1.5rem;
+    flex-grow: 1;
+    min-height: 3rem;
+}
+
+/* Distance Badge (non-clickable info badge) */
+.distance-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--white);
+    padding: 0.3rem 1rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    pointer-events: none;
     margin-bottom: 1.5rem;
-}
-
-/* Distance Link (simple badge with link) */
-.distance-link {
-    display: inline-block;
-    background: var(--accent);
-    color: var(--white);
-    padding: 0.3rem 1rem;
-    border-radius: 15px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.distance-link:hover {
-    background: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Distance Info (non-clickable for Bootsverleih) */
-.distance-info {
-    display: inline-block;
-    background: var(--light);
-    color: var(--primary);
-    padding: 0.3rem 1rem;
-    border-radius: 15px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border: 2px solid var(--border);
-}
-
-/* Legacy distance badge (if still used elsewhere) */
-.distance {
-    display: inline-block;
-    background: var(--accent);
-    color: var(--white);
-    padding: 0.3rem 1rem;
-    border-radius: 15px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    align-self: center;
 }
 
 .activities {
@@ -1480,24 +1490,20 @@ section {
 
     .leisure-card h3 {
         font-size: 1.2rem;
-        margin: 1.2rem 1.2rem 0.5rem;
     }
 
     .leisure-card p {
-        margin: 0 1.2rem 1.2rem;
         font-size: 0.95rem;
     }
 
-    .distance-link {
+    .distance-badge {
         font-size: 0.8rem;
         padding: 0.3rem 0.9rem;
-        margin: 0 0 1.2rem;
     }
 
-    .distance-info {
-        font-size: 0.75rem;
-        padding: 0.3rem 0.9rem;
-        margin: 0 0 1.2rem;
+    .visit-button {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
     }
 
     .activities {
