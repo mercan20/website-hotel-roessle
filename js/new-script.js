@@ -153,7 +153,251 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // ===================================
+    // Booking Room Counter & Calendar
+    // ===================================
+
+    // Initialize calendar if it exists
+    if (document.getElementById('bookingCalendar')) {
+        renderBookingCalendar();
+    }
 });
+
+// Room Counter State
+const bookingCounters = {
+    einzelzimmer: 0,
+    doppelzimmer: 0,
+    familienzimmer: 0
+};
+
+const bookingPrices = {
+    einzelzimmer: 56,
+    doppelzimmer: 80,
+    familienzimmer: 109
+};
+
+// Calendar State
+let bookingCurrentDate = new Date();
+let bookingSelectedCheckin = null;
+let bookingSelectedCheckout = null;
+let bookingSelectingCheckout = false;
+
+const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+                   'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+
+// Update Room Counter
+function updateRoomCounter(room, change) {
+    bookingCounters[room] = Math.max(0, bookingCounters[room] + change);
+    document.getElementById(`booking-count-${room}`).textContent = bookingCounters[room];
+
+    const card = document.querySelector(`[data-room="${room}"]`);
+    if (bookingCounters[room] > 0) {
+        card.classList.add('selected');
+    } else {
+        card.classList.remove('selected');
+    }
+
+    updateBookingSummary();
+    updateBookingSubmitButton();
+}
+
+// Update Summary
+function updateBookingSummary() {
+    const summary = document.getElementById('bookingSummary');
+    const content = document.getElementById('bookingSummaryContent');
+
+    let hasSelection = false;
+    let total = 0;
+    let html = '';
+
+    for (const [room, count] of Object.entries(bookingCounters)) {
+        if (count > 0) {
+            hasSelection = true;
+            const roomTotal = count * bookingPrices[room];
+            total += roomTotal;
+            const roomName = room === 'einzelzimmer' ? 'Einzelzimmer' :
+                           room === 'doppelzimmer' ? 'Doppelzimmer' : 'Familienzimmer';
+            html += `
+                <div class="booking-summary-item">
+                    <span>${count}x ${roomName}</span>
+                    <span>${roomTotal.toFixed(2)} €</span>
+                </div>
+            `;
+        }
+    }
+
+    if (hasSelection) {
+        html += `
+            <div class="booking-summary-item">
+                <span><strong>Gesamt pro Nacht</strong></span>
+                <span><strong>${total.toFixed(2)} €</strong></span>
+            </div>
+        `;
+        content.innerHTML = html;
+        summary.style.display = 'block';
+    } else {
+        summary.style.display = 'none';
+    }
+}
+
+// Update Submit Button
+function updateBookingSubmitButton() {
+    const hasSelection = Object.values(bookingCounters).some(count => count > 0);
+    const hasDates = bookingSelectedCheckin && bookingSelectedCheckout;
+    const submitBtn = document.getElementById('bookingSubmitBtn');
+    if (submitBtn) {
+        submitBtn.disabled = !(hasSelection && hasDates);
+    }
+}
+
+// Toggle Calendar
+function toggleBookingCalendar() {
+    const calendar = document.getElementById('bookingCalendar');
+    const inputBox = document.querySelector('.date-input-box');
+    calendar.classList.toggle('active');
+    inputBox.classList.toggle('active');
+    if (calendar.classList.contains('active')) {
+        renderBookingCalendar();
+    }
+}
+
+// Change Month
+function changeBookingMonth(direction) {
+    bookingCurrentDate.setMonth(bookingCurrentDate.getMonth() + direction);
+    renderBookingCalendar();
+}
+
+// Render Calendar
+function renderBookingCalendar() {
+    const year = bookingCurrentDate.getFullYear();
+    const month = bookingCurrentDate.getMonth();
+
+    document.getElementById('bookingCalendarMonth').textContent = `${monthNames[month]} ${year}`;
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const prevLastDay = new Date(year, month, 0);
+
+    const firstDayWeekday = firstDay.getDay();
+    const lastDate = lastDay.getDate();
+    const prevLastDate = prevLastDay.getDate();
+
+    const daysContainer = document.getElementById('bookingCalendarDays');
+    daysContainer.innerHTML = '';
+
+    // Previous month days
+    for (let i = firstDayWeekday - 1; i >= 0; i--) {
+        const day = createBookingDayElement(prevLastDate - i, true, year, month - 1);
+        day.classList.add('other-month');
+        daysContainer.appendChild(day);
+    }
+
+    // Current month days
+    for (let i = 1; i <= lastDate; i++) {
+        const day = createBookingDayElement(i, false, year, month);
+        daysContainer.appendChild(day);
+    }
+
+    // Next month days
+    const remainingDays = 42 - daysContainer.children.length;
+    for (let i = 1; i <= remainingDays; i++) {
+        const day = createBookingDayElement(i, true, year, month + 1);
+        day.classList.add('other-month');
+        daysContainer.appendChild(day);
+    }
+}
+
+// Create Day Element
+function createBookingDayElement(dayNum, disabled, year, month) {
+    const day = document.createElement('div');
+    day.className = 'calendar-day';
+    day.textContent = dayNum;
+
+    const date = new Date(year, month, dayNum);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (date < today || disabled) {
+        day.classList.add('disabled');
+    } else {
+        day.onclick = () => selectBookingDate(date);
+
+        if (bookingSelectedCheckin && date.getTime() === bookingSelectedCheckin.getTime()) {
+            day.classList.add('start');
+        }
+        if (bookingSelectedCheckout && date.getTime() === bookingSelectedCheckout.getTime()) {
+            day.classList.add('end');
+        }
+        if (bookingSelectedCheckin && bookingSelectedCheckout &&
+            date > bookingSelectedCheckin && date < bookingSelectedCheckout) {
+            day.classList.add('in-range');
+        }
+    }
+
+    return day;
+}
+
+// Select Date
+function selectBookingDate(date) {
+    if (!bookingSelectingCheckout) {
+        bookingSelectedCheckin = date;
+        bookingSelectedCheckout = null;
+        bookingSelectingCheckout = true;
+        updateBookingDateDisplay();
+    } else {
+        if (date > bookingSelectedCheckin) {
+            bookingSelectedCheckout = date;
+            bookingSelectingCheckout = false;
+            updateBookingDateDisplay();
+            setTimeout(() => {
+                document.getElementById('bookingCalendar').classList.remove('active');
+                document.querySelector('.date-input-box').classList.remove('active');
+            }, 300);
+        } else {
+            bookingSelectedCheckin = date;
+            bookingSelectedCheckout = null;
+        }
+    }
+    renderBookingCalendar();
+    updateBookingSubmitButton();
+}
+
+// Update Date Display
+function updateBookingDateDisplay() {
+    const checkinDisplay = document.getElementById('bookingCheckinDisplay');
+    const checkoutDisplay = document.getElementById('bookingCheckoutDisplay');
+    const nightsInfo = document.getElementById('bookingNightsInfo');
+    const nightsCount = document.getElementById('bookingNightsCount');
+
+    if (bookingSelectedCheckin) {
+        checkinDisplay.textContent = formatBookingDate(bookingSelectedCheckin);
+        checkinDisplay.classList.remove('placeholder');
+    }
+
+    if (bookingSelectedCheckout) {
+        checkoutDisplay.textContent = formatBookingDate(bookingSelectedCheckout);
+        checkoutDisplay.classList.remove('placeholder');
+
+        // Calculate nights
+        const diffTime = bookingSelectedCheckout - bookingSelectedCheckin;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        nightsCount.textContent = `${diffDays} ${diffDays === 1 ? 'Nacht' : 'Nächte'}`;
+        nightsInfo.style.display = 'block';
+    } else {
+        nightsInfo.style.display = 'none';
+    }
+}
+
+// Format Date
+function formatBookingDate(date) {
+    const day = date.getDate();
+    const monthNamesShort = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+                      'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+    const month = monthNamesShort[date.getMonth()];
+    const year = date.getFullYear();
+    return `${day}. ${month} ${year}`;
+}
 
 // Add mobile menu styles dynamically
 const style = document.createElement('style');

@@ -280,37 +280,106 @@
     <section id="buchen" class="section-booking">
         <div class="container">
             <h2 class="section-title">Jetzt Buchen</h2>
-            <p class="section-subtitle">Senden Sie uns Ihre Buchungsanfrage</p>
+            <p class="section-subtitle">Wählen Sie Ihre Zimmer und Reisedaten</p>
 
-            <form class="booking-form">
+            <!-- Room Selection with Counters -->
+            <div class="rooms-selection">
+                <h3 class="booking-subtitle">Wählen Sie Ihre Zimmer</h3>
+                <div class="booking-rooms-grid">
+                    <!-- Einzelzimmer -->
+                    <div class="booking-room-card" data-room="einzelzimmer" data-price="56">
+                        <div class="booking-room-icon">🛏️</div>
+                        <h4>Einzelzimmer</h4>
+                        <div class="booking-room-price">56,00 € <span>/ Nacht</span></div>
+                        <div class="booking-counter">
+                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('einzelzimmer', -1)">−</button>
+                            <span class="booking-counter-value" id="booking-count-einzelzimmer">0</span>
+                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('einzelzimmer', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Doppelzimmer -->
+                    <div class="booking-room-card" data-room="doppelzimmer" data-price="80">
+                        <div class="booking-room-icon">🛏️🛏️</div>
+                        <h4>Doppelzimmer</h4>
+                        <div class="booking-room-price">80,00 € <span>/ Nacht</span></div>
+                        <div class="booking-counter">
+                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('doppelzimmer', -1)">−</button>
+                            <span class="booking-counter-value" id="booking-count-doppelzimmer">0</span>
+                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('doppelzimmer', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Familienzimmer -->
+                    <div class="booking-room-card" data-room="familienzimmer" data-price="109">
+                        <div class="booking-room-icon">👨‍👩‍👧‍👦</div>
+                        <h4>Familienzimmer</h4>
+                        <div class="booking-room-price">109,00 € <span>/ Nacht</span></div>
+                        <div class="booking-counter">
+                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('familienzimmer', -1)">−</button>
+                            <span class="booking-counter-value" id="booking-count-familienzimmer">0</span>
+                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('familienzimmer', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="booking-summary" id="bookingSummary" style="display: none;">
+                <h3>📋 Ihre Auswahl</h3>
+                <div id="bookingSummaryContent"></div>
+            </div>
+
+            <!-- Booking Form -->
+            <form class="booking-form" id="mainBookingForm">
+                <h3 class="booking-subtitle">Reisedaten & Kontaktdaten</h3>
+
+                <!-- Calendar Date Picker -->
+                <div class="date-picker-container">
+                    <div class="date-input-box" onclick="toggleBookingCalendar()">
+                        <div class="date-input-header">
+                            <span style="font-size: 1.5rem;">📅</span>
+                            <div class="date-label">Reisedaten auswählen</div>
+                        </div>
+                        <div class="date-range-display">
+                            <div class="date-item">
+                                <div class="date-item-label">Check-In</div>
+                                <div class="date-value placeholder" id="bookingCheckinDisplay">Datum</div>
+                            </div>
+                            <div class="date-separator">→</div>
+                            <div class="date-item">
+                                <div class="date-item-label">Check-Out</div>
+                                <div class="date-value placeholder" id="bookingCheckoutDisplay">Datum</div>
+                            </div>
+                        </div>
+                        <div class="nights-info" id="bookingNightsInfo" style="display: none;">
+                            <span id="bookingNightsCount"></span>
+                        </div>
+                    </div>
+
+                    <!-- Calendar -->
+                    <div class="calendar-wrapper" id="bookingCalendar">
+                        <div class="calendar-header">
+                            <h4 id="bookingCalendarMonth"></h4>
+                            <div class="calendar-nav">
+                                <button type="button" onclick="changeBookingMonth(-1)">‹</button>
+                                <button type="button" onclick="changeBookingMonth(1)">›</button>
+                            </div>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <div class="weekday">So</div>
+                            <div class="weekday">Mo</div>
+                            <div class="weekday">Di</div>
+                            <div class="weekday">Mi</div>
+                            <div class="weekday">Do</div>
+                            <div class="weekday">Fr</div>
+                            <div class="weekday">Sa</div>
+                        </div>
+                        <div class="calendar-days" id="bookingCalendarDays"></div>
+                    </div>
+                </div>
+
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label>Zimmertyp *</label>
-                        <select required>
-                            <option value="">Bitte wählen...</option>
-                            <option value="einzelzimmer">Einzelzimmer - 56,00 €</option>
-                            <option value="doppelzimmer">Doppelzimmer - 80,00 €</option>
-                            <option value="familienzimmer">Familienzimmer - 109,00 €</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Anzahl Gäste *</label>
-                        <select required>
-                            <option value="">Bitte wählen...</option>
-                            <option value="1">1 Person</option>
-                            <option value="2">2 Personen</option>
-                            <option value="3">3 Personen</option>
-                            <option value="4">4 Personen</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Anreise *</label>
-                        <input type="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Abreise *</label>
-                        <input type="date" required>
-                    </div>
                     <div class="form-group">
                         <label>Vorname *</label>
                         <input type="text" required>
@@ -333,10 +402,10 @@
                     <textarea rows="4" placeholder="z.B. Babybett gewünscht, späte Anreise, etc."></textarea>
                 </div>
                 <div class="form-checkbox">
-                    <input type="checkbox" id="privacy" required>
-                    <label for="privacy">Ich habe die Datenschutzerklärung gelesen und akzeptiert *</label>
+                    <input type="checkbox" id="bookingPrivacy" required>
+                    <label for="bookingPrivacy">Ich habe die Datenschutzerklärung gelesen und akzeptiert *</label>
                 </div>
-                <button type="submit" class="btn-primary btn-large">Buchungsanfrage senden</button>
+                <button type="submit" class="btn-primary btn-large" id="bookingSubmitBtn" disabled>Buchungsanfrage senden</button>
             </form>
         </div>
     </section>
