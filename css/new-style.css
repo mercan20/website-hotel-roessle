@@ -333,8 +333,10 @@ section {
 
 .badges {
     display: flex;
-    gap: var(--spacing-sm);
+    /* gap: var(--spacing-md); */
+    gap: 1.5rem;
     margin-top: var(--spacing-md);
+    align-items: center;
 }
 
 .badge {
@@ -344,6 +346,23 @@ section {
     border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 600;
+}
+
+.badge-logo {
+    display: inline-block;
+    transition: all 0.3s ease;
+    opacity: 0.9;
+}
+
+.badge-logo:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+}
+
+.badge-logo img {
+    height: 30px;
+    width: auto;
+    display: block;
 }
 
 .about-features {
@@ -1246,12 +1265,23 @@ section {
 
 .footer-badges {
     display: flex;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-md);
     margin-top: var(--spacing-sm);
+    align-items: center;
 }
 
 .footer-badges .badge {
     background: rgba(255, 255, 255, 0.1);
+}
+
+.footer-badges .badge-logo img {
+    height: 40px;
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+}
+
+.footer-badges .badge-logo:hover img {
+    opacity: 1;
 }
 
 .footer-links {
