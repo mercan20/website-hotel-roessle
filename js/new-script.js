@@ -405,16 +405,17 @@ function formatBookingDate(date) {
 
 const roomGalleries = {
     einzelzimmer: [
-        { src: 'images/zimmer/Zimmer_EZ_small.jpg', caption: 'Einzelzimmer' }
+        { src: 'images/home_roessle4.jpg', caption: 'Einzelzimmer - Gemütliches Frühstück' },
+        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche' }
     ],
     doppelzimmer: [
-        { src: 'images/zimmer/Zimmer_DZ_small.jpg', caption: 'Doppelzimmer mit Afrikabild' },
-        { src: 'images/zimmer/wohnen_roessle_5.jpg', caption: 'Doppelzimmer - Komfortabel und modern' }
+        { src: 'images/zimmer/wohnen_roessle_5.jpg', caption: 'Doppelzimmer - Komfortabel und modern' },
+        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche' }
     ],
     familienzimmer: [
-        { src: 'images/zimmer/Zimmer_FZ_small.jpg', caption: 'Familienzimmer mit Sitzecke' },
         { src: 'images/zimmer/wohnen_roessle1.jpg', caption: 'Familienzimmer - Geräumig für bis zu 4 Personen' },
-        { src: 'images/zimmer/wohnen_roessle4.jpg', caption: 'Familienzimmer - Gemütliche Atmosphäre' }
+        { src: 'images/zimmer/wohnen_roessle4.jpg', caption: 'Familienzimmer - Gemütliche Atmosphäre' },
+        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche' }
     ]
 };
 
