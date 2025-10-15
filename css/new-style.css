@@ -1335,6 +1335,16 @@ section {
     line-height: 1.8;
 }
 
+.footer-section a {
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section a:hover {
+    color: var(--accent);
+}
+
 .footer-badges {
     display: flex;
     gap: var(--spacing-md);
@@ -1348,12 +1358,15 @@ section {
 
 .footer-badges .badge-logo img {
     height: 40px;
-    filter: brightness(0) invert(1);
-    opacity: 0.8;
+    opacity: 0.9;
+    background: white;
+    padding: 5px;
+    border-radius: 5px;
 }
 
 .footer-badges .badge-logo:hover img {
     opacity: 1;
+    transform: translateY(-2px);
 }
 
 .footer-links {
