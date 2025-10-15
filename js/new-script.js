@@ -422,6 +422,12 @@ const roomGalleries = {
 let currentGallery = [];
 let currentImageIndex = 0;
 
+// Touch/Swipe variables
+let touchStartX = 0;
+let touchEndX = 0;
+let touchStartY = 0;
+let touchEndY = 0;
+
 function openRoomGallery(roomType) {
     currentGallery = roomGalleries[roomType] || [];
     if (currentGallery.length === 0) return;
@@ -436,6 +442,17 @@ function openRoomGallery(roomType) {
 
     // Add keyboard navigation
     document.addEventListener('keydown', handleGalleryKeyboard);
+
+    // Add touch/swipe navigation for mobile
+    const galleryImage = document.getElementById('galleryImage');
+    const imageWrapper = document.querySelector('.gallery-image-wrapper');
+
+    galleryImage.addEventListener('touchstart', handleGalleryTouchStart, { passive: true });
+    galleryImage.addEventListener('touchend', handleGalleryTouchEnd, { passive: false });
+    galleryImage.addEventListener('click', handleGalleryTap);
+
+    imageWrapper.addEventListener('touchstart', handleGalleryTouchStart, { passive: true });
+    imageWrapper.addEventListener('touchend', handleGalleryTouchEnd, { passive: false });
 }
 
 function closeRoomGallery() {
@@ -445,6 +462,21 @@ function closeRoomGallery() {
 
     // Remove keyboard navigation
     document.removeEventListener('keydown', handleGalleryKeyboard);
+
+    // Remove touch navigation
+    const galleryImage = document.getElementById('galleryImage');
+    const imageWrapper = document.querySelector('.gallery-image-wrapper');
+
+    if (galleryImage) {
+        galleryImage.removeEventListener('touchstart', handleGalleryTouchStart);
+        galleryImage.removeEventListener('touchend', handleGalleryTouchEnd);
+        galleryImage.removeEventListener('click', handleGalleryTap);
+    }
+
+    if (imageWrapper) {
+        imageWrapper.removeEventListener('touchstart', handleGalleryTouchStart);
+        imageWrapper.removeEventListener('touchend', handleGalleryTouchEnd);
+    }
 }
 
 function nextRoomImage() {
@@ -527,6 +559,67 @@ function handleGalleryKeyboard(e) {
         nextRoomImage();
     } else if (e.key === 'Escape') {
         closeRoomGallery();
+    }
+}
+
+// Touch/Swipe handlers
+function handleGalleryTouchStart(e) {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}
+
+function handleGalleryTouchEnd(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleGallerySwipe();
+}
+
+function handleGallerySwipe() {
+    const swipeThreshold = 50; // Minimum distance for swipe
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+
+    // Check if horizontal swipe is dominant (not vertical scroll)
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX > swipeThreshold) {
+            // Swipe right → Previous image
+            prevRoomImage();
+            triggerHapticFeedback();
+        } else if (deltaX < -swipeThreshold) {
+            // Swipe left → Next image
+            nextRoomImage();
+            triggerHapticFeedback();
+        }
+    }
+}
+
+// Tap navigation on image sides (works on all devices)
+function handleGalleryTap(e) {
+    const imageRect = e.target.getBoundingClientRect();
+    const clickX = e.clientX || (e.touches && e.touches[0].clientX);
+    const imageWidth = imageRect.width;
+
+    if (clickX) {
+        const relativeX = clickX - imageRect.left;
+
+        // Left 30% → Previous
+        if (relativeX < imageWidth * 0.3) {
+            prevRoomImage();
+            triggerHapticFeedback();
+        }
+        // Right 30% → Next
+        else if (relativeX > imageWidth * 0.7) {
+            nextRoomImage();
+            triggerHapticFeedback();
+        }
+        // Middle 40% → Do nothing (reserved for future zoom feature)
+    }
+}
+
+// Haptic feedback for mobile devices
+function triggerHapticFeedback() {
+    if ('vibrate' in navigator) {
+        navigator.vibrate(10); // Short vibration (10ms)
     }
 }
 
