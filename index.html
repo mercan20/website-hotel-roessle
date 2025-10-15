@@ -90,8 +90,11 @@
             <div class="rooms-grid">
                 <!-- Einzelzimmer -->
                 <div class="room-card">
-                    <div class="room-image">
-                        <div class="room-icon">🛏️</div>
+                    <div class="room-image" onclick="openRoomGallery('einzelzimmer')">
+                        <img src="images/zimmer/Zimmer_EZ_small.jpg" alt="Einzelzimmer">
+                        <div class="image-overlay">
+                            <span class="view-gallery">📷 Galerie ansehen</span>
+                        </div>
                     </div>
                     <div class="room-content">
                         <h3>Einzelzimmer</h3>
@@ -110,8 +113,11 @@
                 <!-- Doppelzimmer -->
                 <div class="room-card featured">
                     <div class="room-badge">Beliebt</div>
-                    <div class="room-image">
-                        <div class="room-icon">🛏️🛏️</div>
+                    <div class="room-image" onclick="openRoomGallery('doppelzimmer')">
+                        <img src="images/zimmer/Zimmer_DZ_small.jpg" alt="Doppelzimmer">
+                        <div class="image-overlay">
+                            <span class="view-gallery">📷 Galerie ansehen (2 Bilder)</span>
+                        </div>
                     </div>
                     <div class="room-content">
                         <h3>Doppelzimmer</h3>
@@ -129,8 +135,11 @@
 
                 <!-- Familienzimmer -->
                 <div class="room-card">
-                    <div class="room-image">
-                        <div class="room-icon">👨‍👩‍👧‍👦</div>
+                    <div class="room-image" onclick="openRoomGallery('familienzimmer')">
+                        <img src="images/zimmer/Zimmer_FZ_small.jpg" alt="Familienzimmer">
+                        <div class="image-overlay">
+                            <span class="view-gallery">📷 Galerie ansehen (3 Bilder)</span>
+                        </div>
                     </div>
                     <div class="room-content">
                         <h3>Familienzimmer</h3>
@@ -537,6 +546,22 @@
             </div>
         </div>
     </footer>
+
+    <!-- Room Gallery Modal -->
+    <div id="roomGalleryModal" class="gallery-modal">
+        <div class="gallery-overlay" onclick="closeRoomGallery()"></div>
+        <div class="gallery-container">
+            <button class="gallery-close" onclick="closeRoomGallery()" aria-label="Schließen">&times;</button>
+            <button class="gallery-prev" onclick="prevRoomImage()" aria-label="Vorheriges Bild">‹</button>
+            <div class="gallery-image-wrapper">
+                <img id="galleryImage" src="" alt="Zimmer Galerie">
+                <div class="gallery-caption" id="galleryCaption"></div>
+            </div>
+            <button class="gallery-next" onclick="nextRoomImage()" aria-label="Nächstes Bild">›</button>
+            <div class="gallery-dots" id="galleryDots"></div>
+            <div class="gallery-counter" id="galleryCounter"></div>
+        </div>
+    </div>
 
     <script src="js/new-script.js"></script>
 </body>

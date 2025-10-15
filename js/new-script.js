@@ -399,6 +399,136 @@ function formatBookingDate(date) {
     return `${day}. ${month} ${year}`;
 }
 
+// ===================================
+// Room Gallery (Lightbox)
+// ===================================
+
+const roomGalleries = {
+    einzelzimmer: [
+        { src: 'images/zimmer/Zimmer_EZ_small.jpg', caption: 'Einzelzimmer' }
+    ],
+    doppelzimmer: [
+        { src: 'images/zimmer/Zimmer_DZ_small.jpg', caption: 'Doppelzimmer mit Afrikabild' },
+        { src: 'images/zimmer/wohnen_roessle_5.jpg', caption: 'Doppelzimmer - Komfortabel und modern' }
+    ],
+    familienzimmer: [
+        { src: 'images/zimmer/Zimmer_FZ_small.jpg', caption: 'Familienzimmer mit Sitzecke' },
+        { src: 'images/zimmer/wohnen_roessle1.jpg', caption: 'Familienzimmer - Geräumig für bis zu 4 Personen' },
+        { src: 'images/zimmer/wohnen_roessle4.jpg', caption: 'Familienzimmer - Gemütliche Atmosphäre' }
+    ]
+};
+
+let currentGallery = [];
+let currentImageIndex = 0;
+
+function openRoomGallery(roomType) {
+    currentGallery = roomGalleries[roomType] || [];
+    if (currentGallery.length === 0) return;
+
+    currentImageIndex = 0;
+    const modal = document.getElementById('roomGalleryModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+
+    updateGalleryImage();
+    renderGalleryDots();
+
+    // Add keyboard navigation
+    document.addEventListener('keydown', handleGalleryKeyboard);
+}
+
+function closeRoomGallery() {
+    const modal = document.getElementById('roomGalleryModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+
+    // Remove keyboard navigation
+    document.removeEventListener('keydown', handleGalleryKeyboard);
+}
+
+function nextRoomImage() {
+    if (currentImageIndex < currentGallery.length - 1) {
+        currentImageIndex++;
+        updateGalleryImage();
+    }
+}
+
+function prevRoomImage() {
+    if (currentImageIndex > 0) {
+        currentImageIndex--;
+        updateGalleryImage();
+    }
+}
+
+function goToGalleryImage(index) {
+    currentImageIndex = index;
+    updateGalleryImage();
+}
+
+function updateGalleryImage() {
+    const image = currentGallery[currentImageIndex];
+    const galleryImage = document.getElementById('galleryImage');
+    const galleryCaption = document.getElementById('galleryCaption');
+    const galleryCounter = document.getElementById('galleryCounter');
+    const prevBtn = document.querySelector('.gallery-prev');
+    const nextBtn = document.querySelector('.gallery-next');
+
+    // Update image with fade effect
+    galleryImage.style.opacity = '0';
+    setTimeout(() => {
+        galleryImage.src = image.src;
+        galleryImage.alt = image.caption;
+        galleryCaption.textContent = image.caption;
+        galleryImage.style.opacity = '1';
+    }, 150);
+
+    // Update counter
+    galleryCounter.textContent = `${currentImageIndex + 1} / ${currentGallery.length}`;
+
+    // Update navigation buttons
+    prevBtn.disabled = currentImageIndex === 0;
+    nextBtn.disabled = currentImageIndex === currentGallery.length - 1;
+
+    // Update dots
+    updateGalleryDots();
+}
+
+function renderGalleryDots() {
+    const dotsContainer = document.getElementById('galleryDots');
+    dotsContainer.innerHTML = '';
+
+    currentGallery.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'gallery-dot';
+        if (index === currentImageIndex) {
+            dot.classList.add('active');
+        }
+        dot.onclick = () => goToGalleryImage(index);
+        dotsContainer.appendChild(dot);
+    });
+}
+
+function updateGalleryDots() {
+    const dots = document.querySelectorAll('.gallery-dot');
+    dots.forEach((dot, index) => {
+        if (index === currentImageIndex) {
+            dot.classList.add('active');
+        } else {
+            dot.classList.remove('active');
+        }
+    });
+}
+
+function handleGalleryKeyboard(e) {
+    if (e.key === 'ArrowLeft') {
+        prevRoomImage();
+    } else if (e.key === 'ArrowRight') {
+        nextRoomImage();
+    } else if (e.key === 'Escape') {
+        closeRoomGallery();
+    }
+}
+
 // Add mobile menu styles dynamically
 const style = document.createElement('style');
 style.textContent = `
