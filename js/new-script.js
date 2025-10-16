@@ -2,6 +2,16 @@
 // Modern Hotel Website JavaScript
 // ===================================
 
+// ===================================
+// Google Apps Script API Configuration
+// ===================================
+
+// Google Apps Script Web-App URL (Deployment)
+const BOOKING_API_URL = 'https://script.google.com/macros/s/AKfycbwOaLB8mCh53n7bylqAcR_Csz1u53siPA_ptk7GDWOt0X-OORRKNUzltChUJNz_KQ2BFQ/exec';
+
+// Falls Sie testen möchten ohne Backend (nur Frontend-Validierung):
+const USE_MOCK_API = false; // Auf true setzen zum Testen ohne Backend (für lokale Tests)
+
 document.addEventListener('DOMContentLoaded', function() {
 
     // Smooth Scroll for Navigation Links
@@ -49,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Navbar Scroll Effect
     const navbar = document.querySelector('.navbar');
-    let lastScroll = 0;
 
     window.addEventListener('scroll', function() {
         const currentScroll = window.pageYOffset;
@@ -61,8 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
             navbar.style.padding = '1rem 0';
             navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
         }
-
-        lastScroll = currentScroll;
     });
 
     // Active Navigation Link on Scroll
@@ -88,15 +95,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Form Submission Handling
-    const bookingForm = document.querySelector('.booking-form');
+    const bookingForm = document.getElementById('mainBookingForm');
     const contactForm = document.querySelector('.contact-form');
 
     if (bookingForm) {
-        bookingForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Vielen Dank für Ihre Buchungsanfrage! Wir werden uns schnellstmöglich bei Ihnen melden.');
-            bookingForm.reset();
-        });
+        bookingForm.addEventListener('submit', handleBookingSubmit);
     }
 
     if (contactForm) {
@@ -668,3 +671,265 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ===================================
+// Booking API Integration
+// ===================================
+
+/**
+ * Behandelt das Absenden des Buchungsformulars
+ */
+async function handleBookingSubmit(e) {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById('bookingSubmitBtn');
+    const originalBtnText = submitBtn.textContent;
+
+    // Formulardaten sammeln
+    const formData = new FormData(e.target);
+    const bookingData = {
+        vorname: formData.get('vorname') || document.querySelector('input[type="text"]').value,
+        nachname: formData.get('nachname') || document.querySelectorAll('input[type="text"]')[1].value,
+        email: formData.get('email') || document.querySelector('input[type="email"]').value,
+        telefon: formData.get('telefon') || document.querySelector('input[type="tel"]').value,
+        checkin: bookingSelectedCheckin ? bookingSelectedCheckin.toISOString() : null,
+        checkout: bookingSelectedCheckout ? bookingSelectedCheckout.toISOString() : null,
+        einzelzimmer: bookingCounters.einzelzimmer || 0,
+        doppelzimmer: bookingCounters.doppelzimmer || 0,
+        familienzimmer: bookingCounters.familienzimmer || 0,
+        wuensche: formData.get('wuensche') || document.querySelector('textarea').value || ''
+    };
+
+    // Validierung
+    if (!validateBookingForm(bookingData)) {
+        showBookingMessage('Bitte füllen Sie alle Pflichtfelder aus und wählen Sie mindestens ein Zimmer.', 'error');
+        return;
+    }
+
+    // Button-Status ändern
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ Wird gesendet...';
+
+    try {
+        let response;
+
+        if (USE_MOCK_API || BOOKING_API_URL === 'IHRE_GOOGLE_APPS_SCRIPT_URL_HIER') {
+            // Mock-Modus für Testing ohne Backend
+            console.log('Mock-Modus: Buchungsdaten würden gesendet:', bookingData);
+            response = { success: true, bookingId: 'MOCK-' + Date.now() };
+            await new Promise(resolve => setTimeout(resolve, 1500)); // Simuliere Netzwerk-Verzögerung
+        } else {
+            // Echte API-Anfrage
+            const apiResponse = await fetch(BOOKING_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bookingData),
+                mode: 'cors'
+            });
+
+            if (!apiResponse.ok) {
+                throw new Error(`HTTP Error ${apiResponse.status}`);
+            }
+
+            response = await apiResponse.json();
+        }
+
+        if (response.success) {
+            showBookingMessage(
+                '✅ Buchungsanfrage erfolgreich übermittelt!\n\n' +
+                'Vielen Dank für Ihre Anfrage. Wir prüfen die Verfügbarkeit und melden uns innerhalb von 24 Stunden bei Ihnen.\n\n' +
+                'Sie erhalten in Kürze eine Bestätigungs-E-Mail.',
+                'success'
+            );
+
+            // Formular zurücksetzen
+            e.target.reset();
+            resetBookingForm();
+
+        } else {
+            throw new Error(response.error || 'Unbekannter Fehler');
+        }
+
+    } catch (error) {
+        console.error('Booking submission error:', error);
+        showBookingMessage(
+            '❌ Es ist ein Fehler aufgetreten.\n\n' +
+            'Bitte versuchen Sie es erneut oder kontaktieren Sie uns telefonisch unter +49 (0) 7461 2913.',
+            'error'
+        );
+    } finally {
+        // Button zurücksetzen
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+    }
+}
+
+/**
+ * Validiert die Buchungsformular-Daten
+ */
+function validateBookingForm(data) {
+    if (!data.vorname || !data.nachname || !data.email || !data.telefon) {
+        return false;
+    }
+    if (!data.checkin || !data.checkout) {
+        return false;
+    }
+    const totalRooms = (data.einzelzimmer || 0) + (data.doppelzimmer || 0) + (data.familienzimmer || 0);
+    if (totalRooms === 0) {
+        return false;
+    }
+    // Email-Format prüfen
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Zeigt eine Nachricht nach dem Buchungsversuch
+ */
+function showBookingMessage(message, type) {
+    // Entferne alte Nachrichten
+    const existingMessage = document.querySelector('.booking-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+
+    // Erstelle neue Nachricht
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `booking-message booking-message-${type}`;
+    messageDiv.innerHTML = `
+        <div class="booking-message-content">
+            <p>${message.replace(/\n/g, '<br>')}</p>
+            <button onclick="this.parentElement.parentElement.remove()" class="booking-message-close">Schließen</button>
+        </div>
+    `;
+
+    // Einfügen vor dem Formular
+    const bookingSection = document.getElementById('buchen');
+    const container = bookingSection.querySelector('.container');
+    container.insertBefore(messageDiv, container.firstChild);
+
+    // Scroll zur Nachricht
+    messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Auto-Remove nach 10 Sekunden (nur bei Erfolg)
+    if (type === 'success') {
+        setTimeout(() => {
+            if (messageDiv && messageDiv.parentElement) {
+                messageDiv.remove();
+            }
+        }, 10000);
+    }
+}
+
+/**
+ * Setzt das Buchungsformular zurück
+ */
+function resetBookingForm() {
+    // Counter zurücksetzen
+    bookingCounters.einzelzimmer = 0;
+    bookingCounters.doppelzimmer = 0;
+    bookingCounters.familienzimmer = 0;
+
+    // UI aktualisieren
+    document.getElementById('booking-count-einzelzimmer').textContent = '0';
+    document.getElementById('booking-count-doppelzimmer').textContent = '0';
+    document.getElementById('booking-count-familienzimmer').textContent = '0';
+
+    // Selected-Klasse entfernen
+    document.querySelectorAll('.booking-room-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+
+    // Datum zurücksetzen
+    bookingSelectedCheckin = null;
+    bookingSelectedCheckout = null;
+    bookingSelectingCheckout = false;
+
+    document.getElementById('bookingCheckinDisplay').textContent = 'Datum';
+    document.getElementById('bookingCheckinDisplay').classList.add('placeholder');
+    document.getElementById('bookingCheckoutDisplay').textContent = 'Datum';
+    document.getElementById('bookingCheckoutDisplay').classList.add('placeholder');
+    document.getElementById('bookingNightsInfo').style.display = 'none';
+
+    // Summary verstecken
+    document.getElementById('bookingSummary').style.display = 'none';
+
+    // Submit-Button deaktivieren
+    document.getElementById('bookingSubmitBtn').disabled = true;
+}
+
+// CSS für Booking Messages
+const bookingMessageStyle = document.createElement('style');
+bookingMessageStyle.textContent = `
+    .booking-message {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        border-radius: 8px;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .booking-message-success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+
+    .booking-message-error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+    .booking-message-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .booking-message-content p {
+        margin: 0;
+        flex: 1;
+        line-height: 1.6;
+    }
+
+    .booking-message-close {
+        background: rgba(0, 0, 0, 0.1);
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        white-space: nowrap;
+        transition: background 0.2s;
+    }
+
+    .booking-message-close:hover {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .booking-message-success .booking-message-close {
+        color: #155724;
+    }
+
+    .booking-message-error .booking-message-close {
+        color: #721c24;
+    }
+`;
+document.head.appendChild(bookingMessageStyle);
