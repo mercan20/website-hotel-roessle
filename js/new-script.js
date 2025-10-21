@@ -7,7 +7,7 @@
 // ===================================
 
 // Google Apps Script Web-App URL (Deployment)
-const BOOKING_API_URL = 'https://script.google.com/macros/s/AKfycbwOaLB8mCh53n7bylqAcR_Csz1u53siPA_ptk7GDWOt0X-OORRKNUzltChUJNz_KQ2BFQ/exec';
+const BOOKING_API_URL = 'https://script.google.com/macros/s/AKfycbxom9RbW4YPMje8c-oFHULIkCRi95WNZIHNvpYUQF1R46YEhRBEWS7CExdEAc0SoMsxng/exec';
 
 // Falls Sie testen möchten ohne Backend (nur Frontend-Validierung):
 const USE_MOCK_API = false; // Auf true setzen zum Testen ohne Backend (für lokale Tests)
@@ -697,7 +697,8 @@ async function handleBookingSubmit(e) {
         einzelzimmer: bookingCounters.einzelzimmer || 0,
         doppelzimmer: bookingCounters.doppelzimmer || 0,
         familienzimmer: bookingCounters.familienzimmer || 0,
-        wuensche: formData.get('wuensche') || document.querySelector('textarea').value || ''
+        wuensche: formData.get('wuensche') || document.querySelector('textarea').value || '',
+        origin: window.location.origin // Anti-Spam: Herkunft der Anfrage
     };
 
     // Validierung
