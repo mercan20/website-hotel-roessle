@@ -1180,11 +1180,43 @@ section {
     margin-bottom: var(--spacing-md);
 }
 
+.form-alert {
+    display: none;
+    margin-bottom: var(--spacing-md);
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.form-alert.is-visible {
+    display: block;
+}
+
+.form-alert--success {
+    background: #edf9f1;
+    border: 2px solid #3fa46a;
+    color: #22603c;
+}
+
+.form-alert--error {
+    background: #fdeaea;
+    border: 2px solid #d64545;
+    color: #8b1f1f;
+}
+
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: var(--primary);
+}
+
+.form-group--hidden {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
 }
 
 .form-group input,

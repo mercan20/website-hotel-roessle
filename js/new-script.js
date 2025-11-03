@@ -8,6 +8,9 @@
 
 // Google Apps Script Web-App URL (Deployment)
 const BOOKING_API_URL = 'https://script.google.com/macros/s/AKfycbxom9RbW4YPMje8c-oFHULIkCRi95WNZIHNvpYUQF1R46YEhRBEWS7CExdEAc0SoMsxng/exec';
+const CONTACT_API_URL = 'contact.php';
+const CONTACT_SUCCESS_MESSAGE = 'Vielen Dank für Ihre Nachricht! Wir melden uns so schnell wie möglich bei Ihnen.';
+const CONTACT_ERROR_MESSAGE = 'Ihre Nachricht konnte nicht versendet werden. Bitte versuchen Sie es erneut oder kontaktieren Sie uns telefonisch.';
 
 // Falls Sie testen möchten ohne Backend (nur Frontend-Validierung):
 const USE_MOCK_API = false; // Auf true setzen zum Testen ohne Backend (für lokale Tests)
@@ -96,17 +99,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Form Submission Handling
     const bookingForm = document.getElementById('mainBookingForm');
-    const contactForm = document.querySelector('.contact-form');
+    const contactForm = document.getElementById('contactForm');
+    const contactAlert = document.getElementById('contactFormAlert');
+    const contactSubmitButton = document.getElementById('contactFormSubmit');
+    const contactTimestampField = document.getElementById('contactFormTimestamp');
 
     if (bookingForm) {
         bookingForm.addEventListener('submit', handleBookingSubmit);
     }
 
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Vielen Dank für Ihre Nachricht! Wir werden uns schnellstmöglich bei Ihnen melden.');
-            contactForm.reset();
+        if (contactTimestampField) {
+            contactTimestampField.value = Math.floor(Date.now() / 1000).toString();
+        }
+
+        contactForm.addEventListener('submit', function(event) {
+            handleContactSubmit(event, {
+                form: contactForm,
+                alert: contactAlert,
+                submitButton: contactSubmitButton,
+                timestampField: contactTimestampField
+            });
+        });
+
+        contactForm.addEventListener('focusin', function() {
+            if (contactTimestampField) {
+                contactTimestampField.value = Math.floor(Date.now() / 1000).toString();
+            }
+        });
+
+        contactForm.addEventListener('input', function() {
+            resetContactAlert(contactAlert);
         });
     }
 
@@ -166,6 +189,153 @@ document.addEventListener('DOMContentLoaded', function() {
         renderBookingCalendar();
     }
 });
+
+async function handleContactSubmit(event, state) {
+    event.preventDefault();
+
+    const form = state.form;
+    const alertElement = state.alert;
+    const submitButton = state.submitButton;
+    const timestampField = state.timestampField;
+
+    if (!form) {
+        return;
+    }
+
+    if (timestampField && (!timestampField.value || timestampField.value === '0')) {
+        timestampField.value = Math.floor(Date.now() / 1000).toString();
+    }
+
+    const payload = getContactPayload(form);
+
+    if (payload.website) {
+        form.reset();
+        if (timestampField) {
+            timestampField.value = Math.floor(Date.now() / 1000).toString();
+        }
+        showContactAlert(alertElement, 'success', CONTACT_SUCCESS_MESSAGE);
+        return;
+    }
+
+    const clientErrors = [];
+
+    if (!payload.name || payload.name.length < 3) {
+        clientErrors.push('Bitte geben Sie Ihren vollständigen Namen an.');
+    }
+
+    if (!payload.email || !isValidEmail(payload.email)) {
+        clientErrors.push('Bitte geben Sie eine gültige E-Mail-Adresse an.');
+    }
+
+    if (!payload.subject) {
+        clientErrors.push('Bitte wählen Sie einen Betreff.');
+    }
+
+    if (!payload.message || payload.message.length < 10) {
+        clientErrors.push('Ihre Nachricht muss mindestens 10 Zeichen enthalten.');
+    }
+
+    if (clientErrors.length) {
+        showContactAlert(alertElement, 'error', clientErrors.join(' '));
+        return;
+    }
+
+    if (timestampField) {
+        const timestampValue = timestampField.value && timestampField.value !== '0'
+            ? timestampField.value
+            : Math.floor(Date.now() / 1000).toString();
+        timestampField.value = timestampValue;
+        payload.form_timestamp = timestampValue;
+    }
+
+    try {
+        toggleContactSubmitButton(submitButton, true);
+
+        const response = await fetch(CONTACT_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json().catch(() => null);
+
+        if (!response.ok || !result || !result.success) {
+            const errorMessage = result && result.message ? result.message : CONTACT_ERROR_MESSAGE;
+            throw new Error(errorMessage);
+        }
+
+        showContactAlert(alertElement, 'success', result.message || CONTACT_SUCCESS_MESSAGE);
+        form.reset();
+
+        if (timestampField) {
+            timestampField.value = Math.floor(Date.now() / 1000).toString();
+        }
+    } catch (error) {
+        const fallback = error instanceof Error ? error.message : CONTACT_ERROR_MESSAGE;
+        showContactAlert(alertElement, 'error', fallback);
+    } finally {
+        toggleContactSubmitButton(submitButton, false);
+    }
+}
+
+function getContactPayload(form) {
+    const formData = new FormData(form);
+    const payload = {};
+
+    for (const [key, value] of formData.entries()) {
+        payload[key] = typeof value === 'string' ? value.trim() : value;
+    }
+
+    return payload;
+}
+
+function isValidEmail(value) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(String(value).toLowerCase());
+}
+
+function showContactAlert(alertElement, type, message) {
+    if (!alertElement) {
+        return;
+    }
+
+    alertElement.textContent = message;
+    alertElement.classList.remove('form-alert--success', 'form-alert--error', 'is-visible');
+    alertElement.classList.add(`form-alert--${type}`, 'is-visible');
+}
+
+function resetContactAlert(alertElement) {
+    if (!alertElement) {
+        return;
+    }
+
+    alertElement.textContent = '';
+    alertElement.classList.remove('form-alert--success', 'form-alert--error', 'is-visible');
+}
+
+function toggleContactSubmitButton(button, isLoading) {
+    if (!button) {
+        return;
+    }
+
+    if (isLoading) {
+        button.dataset.originalText = button.textContent;
+        button.textContent = 'Wird gesendet...';
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+    } else {
+        const original = button.dataset.originalText;
+        if (original) {
+            button.textContent = original;
+        }
+        delete button.dataset.originalText;
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+    }
+}
 
 // Room Counter State
 const bookingCounters = {

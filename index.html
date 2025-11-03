@@ -569,30 +569,36 @@
                 </div>
 
                 <div class="contact-form-wrapper">
-                    <form class="contact-form">
+                    <form class="contact-form" id="contactForm" action="contact.php" method="post" novalidate>
+                        <div class="form-alert" id="contactFormAlert" role="status" aria-live="polite"></div>
                         <div class="form-group">
                             <label>Name *</label>
-                            <input type="text" required>
+                            <input type="text" name="name" id="contactName" autocomplete="name" required>
                         </div>
                         <div class="form-group">
                             <label>E-Mail *</label>
-                            <input type="email" required>
+                            <input type="email" name="email" id="contactEmail" autocomplete="email" inputmode="email" required>
                         </div>
                         <div class="form-group">
                             <label>Betreff *</label>
-                            <select required>
+                            <select name="subject" id="contactSubject" required>
                                 <option value="">Bitte wählen...</option>
-                                <option>Allgemeine Anfrage</option>
-                                <option>Zimmeranfrage</option>
-                                <option>Event-Anfrage</option>
-                                <option>Sonstiges</option>
+                                <option value="allgemein">Allgemeine Anfrage</option>
+                                <option value="zimmer">Zimmeranfrage</option>
+                                <option value="event">Event-Anfrage</option>
+                                <option value="sonstiges">Sonstiges</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Nachricht *</label>
-                            <textarea rows="5" required></textarea>
+                            <textarea rows="5" name="message" id="contactMessage" minlength="10" required></textarea>
                         </div>
-                        <button type="submit" class="btn-primary btn-large">Nachricht senden</button>
+                        <div class="form-group form-group--hidden" aria-hidden="true">
+                            <label for="contactWebsite">Website</label>
+                            <input type="text" id="contactWebsite" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+                        <input type="hidden" name="form_timestamp" id="contactFormTimestamp" value="0">
+                        <button type="submit" class="btn-primary btn-large" id="contactFormSubmit">Nachricht senden</button>
                     </form>
                 </div>
             </div>
