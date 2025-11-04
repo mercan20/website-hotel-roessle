@@ -1,0 +1,29 @@
+name: HTML and CSS Quality Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate HTML
+        uses: chabad360/htmlproofer@v1
+        with:
+          directory: .
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run HTMLHint
+        run: npx --yes htmlhint '**/*.html'
+
+      - name: Lint CSS
+        run: npx --yes stylelint '**/*.css'
