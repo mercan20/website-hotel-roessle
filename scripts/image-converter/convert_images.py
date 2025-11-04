@@ -25,12 +25,12 @@ SVG_SUPPORT = False
 # ------------------------------------------------------------
 
 # Optionales Modul laden
-try:
-    import cairosvg
-    SVG_SUPPORT = True
-except ImportError:
-    SVG_SUPPORT = False
-    pass
+# try:
+#     import cairosvg
+#     SVG_SUPPORT = True
+# except ImportError:
+#     SVG_SUPPORT = False
+#     pass
 
     
 
