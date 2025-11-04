@@ -5,53 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Datenschutzerklärung - Hotel Rössle Tuttlingen">
     <title>Datenschutz - Hotel Rössle Tuttlingen</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-style.css">
 </head>
 <body>
-    <!-- Header & Navigation -->
-    <header class="header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                🏨 Hotel Rössle
-            </a>
-            <nav>
-                <button class="mobile-menu-toggle" aria-label="Menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <ul class="nav-menu">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="zimmer.html">Preise</a></li>
-                    <li><a href="events.html">Räumlichkeiten</a></li>
-                    <li><a href="freizeit.html">Freizeit</a></li>
-                    <li><a href="kontakt.html">Kontakt</a></li>
-                    <li><a href="buchung.html" class="btn btn-primary" style="padding: 0.5rem 1rem;">Jetzt Buchen</a></li>
-                </ul>
-            </nav>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">HOTEL RÖSSLE</a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#zimmer">Zimmer</a></li>
+                <li><a href="index.html#events">Räumlichkeiten</a></li>
+                <li><a href="index.html#freizeit">Freizeit</a></li>
+                <li><a href="index.html#kontakt">Kontakt</a></li>
+                <li><a href="index.html#buchen" class="nav-btn">Buchen</a></li>
+            </ul>
+            <button class="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-    </header>
+    </nav>
 
     <!-- Page Header -->
-    <section class="hero" style="height: 30vh; min-height: 250px;">
+    <section class="hero" style="height: 40vh; min-height: 300px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); margin-top: 80px;">
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1>Datenschutzerklärung</h1>
+            <h1 class="hero-title">Datenschutzerklärung</h1>
+            <p class="hero-subtitle">Schutz Ihrer persönlichen Daten</p>
         </div>
     </section>
 
     <!-- Privacy Content -->
-    <section class="section section-light">
+    <section class="section-about" style="background: var(--white);">
         <div class="container">
-            <div style="max-width: 800px; margin: 0 auto;">
+            <div style="max-width: 900px; margin: 0 auto;">
 
-                <h2>1. Datenschutz auf einen Blick</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">1. Datenschutz auf einen Blick</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <h3>Allgemeine Hinweise</h3>
                     <p>Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.</p>
                 </div>
 
-                <h2>2. Verantwortliche Stelle</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">2. Verantwortliche Stelle</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <p>Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:</p>
                     <p><strong>Hotel Rössle</strong><br>
                     Osman Kücük<br>
@@ -63,8 +61,8 @@
                     <p>Verantwortliche Stelle ist die natürliche oder juristische Person, die allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten (z.B. Namen, E-Mail-Adressen o. Ä.) entscheidet.</p>
                 </div>
 
-                <h2>3. Datenerfassung auf dieser Website</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">3. Datenerfassung auf dieser Website</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <h3>Kontaktformular</h3>
                     <p>Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
 
@@ -81,14 +79,14 @@
                     <p>Diese Daten werden ausschließlich zur Bearbeitung Ihrer Buchungsanfrage verwendet und nach Abschluss des Aufenthalts bzw. nach gesetzlichen Aufbewahrungsfristen gelöscht.</p>
                 </div>
 
-                <h2>4. Hosting</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">4. Hosting</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <p>Diese Website wird extern gehostet. Die personenbezogenen Daten, die auf dieser Website erfasst werden, werden auf den Servern des Hosters gespeichert. Hierbei kann es sich v.a. um IP-Adressen, Kontaktanfragen, Meta- und Kommunikationsdaten, Vertragsdaten, Kontaktdaten, Namen, Webseitenzugriffe und sonstige Daten, die über eine Website generiert werden, handeln.</p>
                     <p>Das Hosting erfolgt zum Zwecke der Vertragserfüllung gegenüber unseren potenziellen und bestehenden Kunden (Art. 6 Abs. 1 lit. b DSGVO) und im Interesse einer sicheren, schnellen und effizienten Bereitstellung unseres Online-Angebots durch einen professionellen Anbieter (Art. 6 Abs. 1 lit. f DSGVO).</p>
                 </div>
 
-                <h2>5. Allgemeine Hinweise und Pflichtinformationen</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">5. Allgemeine Hinweise und Pflichtinformationen</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <h3>Datenschutz</h3>
                     <p>Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p>
 
@@ -105,8 +103,8 @@
                     <p>Sie haben das Recht, Daten, die wir auf Grundlage Ihrer Einwilligung oder in Erfüllung eines Vertrags automatisiert verarbeiten, an sich oder an einen Dritten in einem gängigen, maschinenlesbaren Format aushändigen zu lassen.</p>
                 </div>
 
-                <h2>6. Ihre Rechte</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">6. Ihre Rechte</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <p>Sie haben jederzeit das Recht:</p>
                     <ul>
                         <li>Auskunft über Ihre bei uns gespeicherten personenbezogenen Daten zu erhalten (Art. 15 DSGVO)</li>
@@ -119,23 +117,23 @@
                     <p>Zur Ausübung dieser Rechte wenden Sie sich bitte an die oben genannten Kontaktdaten.</p>
                 </div>
 
-                <h2>7. SSL- bzw. TLS-Verschlüsselung</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">7. SSL- bzw. TLS-Verschlüsselung</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <p>Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte, wie zum Beispiel Buchungen oder Anfragen, die Sie an uns als Seitenbetreiber senden, eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von "http://" auf "https://" wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.</p>
                 </div>
 
-                <h2>8. Speicherdauer</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">8. Speicherdauer</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <p>Soweit innerhalb dieser Datenschutzerklärung keine speziellere Speicherdauer genannt wurde, verbleiben Ihre personenbezogenen Daten bei uns, bis der Zweck für die Datenverarbeitung entfällt. Wenn Sie ein berechtigtes Löschersuchen geltend machen oder eine Einwilligung zur Datenverarbeitung widerrufen, werden Ihre Daten gelöscht, sofern wir keine anderen rechtlich zulässigen Gründe für die Speicherung Ihrer personenbezogenen Daten haben (z.B. steuer- oder handelsrechtliche Aufbewahrungsfristen).</p>
                 </div>
 
-                <h2>9. Cookies</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">9. Cookies</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <p>Diese Website verwendet nur technisch notwendige Cookies, um die Funktionalität der Website zu gewährleisten. Diese Cookies speichern keine personenbezogenen Daten und werden nach dem Schließen des Browsers automatisch gelöscht.</p>
                 </div>
 
-                <h2>10. Server-Log-Dateien</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">10. Server-Log-Dateien</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <p>Der Provider der Seiten erhebt und speichert automatisch Informationen in so genannten Server-Log-Dateien, die Ihr Browser automatisch an uns übermittelt. Dies sind:</p>
                     <ul>
                         <li>Browsertyp und Browserversion</li>
@@ -148,14 +146,14 @@
                     <p>Diese Daten werden nicht mit anderen Datenquellen zusammengeführt. Die Erfassung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO.</p>
                 </div>
 
-                <h2>11. Änderung der Datenschutzerklärung</h2>
-                <div style="background: var(--bg-light); padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-lg);">
+                <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 1rem;">11. Änderung der Datenschutzerklärung</h2>
+                <div style="background: var(--light); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
                     <p>Wir behalten uns vor, diese Datenschutzerklärung anzupassen, damit sie stets den aktuellen rechtlichen Anforderungen entspricht oder um Änderungen unserer Leistungen in der Datenschutzerklärung umzusetzen. Für Ihren erneuten Besuch gilt dann die neue Datenschutzerklärung.</p>
                     <p><strong>Stand:</strong> Dezember 2024</p>
                 </div>
 
-                <div style="text-align: center; margin-top: var(--spacing-lg);">
-                    <a href="index.html" class="btn btn-secondary">Zurück zur Startseite</a>
+                <div style="text-align: center; margin-top: 3rem;">
+                    <a href="index.html" class="btn-primary">Zurück zur Startseite</a>
                 </div>
             </div>
         </div>
@@ -163,47 +161,53 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Hotel Rössle</h3>
-                <p>Ihr komfortables Hotel im Herzen von Tuttlingen</p>
-                <p><strong>Inhaber:</strong> Osman Kücük</p>
-                <div class="social-links">
-                    <a href="#" aria-label="Facebook">f</a>
-                    <a href="#" aria-label="Instagram">📷</a>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>HOTEL RÖSSLE</h3>
+                    <p>Ihr komfortables Hotel im Herzen von Tuttlingen</p>
+                    <div class="footer-badges">
+                        <a href="http://www.bettundbike.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="Bett & Bike zertifiziertes Hotel">
+                            <img src="images/bett_und_bike_logo.svg" alt="Bett & Bike Logo">
+                        </a>
+                        <a href="http://www.dehogabw.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="DEHOGA Mitglied">
+                            <img src="images/dehoga.jpg" alt="DEHOGA Baden-Württemberg Logo">
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Kontakt</h4>
+                    <p>
+                        Honbergstrasse 8<br>
+                        78532 Tuttlingen<br>
+                        Tel: <a href="tel:+4974612913">+49 (0) 7461 2913</a><br>
+                        <a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a>
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Navigation</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#home">Home</a></li>
+                        <li><a href="index.html#zimmer">Zimmer</a></li>
+                        <li><a href="index.html#events">Räumlichkeiten</a></li>
+                        <li><a href="index.html#freizeit">Freizeit</a></li>
+                        <li><a href="index.html#kontakt">Kontakt</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Rechtliches</h4>
+                    <ul class="footer-links">
+                        <li><a href="impressum.html">Impressum</a></li>
+                        <li><a href="datenschutz.html">Datenschutz</a></li>
+                    </ul>
                 </div>
             </div>
-            <div class="footer-section">
-                <h3>Kontakt</h3>
-                <p>📍 Honbergstrasse 8<br>78532 Tuttlingen, Deutschland</p>
-                <p>📞 <a href="tel:+4974612913">+49 (0) 7461 2913</a></p>
-                <p>📠 +49 (0) 7461 9697524</p>
-                <p>✉️ <a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a></p>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Hotel Rössle Tuttlingen. Alle Rechte vorbehalten.</p>
             </div>
-            <div class="footer-section">
-                <h3>Öffnungszeiten</h3>
-                <p><strong>Check-In:</strong><br>Täglich 14:00 - 21:00 Uhr</p>
-                <p><strong>Rezeption:</strong><br>Täglich 9:00 - 22:00 Uhr</p>
-            </div>
-            <div class="footer-section">
-                <h3>Schnelllinks</h3>
-                <a href="zimmer.html">Preise</a>
-                <a href="events.html">Räumlichkeiten</a>
-                <a href="freizeit.html">Freizeitangebote</a>
-                <a href="buchung.html">Online Buchen</a>
-                <a href="impressum.html">Impressum</a>
-                <a href="datenschutz.html">Datenschutz</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Hotel Rössle Tuttlingen. Alle Rechte vorbehalten.</p>
-            <p style="margin-top: 0.5rem;">
-                <span class="badge">Bett & Bike</span>
-                <span class="badge">DEHOGA Mitglied</span>
-            </p>
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
+    <script src="js/new-main.js"></script>
 </body>
 </html>
