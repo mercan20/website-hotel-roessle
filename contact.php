@@ -197,6 +197,54 @@ form_save_rate_limits(RATE_LIMIT_FILE, $rateLimitResult['data']);
 
 form_log_event(CONTACT_LOG_CONTEXT, 'Contact email sent successfully', $mailContext);
 
+$ackSubject = form_sanitize_header_value('Ihre Nachricht an das Hotel Rössle');
+$ackLines = [];
+$ackLines[] = 'Guten Tag ' . $name . ',';
+$ackLines[] = '';
+$ackLines[] = 'vielen Dank für Ihre Nachricht. Wir haben Ihre Anfrage erhalten und melden uns zeitnah.';
+
+if ($subject !== '') {
+    $ackLines[] = '';
+    $ackLines[] = 'Betreff: ' . $subject;
+}
+
+$ackLines[] = '';
+$ackLines[] = 'Bei Rückfragen antworten Sie gerne direkt auf diese E-Mail.';
+
+$signature = form_load_email_signature();
+if ($signature !== '') {
+    $ackLines[] = '';
+    $ackLines[] = $signature;
+}
+
+$ackBody = implode("\n", $ackLines) . "\n";
+
+$ackHeaders = [
+    'From' => sprintf('"%s" <%s>', mb_encode_mimeheader('Hotel Rössle'), $recipient),
+    'Reply-To' => sprintf('"%s" <%s>', mb_encode_mimeheader('Hotel Rössle'), $recipient),
+    'X-Mailer' => 'PHP/' . PHP_VERSION,
+    'Content-Type' => 'text/plain; charset=UTF-8',
+];
+
+$ackFormattedHeaders = '';
+foreach ($ackHeaders as $key => $value) {
+    $ackFormattedHeaders .= $key . ': ' . $value . "\r\n";
+}
+
+$ackSent = mail(
+    $email,
+    $ackSubject,
+    $ackBody,
+    $ackFormattedHeaders,
+    $additionalParameters
+);
+
+if (!$ackSent) {
+    form_log_event(CONTACT_LOG_CONTEXT, 'Contact acknowledgement email failed', ['email' => $email]);
+} else {
+    form_log_event(CONTACT_LOG_CONTEXT, 'Contact acknowledgement email sent', ['email' => $email]);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="de">

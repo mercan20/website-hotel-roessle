@@ -291,6 +291,67 @@ form_save_rate_limits(BOOKING_RATE_LIMIT_FILE, $rateLimitResult['data']);
 
 form_log_event(BOOKING_LOG_CONTEXT, 'Booking email sent successfully', $mailContext);
 
+$ackSubject = form_sanitize_header_value('Ihre Buchungsanfrage beim Hotel Rössle');
+$ackLines = [];
+$ackLines[] = 'Guten Tag ' . trim($firstName . ' ' . $lastName) . ',';
+$ackLines[] = '';
+$ackLines[] = 'vielen Dank für Ihre Buchungsanfrage. Wir haben Ihre Nachricht erhalten und melden uns zeitnah.';
+
+if ($checkin !== null && $checkout !== null) {
+    $roomParts = [];
+    if ($einzelzimmer > 0) {
+        $roomParts[] = $einzelzimmer . ' Einzelzimmer';
+    }
+    if ($doppelzimmer > 0) {
+        $roomParts[] = $doppelzimmer . ' Doppelzimmer';
+    }
+    if ($familienzimmer > 0) {
+        $roomParts[] = $familienzimmer . ' Familienzimmer';
+    }
+
+    $periodLine = 'Wir haben Ihre Anfrage für den Zeitraum ' . $checkinForMail . ' bis ' . $checkoutForMail;
+    if ($roomParts !== []) {
+        $periodLine .= ' für ' . implode(', ', $roomParts);
+    }
+    $periodLine .= ' erhalten.';
+
+    $ackLines[] = '';
+    $ackLines[] = $periodLine;
+}
+
+$ackLines[] = '';
+$ackLines[] = 'Bei Rückfragen antworten Sie einfach auf diese E-Mail.';
+
+$signature = form_load_email_signature();
+if ($signature !== '') {
+    $ackLines[] = '';
+    $ackLines[] = $signature;
+}
+
+$ackBody = implode("\n", $ackLines) . "\n";
+
+$ackHeaders = [
+    'From: Hotel Rössle <' . $recipient . '>',
+    'Reply-To: Hotel Rössle <' . $recipient . '>',
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=UTF-8',
+    'X-Mailer: PHP/' . PHP_VERSION,
+];
+
+$ackSent = mail(
+    $email,
+    $ackSubject,
+    $ackBody,
+    implode("\r\n", $ackHeaders),
+    '-f' . $returnPath
+);
+
+if (!$ackSent) {
+    form_log_event(BOOKING_LOG_CONTEXT, 'Booking acknowledgement email failed', ['email' => $email]);
+} else {
+    form_log_event(BOOKING_LOG_CONTEXT, 'Booking acknowledgement email sent', ['email' => $email]);
+}
+
 respondWithJson(200, [
     'success' => true,
     'message' => 'Vielen Dank! Ihre Buchungsanfrage wurde erfolgreich übermittelt.',

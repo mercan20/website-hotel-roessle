@@ -47,7 +47,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # Application storage
-var/
+var/*
+!var/email_signature.txt
 !var/.gitignore
 
 # Optional: Backup files
