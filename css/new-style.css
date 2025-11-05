@@ -166,11 +166,7 @@ body {
 .hero {
     height: 100vh;
     min-height: 600px;
-    background-color: #000;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-image: url('../images/home_hotelroessle.jpg');
+    background: #000 url('../images/home_hotelroessle.jpg') center/cover no-repeat;
     background-image: image-set(
         url('../images/optimized/home_hotelroessle.avif') type('image/avif'),
         url('../images/optimized/home_hotelroessle.webp') type('image/webp'),
