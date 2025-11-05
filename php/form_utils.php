@@ -80,6 +80,24 @@ function form_determine_origin(): string
     return $origin;
 }
 
+function form_load_email_signature(?string $filePath = null): string
+{
+    $path = $filePath ?? FORM_PROJECT_ROOT . '/var/email_signature.txt';
+
+    if ($path === '' || !is_file($path) || !is_readable($path)) {
+        return '';
+    }
+
+    $contents = file_get_contents($path);
+    if ($contents === false) {
+        return '';
+    }
+
+    $normalized = str_replace("\r", '', trim($contents));
+
+    return $normalized === '' ? '' : $normalized;
+}
+
 function form_is_origin_allowed(array $allowedOrigins): bool
 {
     $origin = form_determine_origin();

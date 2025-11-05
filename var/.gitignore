@@ -1,3 +1,4 @@
 # Keep storage directory but ignore runtime files
 *
 !.gitignore
+!email_signature.txt
