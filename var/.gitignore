@@ -1,0 +1,3 @@
+# Keep storage directory but ignore runtime files
+*
+!.gitignore

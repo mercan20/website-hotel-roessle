@@ -5,6 +5,44 @@ declare(strict_types=1);
  * Utility helpers shared by the contact and booking form handlers.
  */
 
+if (!defined('FORM_PROJECT_ROOT')) {
+    define('FORM_PROJECT_ROOT', dirname(__DIR__));
+}
+
+if (!defined('FORM_STORAGE_DIR')) {
+    define('FORM_STORAGE_DIR', FORM_PROJECT_ROOT . '/var');
+}
+
+if (!defined('FORM_LOG_DIR')) {
+    define('FORM_LOG_DIR', FORM_PROJECT_ROOT . '/logs');
+}
+
+/**
+ * Ensure that a directory exists and is writable.
+ */
+function form_ensure_directory(string $directory): void
+{
+    if (is_dir($directory)) {
+        return;
+    }
+
+    @mkdir($directory, 0775, true);
+}
+
+/**
+ * Configure PHP's mail transport similar to the legacy Joomla setup.
+ */
+function form_configure_mail(string $fromAddress, ?string $sendmailPath = null): void
+{
+    if ($fromAddress !== '') {
+        ini_set('sendmail_from', $fromAddress);
+    }
+
+    if ($sendmailPath !== null && $sendmailPath !== '') {
+        ini_set('sendmail_path', $sendmailPath);
+    }
+}
+
 function form_get_post_value(string $key): string
 {
     return trim((string)($_POST[$key] ?? ''));
@@ -54,7 +92,45 @@ function form_is_origin_allowed(array $allowedOrigins): bool
 
 function form_get_rate_limit_path(string $storageFile): string
 {
-    return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $storageFile;
+    form_ensure_directory(FORM_STORAGE_DIR);
+
+    return FORM_STORAGE_DIR . DIRECTORY_SEPARATOR . $storageFile;
+}
+
+/**
+ * Build the path to the log file and make sure the log directory exists.
+ */
+function form_get_log_path(string $fileName): string
+{
+    form_ensure_directory(FORM_LOG_DIR);
+
+    return FORM_LOG_DIR . DIRECTORY_SEPARATOR . $fileName;
+}
+
+/**
+ * Write a structured entry to a log file.
+ *
+ * @param array<string, scalar|null> $context
+ */
+function form_log_event(string $channel, string $message, array $context = []): void
+{
+    $timestamp = (new DateTimeImmutable('now', new DateTimeZone('Europe/Berlin')))
+        ->format('Y-m-d H:i:s');
+
+    $logLine = sprintf('[%s] %s: %s', $timestamp, $channel, $message);
+
+    if ($context !== []) {
+        $encodedContext = json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($encodedContext !== false) {
+            $logLine .= ' ' . $encodedContext;
+        }
+    }
+
+    $logLine .= PHP_EOL;
+
+    $logFile = form_get_log_path('form_mail.log');
+
+    file_put_contents($logFile, $logLine, FILE_APPEND | LOCK_EX);
 }
 
 /**

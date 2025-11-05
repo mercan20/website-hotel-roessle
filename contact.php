@@ -10,9 +10,11 @@ header('Content-Type: text/html; charset=UTF-8');
 require_once __DIR__ . '/php/form_utils.php';
 
 // Konfiguration
-$recipient = 'info@hotelroessle.eu';
+$recipient = 'info@gast-roessle.de';
 $subjectPrefix = 'Kontaktformular Hotel Rössle';
-$returnPath = $recipient; // Wichtig für Hoster wie Strato
+$returnPath = 'info@gast-roessle.de'; // Wichtig für Hoster wie Strato
+
+form_configure_mail($returnPath, '/usr/sbin/sendmail');
 
 const ALLOWED_ORIGINS = [
     'https://www.hotelroessle.eu',
@@ -30,6 +32,7 @@ const MAX_EMAILS_PER_IP_PER_HOUR = 5;
 const MIN_MESSAGE_LENGTH = 20;
 const MAX_MESSAGE_LENGTH = 4000;
 const RATE_LIMIT_FILE = 'hotel_roessle_contact_limits.json';
+const CONTACT_LOG_CONTEXT = 'contact';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -87,6 +90,10 @@ if ($phone !== '' && mb_strlen($phone) > 60) {
 }
 
 if ($errors !== []) {
+    form_log_event(CONTACT_LOG_CONTEXT, 'Validation failed', [
+        'email' => $email,
+        'ip' => $clientIpRaw,
+    ]);
     http_response_code(400);
     echo '<h1>Fehler beim Versenden</h1>';
     echo '<ul>';
@@ -112,6 +119,10 @@ $rateLimitResult = form_enforce_rate_limits(
 );
 
 if ($rateLimitResult['status'] === false) {
+    form_log_event(CONTACT_LOG_CONTEXT, 'Rate limit triggered', [
+        'email' => $email,
+        'ip' => $clientIp,
+    ]);
     http_response_code(429);
     echo '<h1>Zu viele Anfragen</h1>';
     echo '<p>' . htmlspecialchars($rateLimitResult['message'], ENT_QUOTES, 'UTF-8') . '</p>';
@@ -157,6 +168,14 @@ foreach ($headers as $key => $value) {
 
 $additionalParameters = sprintf('-f%s', $returnPath);
 
+$mailContext = [
+    'email' => $email,
+    'recipient' => $recipient,
+    'ip' => $clientIp,
+];
+
+form_log_event(CONTACT_LOG_CONTEXT, 'Attempting to send contact email', $mailContext);
+
 $mailSent = mail(
     $recipient,
     $emailSubject,
@@ -166,6 +185,7 @@ $mailSent = mail(
 );
 
 if (!$mailSent) {
+    form_log_event(CONTACT_LOG_CONTEXT, 'Contact email send failed', $mailContext);
     http_response_code(500);
     echo '<h1>Versand fehlgeschlagen</h1>';
     echo '<p>Bitte versuchen Sie es später erneut oder kontaktieren Sie uns telefonisch.</p>';
@@ -174,6 +194,8 @@ if (!$mailSent) {
 }
 
 form_save_rate_limits(RATE_LIMIT_FILE, $rateLimitResult['data']);
+
+form_log_event(CONTACT_LOG_CONTEXT, 'Contact email sent successfully', $mailContext);
 
 ?>
 <!DOCTYPE html>
