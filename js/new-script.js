@@ -501,6 +501,63 @@ function goToGalleryImage(index) {
     updateGalleryImage();
 }
 
+function getOptimizedImageSources(imageSrc) {
+    if (!imageSrc || typeof imageSrc !== 'string') {
+        return {};
+    }
+
+    if (!imageSrc.startsWith('images/')) {
+        return {};
+    }
+
+    const extensionMatch = imageSrc.match(/\.([a-z0-9]+)$/i);
+    if (!extensionMatch) {
+        return {};
+    }
+
+    const extension = extensionMatch[1].toLowerCase();
+
+    if (extension === 'svg') {
+        return {};
+    }
+
+    const optimizedBasePath = imageSrc
+        .replace(/^images\//, 'images/optimized/')
+        .replace(/\.[^.]+$/, '');
+
+    return {
+        avif: `${optimizedBasePath}.avif`,
+        webp: `${optimizedBasePath}.webp`
+    };
+}
+
+function updateGalleryPictureSources(imageSrc) {
+    const picture = document.getElementById('galleryImageWrapper');
+    if (!picture) {
+        return;
+    }
+
+    const optimizedSources = getOptimizedImageSources(imageSrc);
+    const avifSource = picture.querySelector('source[type="image/avif"]');
+    const webpSource = picture.querySelector('source[type="image/webp"]');
+
+    if (avifSource) {
+        if (optimizedSources.avif) {
+            avifSource.srcset = optimizedSources.avif;
+        } else {
+            avifSource.removeAttribute('srcset');
+        }
+    }
+
+    if (webpSource) {
+        if (optimizedSources.webp) {
+            webpSource.srcset = optimizedSources.webp;
+        } else {
+            webpSource.removeAttribute('srcset');
+        }
+    }
+}
+
 function updateGalleryImage() {
     const image = currentGallery[currentImageIndex];
     const galleryImage = document.getElementById('galleryImage');
@@ -512,6 +569,7 @@ function updateGalleryImage() {
     // Update image with fade effect
     galleryImage.style.opacity = '0';
     setTimeout(() => {
+        updateGalleryPictureSources(image.src);
         galleryImage.src = image.src;
         galleryImage.alt = image.caption;
         galleryCaption.textContent = image.caption;
