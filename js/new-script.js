@@ -2,15 +2,22 @@
 // Modern Hotel Website JavaScript
 // ===================================
 
-// ===================================
-// Google Apps Script API Configuration
-// ===================================
+const BOOKING_FORM_ENDPOINT = 'booking.php';
 
-// Google Apps Script Web-App URL (Deployment)
-const BOOKING_API_URL = 'https://script.google.com/macros/s/AKfycbxom9RbW4YPMje8c-oFHULIkCRi95WNZIHNvpYUQF1R46YEhRBEWS7CExdEAc0SoMsxng/exec';
+const BOOKING_SECURITY_CONFIG = {
+    maxRooms: {
+        einzelzimmer: 5,
+        doppelzimmer: 10,
+        familienzimmer: 3,
+    },
+    maxRoomsTotal: 18,
+    minNights: 1,
+    maxNights: 30,
+    maxAdvanceDays: 365,
+    clientEmailLimitPerDay: 3,
+};
 
-// Falls Sie testen möchten ohne Backend (nur Frontend-Validierung):
-const USE_MOCK_API = false; // Auf true setzen zum Testen ohne Backend (für lokale Tests)
+const BOOKING_RATE_LIMIT_STORAGE_KEY = 'hotel_roessle_booking_rate_limits';
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -96,18 +103,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Form Submission Handling
     const bookingForm = document.getElementById('mainBookingForm');
-    const contactForm = document.querySelector('.contact-form');
-
     if (bookingForm) {
         bookingForm.addEventListener('submit', handleBookingSubmit);
-    }
-
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Vielen Dank für Ihre Nachricht! Wir werden uns schnellstmöglich bei Ihnen melden.');
-            contactForm.reset();
-        });
     }
 
     // Animate Elements on Scroll
@@ -165,6 +162,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('bookingCalendar')) {
         renderBookingCalendar();
     }
+
+    syncBookingHiddenFields();
 });
 
 // Room Counter State
@@ -172,6 +171,39 @@ const bookingCounters = {
     einzelzimmer: 0,
     doppelzimmer: 0,
     familienzimmer: 0
+};
+
+function syncBookingHiddenFields() {
+    const checkinInput = document.getElementById('bookingCheckinInput');
+    if (checkinInput) {
+        checkinInput.value = bookingSelectedCheckin ? serializeBookingDate(bookingSelectedCheckin) : '';
+    }
+
+    const checkoutInput = document.getElementById('bookingCheckoutInput');
+    if (checkoutInput) {
+        checkoutInput.value = bookingSelectedCheckout ? serializeBookingDate(bookingSelectedCheckout) : '';
+    }
+
+    const einzelzimmerInput = document.getElementById('bookingCountEinzelzimmer');
+    if (einzelzimmerInput) {
+        einzelzimmerInput.value = String(bookingCounters.einzelzimmer ?? 0);
+    }
+
+    const doppelzimmerInput = document.getElementById('bookingCountDoppelzimmer');
+    if (doppelzimmerInput) {
+        doppelzimmerInput.value = String(bookingCounters.doppelzimmer ?? 0);
+    }
+
+    const familienzimmerInput = document.getElementById('bookingCountFamilienzimmer');
+    if (familienzimmerInput) {
+        familienzimmerInput.value = String(bookingCounters.familienzimmer ?? 0);
+    }
+}
+
+const bookingRoomLimitWarned = {
+    einzelzimmer: false,
+    doppelzimmer: false,
+    familienzimmer: false,
 };
 
 const bookingPrices = {
@@ -191,7 +223,28 @@ const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
 
 // Update Room Counter
 function updateRoomCounter(room, change) {
-    bookingCounters[room] = Math.max(0, bookingCounters[room] + change);
+    const maxForRoom = BOOKING_SECURITY_CONFIG.maxRooms[room] ?? Infinity;
+    const currentValue = bookingCounters[room];
+    let nextValue = currentValue + change;
+    nextValue = Math.max(0, Math.min(maxForRoom, nextValue));
+
+    if (nextValue === currentValue && change > 0 && currentValue >= maxForRoom && !bookingRoomLimitWarned[room]) {
+        const roomName = room === 'einzelzimmer' ? 'Einzelzimmer'
+            : room === 'doppelzimmer' ? 'Doppelzimmer'
+            : 'Familienzimmer';
+        showBookingMessage(`Für ${roomName} stehen maximal ${maxForRoom} Zimmer gleichzeitig zur Verfügung.`, 'error');
+        bookingRoomLimitWarned[room] = true;
+    }
+
+    if (nextValue < maxForRoom) {
+        bookingRoomLimitWarned[room] = false;
+    }
+
+    if (nextValue === currentValue) {
+        return;
+    }
+
+    bookingCounters[room] = nextValue;
     document.getElementById(`booking-count-${room}`).textContent = bookingCounters[room];
 
     const card = document.querySelector(`[data-room="${room}"]`);
@@ -203,6 +256,7 @@ function updateRoomCounter(room, change) {
 
     updateBookingSummary();
     updateBookingSubmitButton();
+    syncBookingHiddenFields();
 }
 
 // Update Summary
@@ -318,10 +372,14 @@ function createBookingDayElement(dayNum, disabled, year, month) {
     day.textContent = dayNum;
 
     const date = new Date(year, month, dayNum);
+    date.setHours(0, 0, 0, 0);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const maxDate = new Date();
+    maxDate.setHours(0, 0, 0, 0);
+    maxDate.setDate(maxDate.getDate() + BOOKING_SECURITY_CONFIG.maxAdvanceDays);
 
-    if (date < today || disabled) {
+    if (date < today || disabled || date > maxDate) {
         day.classList.add('disabled');
     } else {
         day.onclick = () => selectBookingDate(date);
@@ -383,13 +441,18 @@ function updateBookingDateDisplay() {
         checkoutDisplay.classList.remove('placeholder');
 
         // Calculate nights
-        const diffTime = bookingSelectedCheckout - bookingSelectedCheckin;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        nightsCount.textContent = `${diffDays} ${diffDays === 1 ? 'Nacht' : 'Nächte'}`;
-        nightsInfo.style.display = 'block';
+        const diffDays = calculateBookingNights(bookingSelectedCheckin, bookingSelectedCheckout);
+        if (diffDays > 0) {
+            nightsCount.textContent = `${diffDays} ${diffDays === 1 ? 'Nacht' : 'Nächte'}`;
+            nightsInfo.style.display = 'block';
+        } else {
+            nightsInfo.style.display = 'none';
+        }
     } else {
         nightsInfo.style.display = 'none';
     }
+
+    syncBookingHiddenFields();
 }
 
 // Format Date
@@ -685,79 +748,110 @@ async function handleBookingSubmit(e) {
     const submitBtn = document.getElementById('bookingSubmitBtn');
     const originalBtnText = submitBtn.textContent;
 
+    syncBookingHiddenFields();
     // Formulardaten sammeln
     const formData = new FormData(e.target);
+    const honeypotValue = (formData.get('company') || '').toString().trim();
+    if (honeypotValue !== '') {
+        showBookingMessage('Die Anfrage konnte nicht gesendet werden. Bitte kontaktieren Sie uns telefonisch.', 'error');
+        return;
+    }
+
     const bookingData = {
-        vorname: formData.get('vorname') || document.querySelector('input[type="text"]').value,
-        nachname: formData.get('nachname') || document.querySelectorAll('input[type="text"]')[1].value,
-        email: formData.get('email') || document.querySelector('input[type="email"]').value,
-        telefon: formData.get('telefon') || document.querySelector('input[type="tel"]').value,
-        checkin: bookingSelectedCheckin ? bookingSelectedCheckin.toISOString() : null,
-        checkout: bookingSelectedCheckout ? bookingSelectedCheckout.toISOString() : null,
+        vorname: (formData.get('vorname') || '').toString().trim(),
+        nachname: (formData.get('nachname') || '').toString().trim(),
+        email: (formData.get('email') || '').toString().trim(),
+        telefon: (formData.get('telefon') || '').toString().trim(),
+        checkin: bookingSelectedCheckin ? serializeBookingDate(bookingSelectedCheckin) : null,
+        checkout: bookingSelectedCheckout ? serializeBookingDate(bookingSelectedCheckout) : null,
         einzelzimmer: bookingCounters.einzelzimmer || 0,
         doppelzimmer: bookingCounters.doppelzimmer || 0,
         familienzimmer: bookingCounters.familienzimmer || 0,
-        wuensche: formData.get('wuensche') || document.querySelector('textarea').value || '',
-        origin: window.location.origin // Anti-Spam: Herkunft der Anfrage
+        wuensche: (formData.get('wuensche') || '').toString().trim(),
+        origin: window.location.origin,
+        userAgent: navigator.userAgent,
+        privacyAccepted: document.getElementById('bookingPrivacy')?.checked ?? false,
+        company: honeypotValue,
     };
 
     // Validierung
-    if (!validateBookingForm(bookingData)) {
-        showBookingMessage('Bitte füllen Sie alle Pflichtfelder aus und wählen Sie mindestens ein Zimmer.', 'error');
+    if (!bookingData.privacyAccepted) {
+        showBookingMessage('Bitte bestätigen Sie die Datenschutzerklärung, bevor Sie die Anfrage absenden.', 'error');
         return;
     }
+
+    const validation = validateBookingForm(bookingData, bookingSelectedCheckin, bookingSelectedCheckout);
+    if (!validation.valid) {
+        showBookingMessage(validation.message || 'Bitte überprüfen Sie Ihre Eingaben.', 'error');
+        return;
+    }
+
+    const rateLimitCheck = enforceClientRateLimit(bookingData.email);
+    if (!rateLimitCheck.allowed) {
+        showBookingMessage(rateLimitCheck.message, 'error');
+        return;
+    }
+
+    delete bookingData.privacyAccepted;
+
+    // FormData für den Versand vorbereiten
+    formData.set('vorname', bookingData.vorname);
+    formData.set('nachname', bookingData.nachname);
+    formData.set('email', bookingData.email);
+    formData.set('telefon', bookingData.telefon);
+    formData.set('wuensche', bookingData.wuensche);
+    formData.set('checkin', bookingData.checkin ?? '');
+    formData.set('checkout', bookingData.checkout ?? '');
+    formData.set('einzelzimmer', String(bookingData.einzelzimmer ?? 0));
+    formData.set('doppelzimmer', String(bookingData.doppelzimmer ?? 0));
+    formData.set('familienzimmer', String(bookingData.familienzimmer ?? 0));
+    formData.set('origin', bookingData.origin);
+    formData.set('userAgent', bookingData.userAgent);
 
     // Button-Status ändern
     submitBtn.disabled = true;
     submitBtn.textContent = '⏳ Wird gesendet...';
 
     try {
+        const apiResponse = await fetch(BOOKING_FORM_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+            },
+            body: formData,
+        });
+
+        const responseText = await apiResponse.text();
         let response;
-
-        if (USE_MOCK_API || BOOKING_API_URL === 'IHRE_GOOGLE_APPS_SCRIPT_URL_HIER') {
-            // Mock-Modus für Testing ohne Backend
-            console.log('Mock-Modus: Buchungsdaten würden gesendet:', bookingData);
-            response = { success: true, bookingId: 'MOCK-' + Date.now() };
-            await new Promise(resolve => setTimeout(resolve, 1500)); // Simuliere Netzwerk-Verzögerung
-        } else {
-            // Echte API-Anfrage
-            const apiResponse = await fetch(BOOKING_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(bookingData),
-                mode: 'cors'
-            });
-
-            if (!apiResponse.ok) {
-                throw new Error(`HTTP Error ${apiResponse.status}`);
-            }
-
-            response = await apiResponse.json();
+        try {
+            response = JSON.parse(responseText);
+        } catch (parseError) {
+            throw new Error('Der Server hat eine unerwartete Antwort zurückgegeben.');
         }
 
-        if (response.success) {
-            showBookingMessage(
-                '✅ Buchungsanfrage erfolgreich übermittelt!\n\n' +
-                'Vielen Dank für Ihre Anfrage. Wir prüfen die Verfügbarkeit und melden uns innerhalb von 24 Stunden bei Ihnen.\n\n' +
-                'Sie erhalten in Kürze eine Bestätigungs-E-Mail.',
-                'success'
-            );
-
-            // Formular zurücksetzen
-            e.target.reset();
-            resetBookingForm();
-
-        } else {
-            throw new Error(response.error || 'Unbekannter Fehler');
+        if (!apiResponse.ok || !response.success) {
+            const errorMessage = typeof response?.message === 'string' && response.message.trim().length > 0
+                ? response.message
+                : `Die Anfrage konnte nicht verarbeitet werden (Status ${apiResponse.status}).`;
+            throw new Error(errorMessage);
         }
+
+        showBookingMessage(
+            '✅ Buchungsanfrage erfolgreich übermittelt!\n\n' +
+            'Vielen Dank für Ihre Anfrage. Wir melden uns zeitnah per E-Mail, um die Details zu bestätigen.',
+            'success'
+        );
+
+        e.target.reset();
+        resetBookingForm();
 
     } catch (error) {
         console.error('Booking submission error:', error);
+        const fallbackMessage = typeof error?.message === 'string' && error.message.trim().length > 0
+            ? error.message
+            : 'Es ist ein unbekannter Fehler aufgetreten.';
         showBookingMessage(
-            '❌ Es ist ein Fehler aufgetreten.\n\n' +
-            'Bitte versuchen Sie es erneut oder kontaktieren Sie uns telefonisch unter +49 (0) 7461 2913.',
+            `❌ ${fallbackMessage}\n\nBitte versuchen Sie es erneut oder kontaktieren Sie uns telefonisch unter +49 (0) 7461 2913.`,
             'error'
         );
     } finally {
@@ -770,23 +864,100 @@ async function handleBookingSubmit(e) {
 /**
  * Validiert die Buchungsformular-Daten
  */
-function validateBookingForm(data) {
+function validateBookingForm(data, checkinDate, checkoutDate) {
     if (!data.vorname || !data.nachname || !data.email || !data.telefon) {
-        return false;
+        return { valid: false, message: 'Bitte füllen Sie alle Pflichtfelder aus.' };
     }
-    if (!data.checkin || !data.checkout) {
-        return false;
+
+    if (!checkinDate || !checkoutDate) {
+        return { valid: false, message: 'Bitte wählen Sie An- und Abreisedatum aus.' };
     }
-    const totalRooms = (data.einzelzimmer || 0) + (data.doppelzimmer || 0) + (data.familienzimmer || 0);
-    if (totalRooms === 0) {
-        return false;
+
+    const trimmedFirstName = data.vorname.trim();
+    const trimmedLastName = data.nachname.trim();
+    const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,}$/;
+    if (!nameRegex.test(trimmedFirstName) || !nameRegex.test(trimmedLastName)) {
+        return { valid: false, message: 'Bitte geben Sie einen gültigen Vor- und Nachnamen ein.' };
     }
-    // Email-Format prüfen
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email)) {
-        return false;
+        return { valid: false, message: 'Bitte geben Sie eine gültige E-Mail-Adresse an.' };
     }
-    return true;
+
+    const phoneRegex = /^[0-9+()\s-]{6,}$/;
+    if (!phoneRegex.test(data.telefon)) {
+        return { valid: false, message: 'Bitte geben Sie eine gültige Telefonnummer an.' };
+    }
+
+    const totalRooms = (data.einzelzimmer || 0) + (data.doppelzimmer || 0) + (data.familienzimmer || 0);
+    if (totalRooms === 0) {
+        return { valid: false, message: 'Bitte wählen Sie mindestens ein Zimmer aus.' };
+    }
+
+    if (totalRooms > BOOKING_SECURITY_CONFIG.maxRoomsTotal) {
+        return {
+            valid: false,
+            message: `Maximal ${BOOKING_SECURITY_CONFIG.maxRoomsTotal} Zimmer können pro Anfrage gebucht werden.`,
+        };
+    }
+
+    for (const [room, max] of Object.entries(BOOKING_SECURITY_CONFIG.maxRooms)) {
+        if ((data[room] || 0) > max) {
+            const roomName = room === 'einzelzimmer' ? 'Einzelzimmer'
+                : room === 'doppelzimmer' ? 'Doppelzimmer'
+                : 'Familienzimmer';
+            return {
+                valid: false,
+                message: `Für ${roomName} können maximal ${max} Zimmer gleichzeitig angefragt werden.`,
+            };
+        }
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const normalizedCheckin = new Date(checkinDate.getTime());
+    normalizedCheckin.setHours(0, 0, 0, 0);
+    const normalizedCheckout = new Date(checkoutDate.getTime());
+    normalizedCheckout.setHours(0, 0, 0, 0);
+
+    if (normalizedCheckin < today) {
+        return { valid: false, message: 'Der Check-in darf nicht in der Vergangenheit liegen.' };
+    }
+
+    if (normalizedCheckout <= normalizedCheckin) {
+        return { valid: false, message: 'Der Check-out muss nach dem Check-in liegen.' };
+    }
+
+    const nights = calculateBookingNights(normalizedCheckin, normalizedCheckout);
+    if (nights < BOOKING_SECURITY_CONFIG.minNights) {
+        return {
+            valid: false,
+            message: `Es muss mindestens ${BOOKING_SECURITY_CONFIG.minNights} Nacht gebucht werden.`,
+        };
+    }
+
+    if (nights > BOOKING_SECURITY_CONFIG.maxNights) {
+        return {
+            valid: false,
+            message: `Es können maximal ${BOOKING_SECURITY_CONFIG.maxNights} Nächte am Stück gebucht werden.`,
+        };
+    }
+
+    const maxAdvanceDate = new Date(today.getTime());
+    maxAdvanceDate.setDate(maxAdvanceDate.getDate() + BOOKING_SECURITY_CONFIG.maxAdvanceDays);
+    if (normalizedCheckin > maxAdvanceDate) {
+        return {
+            valid: false,
+            message: 'Der Check-in darf höchstens ein Jahr im Voraus liegen.',
+        };
+    }
+
+    if (data.wuensche && data.wuensche.length > 1000) {
+        return { valid: false, message: 'Das Feld für besondere Wünsche ist zu lang.' };
+    }
+
+    return { valid: true };
 }
 
 /**
@@ -836,6 +1007,10 @@ function resetBookingForm() {
     bookingCounters.doppelzimmer = 0;
     bookingCounters.familienzimmer = 0;
 
+    Object.keys(bookingRoomLimitWarned).forEach(room => {
+        bookingRoomLimitWarned[room] = false;
+    });
+
     // UI aktualisieren
     document.getElementById('booking-count-einzelzimmer').textContent = '0';
     document.getElementById('booking-count-doppelzimmer').textContent = '0';
@@ -862,6 +1037,81 @@ function resetBookingForm() {
 
     // Submit-Button deaktivieren
     document.getElementById('bookingSubmitBtn').disabled = true;
+
+    syncBookingHiddenFields();
+}
+
+function serializeBookingDate(date) {
+    if (!(date instanceof Date)) {
+        return '';
+    }
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function calculateBookingNights(checkinDate, checkoutDate) {
+    if (!checkinDate || !checkoutDate) {
+        return 0;
+    }
+    const start = Date.UTC(checkinDate.getFullYear(), checkinDate.getMonth(), checkinDate.getDate());
+    const end = Date.UTC(checkoutDate.getFullYear(), checkoutDate.getMonth(), checkoutDate.getDate());
+    return Math.round((end - start) / (1000 * 60 * 60 * 24));
+}
+
+function getBookingRateLimitStore() {
+    try {
+        const raw = localStorage.getItem(BOOKING_RATE_LIMIT_STORAGE_KEY);
+        if (!raw) {
+            return {};
+        }
+        const parsed = JSON.parse(raw);
+        return typeof parsed === 'object' && parsed !== null ? parsed : {};
+    } catch (error) {
+        console.warn('Rate-Limit-Speicher nicht verfügbar', error);
+        return {};
+    }
+}
+
+function saveBookingRateLimitStore(store) {
+    try {
+        localStorage.setItem(BOOKING_RATE_LIMIT_STORAGE_KEY, JSON.stringify(store));
+    } catch (error) {
+        console.warn('Rate-Limit-Speicher konnte nicht aktualisiert werden', error);
+    }
+}
+
+function enforceClientRateLimit(email) {
+    if (!email) {
+        return { allowed: true };
+    }
+
+    const store = getBookingRateLimitStore();
+    const normalizedEmail = email.toLowerCase();
+    const now = Date.now();
+    const windowStart = now - 24 * 60 * 60 * 1000;
+
+    const timestampsRaw = Array.isArray(store[normalizedEmail]) ? store[normalizedEmail] : [];
+    const timestamps = timestampsRaw
+        .map(ts => Number(ts))
+        .filter(ts => Number.isFinite(ts) && ts >= windowStart);
+
+    store[normalizedEmail] = timestamps;
+
+    if (timestamps.length >= BOOKING_SECURITY_CONFIG.clientEmailLimitPerDay) {
+        saveBookingRateLimitStore(store);
+        return {
+            allowed: false,
+            message: 'Sie haben bereits mehrere Buchungsanfragen gesendet. Bitte warten Sie auf unsere Antwort.',
+        };
+    }
+
+    timestamps.push(now);
+    store[normalizedEmail] = timestamps;
+    saveBookingRateLimitStore(store);
+
+    return { allowed: true };
 }
 
 // CSS für Booking Messages

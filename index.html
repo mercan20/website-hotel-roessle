@@ -443,8 +443,14 @@
             </div>
 
             <!-- Booking Form -->
-            <form class="booking-form" id="mainBookingForm">
+            <form class="booking-form" id="mainBookingForm" action="booking.php" method="post">
                 <h3 class="booking-subtitle">Reisedaten & Kontaktdaten</h3>
+
+                <input type="hidden" name="checkin" id="bookingCheckinInput">
+                <input type="hidden" name="checkout" id="bookingCheckoutInput">
+                <input type="hidden" name="einzelzimmer" id="bookingCountEinzelzimmer" value="0">
+                <input type="hidden" name="doppelzimmer" id="bookingCountDoppelzimmer" value="0">
+                <input type="hidden" name="familienzimmer" id="bookingCountFamilienzimmer" value="0">
 
                 <!-- Calendar Date Picker -->
                 <div class="date-picker-container">
@@ -493,25 +499,29 @@
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Vorname *</label>
-                        <input type="text" name="vorname" required>
+                        <label for="bookingFirstName">Vorname *</label>
+                        <input type="text" id="bookingFirstName" name="vorname" minlength="2" maxlength="120" autocomplete="given-name" required>
                     </div>
                     <div class="form-group">
-                        <label>Nachname *</label>
-                        <input type="text" name="nachname" required>
+                        <label for="bookingLastName">Nachname *</label>
+                        <input type="text" id="bookingLastName" name="nachname" minlength="2" maxlength="120" autocomplete="family-name" required>
                     </div>
                     <div class="form-group">
-                        <label>E-Mail *</label>
-                        <input type="email" name="email" required>
+                        <label for="bookingEmail">E-Mail *</label>
+                        <input type="email" id="bookingEmail" name="email" maxlength="160" autocomplete="email" required>
                     </div>
                     <div class="form-group">
-                        <label>Telefon *</label>
-                        <input type="tel" name="telefon" required>
+                        <label for="bookingPhone">Telefon *</label>
+                        <input type="tel" id="bookingPhone" name="telefon" minlength="6" maxlength="40" pattern="[0-9+()\s-]{6,}" autocomplete="tel" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Besondere Wünsche</label>
-                    <textarea rows="4" name="wuensche" placeholder="z.B. Babybett gewünscht, späte Anreise, etc."></textarea>
+                    <label for="bookingNotes">Besondere Wünsche</label>
+                    <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z.B. Babybett gewünscht, späte Anreise, etc."></textarea>
+                </div>
+                <div class="form-group" style="position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
+                    <label for="bookingCompany">Firma</label>
+                    <input type="text" id="bookingCompany" name="company" tabindex="-1" autocomplete="off">
                 </div>
                 <div class="form-checkbox">
                     <input type="checkbox" id="bookingPrivacy" required>
@@ -569,28 +579,36 @@
                 </div>
 
                 <div class="contact-form-wrapper">
-                    <form class="contact-form">
+                    <form class="contact-form" action="contact.php" method="post">
                         <div class="form-group">
-                            <label>Name *</label>
-                            <input type="text" required>
+                            <label for="contact-name">Name *</label>
+                            <input id="contact-name" name="name" type="text" required autocomplete="name">
                         </div>
                         <div class="form-group">
-                            <label>E-Mail *</label>
-                            <input type="email" required>
+                            <label for="contact-email">E-Mail *</label>
+                            <input id="contact-email" name="email" type="email" required autocomplete="email">
                         </div>
                         <div class="form-group">
-                            <label>Betreff *</label>
-                            <select required>
+                            <label for="contact-subject">Betreff *</label>
+                            <select id="contact-subject" name="subject" required>
                                 <option value="">Bitte wählen...</option>
-                                <option>Allgemeine Anfrage</option>
-                                <option>Zimmeranfrage</option>
-                                <option>Event-Anfrage</option>
-                                <option>Sonstiges</option>
+                                <option value="Allgemeine Anfrage">Allgemeine Anfrage</option>
+                                <option value="Zimmeranfrage">Zimmeranfrage</option>
+                                <option value="Event-Anfrage">Event-Anfrage</option>
+                                <option value="Sonstiges">Sonstiges</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Nachricht *</label>
-                            <textarea rows="5" required></textarea>
+                            <label for="contact-message">Nachricht *</label>
+                            <textarea id="contact-message" name="message" rows="5" required minlength="20" maxlength="4000"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-phone">Telefon (optional)</label>
+                            <input id="contact-phone" name="phone" type="tel" autocomplete="tel">
+                        </div>
+                        <div class="form-group" style="position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
+                            <label for="contact-company">Firma (bitte frei lassen)</label>
+                            <input id="contact-company" name="company" type="text" tabindex="-1" autocomplete="off">
                         </div>
                         <button type="submit" class="btn-primary btn-large">Nachricht senden</button>
                     </form>
