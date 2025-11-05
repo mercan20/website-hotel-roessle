@@ -1,0 +1,30 @@
+name: PHP Lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - name: Lint PHP files
+        run: |
+          set -euo pipefail
+          php -v
+          mapfile -t php_files < <(find . -type f -name '*.php')
+          if [ ${#php_files[@]} -eq 0 ]; then
+            echo "No PHP files to lint"
+            exit 0
+          fi
+          for file in "${php_files[@]}"; do
+            echo "Linting $file"
+            php -l "$file"
+          done

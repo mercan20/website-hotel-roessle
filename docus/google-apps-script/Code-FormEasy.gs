@@ -20,11 +20,27 @@ const CONFIG = {
   MAX_NIGHTS: 30,                         // Maximal 30 Nächte
   MAX_ROOMS_TOTAL: 18,                    // Maximal 18 Zimmer gesamt (5 EZ + 10 DZ + 3 FZ)
   ALLOWED_ORIGINS: [                      // Nur diese Websites dürfen Buchungen senden
+    'https://www.hotelroessle.eu',
+    'https://hotelroessle.eu',
+    'http://www.hotelroessle.eu',
+    'http://hotelroessle.eu',
     'https://mercan20.github.io',
     'http://localhost:8000',
     'http://127.0.0.1:8000'
   ]
 };
+
+const RATE_LIMIT_PROPERTY_KEY = 'HOTEL_ROESSLE_BOOKING_RATE_LIMITS_V1';
+
+function normalizeOrigin(origin) {
+  if (!origin) {
+    return '';
+  }
+  const trimmed = origin.trim().toLowerCase();
+  return trimmed.replace(/\/+$/, '');
+}
+
+const NORMALIZED_ALLOWED_ORIGINS = CONFIG.ALLOWED_ORIGINS.map(normalizeOrigin);
 
 // Zimmer-Preise (in Euro)
 const ROOM_PRICES = {
@@ -52,13 +68,27 @@ function doPost(req) {
       return FormEasy.createResponse('error', 'Zugriff verweigert.');
     }
 
+    const honeypot = (req.parameter.company || '').trim();
+    if (honeypot) {
+      Logger.log('Blockiert: Honeypot ausgelöst');
+      return FormEasy.createResponse('error', 'Ungültige Anfrage.');
+    }
+
     // Daten aus FormEasy extrahieren
     const formData = extractFormData(req);
+    const clientIpRaw = (req.userIp || '').trim();
+    const clientIp = clientIpRaw || 'unknown';
+
+    formData.origin = formData.origin || origin;
+    formData.clientIp = clientIp;
+    if (!formData.userAgent && req.parameter.userAgent) {
+      formData.userAgent = req.parameter.userAgent;
+    }
 
     // ========== SPAM-SCHUTZ #2: Rate Limiting ==========
-    const rateLimitCheck = checkRateLimit(formData.email);
+    const rateLimitCheck = checkRateLimit(formData.email, clientIp);
     if (!rateLimitCheck.allowed) {
-      Logger.log('Blockiert: Rate Limit überschritten - ' + formData.email);
+      Logger.log('Blockiert: Rate Limit überschritten - ' + formData.email + ' / ' + clientIp);
       return FormEasy.createResponse('error', rateLimitCheck.message);
     }
 
@@ -134,7 +164,9 @@ function extractFormData(req) {
     einzelzimmer: parseInt(params.einzelzimmer || '0'),
     doppelzimmer: parseInt(params.doppelzimmer || '0'),
     familienzimmer: parseInt(params.familienzimmer || '0'),
-    wuensche: params.wuensche || ''
+    wuensche: params.wuensche || '',
+    origin: params.origin || '',
+    userAgent: params.userAgent || ''
   };
 }
 
@@ -254,7 +286,10 @@ function saveBooking(data) {
     data.wuensche || '',
     'Pending',
     '',
-    new Date()
+    new Date(),
+    data.origin || '',
+    data.clientIp || '',
+    data.userAgent || ''
   ]);
 
   return bookingId;
@@ -518,30 +553,122 @@ function formatDate(date) {
  * Prüft ob die Anfrage von einer erlaubten Website kommt
  */
 function isAllowedOrigin(origin) {
-  // Wenn kein Origin angegeben, trotzdem erlauben (für Abwärtskompatibilität)
-  if (!origin) return true;
+  if (!origin) {
+    return false;
+  }
 
-  // Prüfe gegen erlaubte Origins
-  return CONFIG.ALLOWED_ORIGINS.some(allowed => origin.includes(allowed));
+  const normalized = normalizeOrigin(origin);
+  return NORMALIZED_ALLOWED_ORIGINS.indexOf(normalized) !== -1;
 }
 
 /**
  * Rate Limiting: Verhindert zu viele Buchungen von derselben Email
  */
-function checkRateLimit(email) {
+function checkRateLimit(email, ip) {
+  const normalizedEmail = (email || '').toLowerCase();
+  const clientIp = ip || 'unknown';
+  const now = Date.now();
+  const emailWindowStart = now - 24 * 60 * 60 * 1000;
+  const ipWindowStart = now - 60 * 60 * 1000;
+
+  const store = loadRateLimitStore();
+
+  const emailEntries = pruneTimestamps(store.email[normalizedEmail] || [], emailWindowStart);
+  const ipEntries = pruneTimestamps(store.ip[clientIp] || [], ipWindowStart);
+
+  store.email[normalizedEmail] = emailEntries;
+  store.ip[clientIp] = ipEntries;
+
+  if (normalizedEmail) {
+    const sheetCheck = checkEmailRateLimitInSheet(normalizedEmail, emailWindowStart);
+    if (!sheetCheck.allowed) {
+      saveRateLimitStore(store);
+      return sheetCheck;
+    }
+  }
+
+  if (emailEntries.length >= CONFIG.MAX_BOOKINGS_PER_EMAIL_PER_DAY) {
+    saveRateLimitStore(store);
+    return {
+      allowed: false,
+      message: 'Sie haben bereits mehrere Buchungsanfragen gesendet. Bitte warten Sie auf unsere Antwort.'
+    };
+  }
+
+  if (CONFIG.MAX_BOOKINGS_PER_IP_PER_HOUR && ipEntries.length >= CONFIG.MAX_BOOKINGS_PER_IP_PER_HOUR) {
+    saveRateLimitStore(store);
+    return {
+      allowed: false,
+      message: 'Von Ihrer IP-Adresse sind bereits mehrere Buchungsanfragen eingegangen. Bitte versuchen Sie es später erneut.'
+    };
+  }
+
+  emailEntries.push(now);
+  ipEntries.push(now);
+  store.email[normalizedEmail] = emailEntries;
+  store.ip[clientIp] = ipEntries;
+  saveRateLimitStore(store);
+
+  return { allowed: true };
+}
+
+function loadRateLimitStore() {
+  try {
+    const props = PropertiesService.getScriptProperties();
+    const raw = props.getProperty(RATE_LIMIT_PROPERTY_KEY);
+    if (!raw) {
+      return { email: {}, ip: {} };
+    }
+    const parsed = JSON.parse(raw);
+    const emailStore = typeof parsed.email === 'object' && parsed.email !== null ? parsed.email : {};
+    const ipStore = typeof parsed.ip === 'object' && parsed.ip !== null ? parsed.ip : {};
+    return { email: emailStore, ip: ipStore };
+  } catch (error) {
+    Logger.log('RateLimitStore (load) Fehler: ' + error);
+    return { email: {}, ip: {} };
+  }
+}
+
+function saveRateLimitStore(store) {
+  try {
+    const props = PropertiesService.getScriptProperties();
+    props.setProperty(RATE_LIMIT_PROPERTY_KEY, JSON.stringify(store));
+  } catch (error) {
+    Logger.log('RateLimitStore (save) Fehler: ' + error);
+  }
+}
+
+function pruneTimestamps(timestamps, minTimestamp) {
+  if (!Array.isArray(timestamps)) {
+    return [];
+  }
+  return timestamps
+    .map(function (value) { return Number(value); })
+    .filter(function (value) { return !isNaN(value) && value >= minTimestamp; });
+}
+
+function checkEmailRateLimitInSheet(email, windowStart) {
+  if (!email) {
+    return { allowed: true };
+  }
+
   const sheet = getSheet(CONFIG.BOOKINGS_SHEET);
+  if (!sheet) {
+    return { allowed: true };
+  }
+
   const data = sheet.getDataRange().getValues();
-
-  const now = new Date();
-  const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
-  // Zähle Buchungen dieser Email in den letzten 24h
   let bookingsLast24h = 0;
-  for (let i = 1; i < data.length; i++) {
-    const rowEmail = data[i][4]; // Spalte E = Email
-    const rowDate = new Date(data[i][1]); // Spalte B = Timestamp
 
-    if (rowEmail === email && rowDate > oneDayAgo) {
+  for (let i = 1; i < data.length; i++) {
+    const rowEmail = (data[i][4] || '').toString().toLowerCase();
+    if (rowEmail !== email) {
+      continue;
+    }
+
+    const timestamp = data[i][1];
+    const createdAt = timestamp instanceof Date ? timestamp : new Date(timestamp);
+    if (!isNaN(createdAt.getTime()) && createdAt.getTime() > windowStart) {
       bookingsLast24h++;
     }
   }
