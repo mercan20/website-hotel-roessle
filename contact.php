@@ -10,9 +10,9 @@ header('Content-Type: text/html; charset=UTF-8');
 require_once __DIR__ . '/php/form_utils.php';
 
 // Konfiguration
-$recipient = 'info@gast-roessle.de';
+$recipient = 'info@hotelroessle.eu';
 $subjectPrefix = 'Kontaktformular Hotel Rössle';
-$returnPath = 'info@gast-roessle.de'; // Wichtig für Hoster wie Strato
+$returnPath = 'info@hotelroessle.eu'; // Wichtig für Hoster wie Strato
 
 form_configure_mail($returnPath, '/usr/sbin/sendmail');
 
@@ -55,6 +55,9 @@ $message = form_get_post_value('message');
 $phone = form_get_post_value('phone');
 $honeypot = form_get_post_value('company');
 
+$clientIpRaw = $_SERVER['REMOTE_ADDR'] ?? '';
+$clientIp = filter_var($clientIpRaw, FILTER_VALIDATE_IP) ?: 'unknown';
+
 $errors = [];
 
 if ($honeypot !== '') {
@@ -92,7 +95,7 @@ if ($phone !== '' && mb_strlen($phone) > 60) {
 if ($errors !== []) {
     form_log_event(CONTACT_LOG_CONTEXT, 'Validation failed', [
         'email' => $email,
-        'ip' => $clientIpRaw,
+        'ip' => $clientIp,
     ]);
     http_response_code(400);
     echo '<h1>Fehler beim Versenden</h1>';
@@ -105,8 +108,6 @@ if ($errors !== []) {
     exit;
 }
 
-$clientIpRaw = $_SERVER['REMOTE_ADDR'] ?? '';
-$clientIp = filter_var($clientIpRaw, FILTER_VALIDATE_IP) ?: 'unknown';
 $rateLimitData = form_load_rate_limits(RATE_LIMIT_FILE);
 $rateLimitResult = form_enforce_rate_limits(
     $rateLimitData,
@@ -149,7 +150,7 @@ $lines[] = '';
 $lines[] = 'Nachricht:';
 $lines[] = $message;
 $lines[] = '';
-$lines[] = 'IP-Adresse: ' . ($_SERVER['REMOTE_ADDR'] ?? 'unbekannt');
+$lines[] = 'IP-Adresse: ' . $clientIp;
 $lines[] = 'User-Agent: ' . ($_SERVER['HTTP_USER_AGENT'] ?? 'unbekannt');
 
 $emailBody = implode("\n", $lines);

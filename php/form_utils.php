@@ -31,6 +31,11 @@ function form_ensure_directory(string $directory): void
 
 /**
  * Configure PHP's mail transport similar to the legacy Joomla setup.
+ *
+ * Strato's environment expects sendmail to be called with the "-t" and "-i"
+ * flags.  PHP < 8 appended those flags automatically, but since we override
+ * the path at runtime we ensure they remain present to keep mail delivery
+ * working on the new stack.
  */
 function form_configure_mail(string $fromAddress, ?string $sendmailPath = null): void
 {
@@ -39,7 +44,22 @@ function form_configure_mail(string $fromAddress, ?string $sendmailPath = null):
     }
 
     if ($sendmailPath !== null && $sendmailPath !== '') {
-        ini_set('sendmail_path', $sendmailPath);
+        $normalizedPath = trim($sendmailPath);
+
+        if ($normalizedPath !== '') {
+            $hasTFlag = preg_match('/(^|\s)-t(\s|$)/', $normalizedPath) === 1;
+            $hasIFlag = preg_match('/(^|\s)-i(\s|$)/', $normalizedPath) === 1;
+
+            if (!$hasTFlag) {
+                $normalizedPath .= ' -t';
+            }
+
+            if (!$hasIFlag) {
+                $normalizedPath .= ' -i';
+            }
+
+            ini_set('sendmail_path', $normalizedPath);
+        }
     }
 }
 

@@ -7,9 +7,9 @@ header('Content-Type: application/json; charset=UTF-8');
 
 require_once __DIR__ . '/php/form_utils.php';
 
-$recipient = 'info@gast-roessle.de';
+$recipient = 'info@hotelroessle.eu';
 $subjectPrefix = 'Buchungsanfrage Hotel Rössle';
-$returnPath = 'info@gast-roessle.de';
+$returnPath = 'info@hotelroessle.eu';
 
 form_configure_mail($returnPath, '/usr/sbin/sendmail');
 
@@ -181,7 +181,8 @@ if ($errors !== []) {
 }
 
 $rateLimitData = form_load_rate_limits(BOOKING_RATE_LIMIT_FILE);
-$clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unbekannt';
+$clientIpRaw = $_SERVER['REMOTE_ADDR'] ?? '';
+$clientIp = filter_var($clientIpRaw, FILTER_VALIDATE_IP) ?: 'unbekannt';
 $rateLimitResult = form_enforce_rate_limits(
     $rateLimitData,
     $email,
