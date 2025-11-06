@@ -181,7 +181,8 @@ if ($errors !== []) {
 }
 
 $rateLimitData = form_load_rate_limits(BOOKING_RATE_LIMIT_FILE);
-$clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unbekannt';
+$clientIpRaw = $_SERVER['REMOTE_ADDR'] ?? '';
+$clientIp = filter_var($clientIpRaw, FILTER_VALIDATE_IP) ?: 'unbekannt';
 $rateLimitResult = form_enforce_rate_limits(
     $rateLimitData,
     $email,
