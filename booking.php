@@ -7,9 +7,9 @@ header('Content-Type: application/json; charset=UTF-8');
 
 require_once __DIR__ . '/php/form_utils.php';
 
-$recipient = 'info@gast-roessle.de';
+$recipient = 'info@hotelroessle.eu';
 $subjectPrefix = 'Buchungsanfrage Hotel Rössle';
-$returnPath = 'info@gast-roessle.de';
+$returnPath = 'info@hotelroessle.eu';
 
 form_configure_mail($returnPath, '/usr/sbin/sendmail');
 

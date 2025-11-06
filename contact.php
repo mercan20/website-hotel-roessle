@@ -10,9 +10,9 @@ header('Content-Type: text/html; charset=UTF-8');
 require_once __DIR__ . '/php/form_utils.php';
 
 // Konfiguration
-$recipient = 'info@gast-roessle.de';
+$recipient = 'info@hotelroessle.eu';
 $subjectPrefix = 'Kontaktformular Hotel Rössle';
-$returnPath = 'info@gast-roessle.de'; // Wichtig für Hoster wie Strato
+$returnPath = 'info@hotelroessle.eu'; // Wichtig für Hoster wie Strato
 
 form_configure_mail($returnPath, '/usr/sbin/sendmail');
 
