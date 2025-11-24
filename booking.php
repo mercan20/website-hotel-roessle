@@ -264,9 +264,9 @@ $replyToNameEncoded = $replyToNameRaw !== ''
     : '';
 
 $headers = [
-    sprintf('From: "%s" <%s>', $fromNameEncoded, $recipient),
+    sprintf('From: %s <%s>', $fromNameEncoded, $recipient),
     'Reply-To: ' . ($replyToNameEncoded !== ''
-        ? sprintf('"%s" <%s>', $replyToNameEncoded, $email)
+        ? sprintf('%s <%s>', $replyToNameEncoded, $email)
         : $email),
     'MIME-Version: 1.0',
     'Content-Type: text/plain; charset=UTF-8',
@@ -346,8 +346,8 @@ if ($signature !== '') {
 $ackBody = implode("\n", $ackLines) . "\n";
 
 $ackHeaders = [
-    sprintf('From: "%s" <%s>', $fromNameEncoded, $recipient),
-    sprintf('Reply-To: "%s" <%s>', $fromNameEncoded, $recipient),
+    sprintf('From: %s <%s>', $fromNameEncoded, $recipient),
+    sprintf('Reply-To: %s <%s>', $fromNameEncoded, $recipient),
     'MIME-Version: 1.0',
     'Content-Type: text/plain; charset=UTF-8',
     'X-Mailer: PHP/' . PHP_VERSION,
