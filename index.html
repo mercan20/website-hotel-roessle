@@ -583,6 +583,44 @@
                         <input type="tel" id="bookingPhone" name="telefon" minlength="6" maxlength="40" pattern="[0-9+()\s-]{6,}" autocomplete="tel" required>
                     </div>
                 </div>
+
+                <!-- Firmeninformationen -->
+                <div id="companyInfoSection">
+                    <button type="button" id="addCompanyBtn" class="add-company-btn">+ Firmendaten hinzufügen?</button>
+                    
+                    <div id="companyFieldsWrapper" style="display: none;">
+                        <div id="companyNameSection" class="company-section">
+                            <div class="form-group">
+                                <label for="bookingCompanyName">Firmenname</label>
+                                <input type="text" id="bookingCompanyName" name="firmenname" maxlength="120" autocomplete="organization">
+                            </div>
+                            <button type="button" id="addCompanyAddressBtn" class="add-company-btn" style="margin-top: 0.5rem;">+ Firmenadresse hinzufügen?</button>
+                        </div>
+
+                        <div id="companyAddressSection" class="company-section" style="display: none;">
+                            <div class="form-group">
+                                <label for="bookingCompanyStreet">Firma Straße</label>
+                                <input type="text" id="bookingCompanyStreet" name="firma_strasse" maxlength="120" autocomplete="off">
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="bookingCompanyZip">Firma PLZ</label>
+                                    <input type="text" id="bookingCompanyZip" name="firma_plz" maxlength="10" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookingCompanyCity">Firma Ort</label>
+                                    <input type="text" id="bookingCompanyCity" name="firma_ort" maxlength="120" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="delete-company-all-btn" id="deleteAllCompanyBtn" title="Alle Firmendaten entfernen">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="bookingNotes">Besondere Wünsche</label>
                     <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z.B. Babybett gewünscht, späte Anreise, etc."></textarea>
