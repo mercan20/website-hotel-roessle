@@ -132,7 +132,8 @@ if ($rateLimitResult['status'] === false) {
 }
 
 // E-Mail-Inhalt erstellen
-$emailSubject = $subjectPrefix . ' – ' . form_sanitize_header_value($subject);
+$emailSubjectRaw = form_sanitize_header_value($subjectPrefix . ' – ' . $subject);
+$emailSubject = mb_encode_mimeheader($emailSubjectRaw, 'UTF-8', 'B', "\r\n");
 
 $lines = [
     'Neue Kontaktanfrage über hotelroessle.eu',
@@ -155,17 +156,24 @@ $lines[] = 'User-Agent: ' . ($_SERVER['HTTP_USER_AGENT'] ?? 'unbekannt');
 
 $emailBody = implode("\n", $lines);
 
+$fromNameRaw = form_sanitize_header_value('Hotel Rössle');
+$fromNameEncoded = mb_encode_mimeheader($fromNameRaw, 'UTF-8', 'B', "\r\n");
+$replyToNameRaw = form_sanitize_header_value($name);
+$replyToNameEncoded = $replyToNameRaw !== ''
+    ? mb_encode_mimeheader($replyToNameRaw, 'UTF-8', 'B', "\r\n")
+    : '';
+
 $headers = [
-    'From' => sprintf('"%s" <%s>', mb_encode_mimeheader('Hotel Rössle'), $recipient),
-    'Reply-To' => sprintf('"%s" <%s>', mb_encode_mimeheader(form_sanitize_header_value($name)), $email),
-    'X-Mailer' => 'PHP/' . PHP_VERSION,
-    'Content-Type' => 'text/plain; charset=UTF-8',
+    sprintf('From: %s <%s>', $fromNameEncoded, $recipient),
+    'Reply-To: ' . ($replyToNameEncoded !== ''
+        ? sprintf('%s <%s>', $replyToNameEncoded, $email)
+        : $email),
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=UTF-8',
+    'X-Mailer: PHP/' . PHP_VERSION,
 ];
 
-$formattedHeaders = '';
-foreach ($headers as $key => $value) {
-    $formattedHeaders .= $key . ': ' . $value . "\r\n";
-}
+$formattedHeaders = implode("\r\n", $headers);
 
 $additionalParameters = sprintf('-f%s', $returnPath);
 
@@ -198,7 +206,12 @@ form_save_rate_limits(RATE_LIMIT_FILE, $rateLimitResult['data']);
 
 form_log_event(CONTACT_LOG_CONTEXT, 'Contact email sent successfully', $mailContext);
 
-$ackSubject = form_sanitize_header_value('Ihre Nachricht an das Hotel Rössle');
+$ackSubject = mb_encode_mimeheader(
+    form_sanitize_header_value('Ihre Nachricht an das Hotel Rössle'),
+    'UTF-8',
+    'B',
+    "\r\n"
+);
 $ackLines = [];
 $ackLines[] = 'Guten Tag ' . $name . ',';
 $ackLines[] = '';
@@ -221,16 +234,14 @@ if ($signature !== '') {
 $ackBody = implode("\n", $ackLines) . "\n";
 
 $ackHeaders = [
-    'From' => sprintf('"%s" <%s>', mb_encode_mimeheader('Hotel Rössle'), $recipient),
-    'Reply-To' => sprintf('"%s" <%s>', mb_encode_mimeheader('Hotel Rössle'), $recipient),
-    'X-Mailer' => 'PHP/' . PHP_VERSION,
-    'Content-Type' => 'text/plain; charset=UTF-8',
+    sprintf('From: %s <%s>', $fromNameEncoded, $recipient),
+    sprintf('Reply-To: %s <%s>', $fromNameEncoded, $recipient),
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=UTF-8',
+    'X-Mailer: PHP/' . PHP_VERSION,
 ];
 
-$ackFormattedHeaders = '';
-foreach ($ackHeaders as $key => $value) {
-    $ackFormattedHeaders .= $key . ': ' . $value . "\r\n";
-}
+$ackFormattedHeaders = implode("\r\n", $ackHeaders);
 
 $ackSent = mail(
     $email,
