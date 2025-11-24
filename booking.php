@@ -257,7 +257,8 @@ if ($checkin !== null && $checkout !== null) {
 $subjectRaw = form_sanitize_header_value(implode(' | ', array_filter($subjectParts)));
 $subject = mb_encode_mimeheader($subjectRaw, 'UTF-8', 'B', "\r\n");
 
-$fromNameEncoded = mb_encode_mimeheader('Hotel Rössle', 'UTF-8', 'B', "\r\n");
+$fromNameRaw = form_sanitize_header_value('Hotel Rössle');
+$fromNameEncoded = mb_encode_mimeheader($fromNameRaw, 'UTF-8', 'B', "\r\n");
 $replyToNameRaw = form_sanitize_header_value(trim($firstName . ' ' . $lastName));
 $replyToNameEncoded = $replyToNameRaw !== ''
     ? mb_encode_mimeheader($replyToNameRaw, 'UTF-8', 'B', "\r\n")
