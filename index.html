@@ -8,27 +8,32 @@
     <link rel="stylesheet" href="css/new-style.css">
 </head>
 <body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
+    
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#home" class="logo">HOTEL RÖSSLE</a>
-            <ul class="nav-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#zimmer">Zimmer</a></li>
-                <li><a href="#events">Räumlichkeiten</a></li>
-                <li><a href="#freizeit">Freizeit</a></li>
-                <li><a href="#kontakt">Kontakt</a></li>
-                <li><a href="#buchen" class="nav-btn">Buchen</a></li>
-            </ul>
-            <button class="mobile-menu-btn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </nav>
+    <header>
+        <nav class="navbar" aria-label="Hauptnavigation">
+            <div class="nav-container">
+                <a href="#home" class="logo">HOTEL RÖSSLE</a>
+                <ul class="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#zimmer">Zimmer</a></li>
+                    <li><a href="#events">Räumlichkeiten</a></li>
+                    <li><a href="#freizeit">Freizeit</a></li>
+                    <li><a href="#kontakt">Kontakt</a></li>
+                    <li><a href="#buchen" class="nav-btn">Buchen</a></li>
+                </ul>
+                <button class="mobile-menu-btn" aria-label="Menü öffnen" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
 
-    <!-- Hero Section -->
+    <main id="main-content">
     <section id="home" class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -649,14 +654,14 @@
                     <div class="contact-item">
                         <div class="contact-icon">📍</div>
                         <div>
-                            <h4>Adresse</h4>
+                            <h3>Adresse</h3>
                             <p>Hotel Rössle<br>Honbergstrasse 8<br>78532 Tuttlingen<br>Deutschland</p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">📞</div>
                         <div>
-                            <h4>Telefon & E-Mail</h4>
+                            <h3>Telefon & E-Mail</h3>
                             <p>
                                 Tel: <a href="tel:+4974612913">+49 (0) 7461 2913</a><br>
                                 Fax: +49 (0) 7461 9697524<br>
@@ -667,7 +672,7 @@
                     <div class="contact-item">
                         <div class="contact-icon">⏰</div>
                         <div>
-                            <h4>Öffnungszeiten</h4>
+                            <h3>Öffnungszeiten</h3>
                             <p>
                                 <strong>Check-In:</strong> 14:00 - 21:00<br>
                                 <strong>Check-Out:</strong> Bis 11:00<br>
@@ -678,7 +683,7 @@
                     <div class="contact-item">
                         <div class="contact-icon">👤</div>
                         <div>
-                            <h4>Inhaber</h4>
+                            <h3>Inhaber</h3>
                             <p>Osman Kücük</p>
                         </div>
                     </div>
@@ -779,6 +784,8 @@
             </div>
         </div>
     </footer>
+
+    </main>
 
     <!-- Room Gallery Modal -->
     <div id="roomGalleryModal" class="gallery-modal">

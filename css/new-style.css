@@ -17,7 +17,7 @@
     --light: #f8f9fa;
     --dark: #1a1a1a;
     --white: #ffffff;
-    --gray: #95a5a6;
+    --gray: #6c7a7b;
     --border: #e1e8ed;
 
     /* Typography */
@@ -46,6 +46,34 @@ body {
     color: var(--dark);
     background: var(--white);
 }
+
+/* ===================================
+   Accessibility - Skip Link
+   =================================== */
+
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    background: var(--primary);
+    color: var(--white);
+    padding: 1rem 1.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    z-index: 10000;
+    border-radius: 0 0 4px 0;
+    transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* ===================================
+   Container
+   =================================== */
 
 .container {
     max-width: 1200px;
