@@ -1258,6 +1258,61 @@ section {
     font-size: 0.95rem;
 }
 
+.optional-toggle {
+    margin: var(--spacing-sm) 0;
+}
+
+.optional-toggle-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    background: rgba(192, 147, 109, 0.06);
+    color: var(--primary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.optional-toggle-btn:hover,
+.optional-toggle-btn.is-active {
+    border-color: var(--accent);
+    background: rgba(192, 147, 109, 0.12);
+}
+
+.optional-toggle-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(192, 147, 109, 0.15);
+}
+
+.optional-toggle .toggle-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.optional-fields {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: var(--spacing-sm);
+    background: #fffaf5;
+    margin-bottom: var(--spacing-md);
+}
+
+.optional-fields:not(.is-visible) {
+    display: none;
+}
+
 /* ===================================
    Contact Section
    =================================== */

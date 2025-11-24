@@ -578,19 +578,31 @@
                         <label for="bookingEmail">E-Mail *</label>
                         <input type="email" id="bookingEmail" name="email" maxlength="160" autocomplete="email" required>
                     </div>
-                    <div class="form-group">
-                        <label for="bookingPhone">Telefon *</label>
-                        <input type="tel" id="bookingPhone" name="telefon" minlength="6" maxlength="40" pattern="[0-9+()\s-]{6,}" autocomplete="tel" required>
-                    </div>
-                </div>
                 <div class="form-group">
-                    <label for="bookingNotes">Besondere Wünsche</label>
-                    <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z.B. Babybett gewünscht, späte Anreise, etc."></textarea>
+                    <label for="bookingPhone">Telefon *</label>
+                    <input type="tel" id="bookingPhone" name="telefon" minlength="6" maxlength="40" pattern="[0-9+()\s-]{6,}" autocomplete="tel" required>
                 </div>
-                <div class="form-group" style="position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
-                    <label for="bookingCompany">Firma</label>
-                    <input type="text" id="bookingCompany" name="company" tabindex="-1" autocomplete="off">
+            </div>
+            <div class="optional-toggle">
+                <button type="button" class="optional-toggle-btn" data-optional-toggle data-target="#booking-company-fields" aria-expanded="false" aria-controls="booking-company-fields" data-label-show="Firmenangaben hinzufügen" data-label-hide="Firmenangaben ausblenden">
+                    <span class="toggle-icon" aria-hidden="true">＋</span>
+                    <span class="toggle-label">Firmenangaben hinzufügen</span>
+                </button>
+            </div>
+            <div id="booking-company-fields" class="optional-fields" hidden>
+                <div class="form-group">
+                    <label for="bookingCompany">Firma (optional)</label>
+                    <input type="text" id="bookingCompany" name="company" maxlength="160" autocomplete="organization">
                 </div>
+            </div>
+            <div class="form-group">
+                <label for="bookingNotes">Besondere Wünsche</label>
+                <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z.B. Babybett gewünscht, späte Anreise, etc."></textarea>
+            </div>
+            <div class="form-group" style="position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
+                <label for="bookingWebsite">Ihre Website</label>
+                <input type="text" id="bookingWebsite" name="website" tabindex="-1" autocomplete="off">
+            </div>
                 <div class="form-checkbox">
                     <input type="checkbox" id="bookingPrivacy" required>
                     <label for="bookingPrivacy">Ich habe die Datenschutzerklärung gelesen und akzeptiert *</label>
@@ -656,6 +668,18 @@
                             <label for="contact-email">E-Mail *</label>
                             <input id="contact-email" name="email" type="email" required autocomplete="email">
                         </div>
+                        <div class="optional-toggle">
+                            <button type="button" class="optional-toggle-btn" data-optional-toggle data-target="#contact-company-fields" aria-expanded="false" aria-controls="contact-company-fields" data-label-show="Firmenangaben hinzufügen" data-label-hide="Firmenangaben ausblenden">
+                                <span class="toggle-icon" aria-hidden="true">＋</span>
+                                <span class="toggle-label">Firmenangaben hinzufügen</span>
+                            </button>
+                        </div>
+                        <div id="contact-company-fields" class="optional-fields" hidden>
+                            <div class="form-group">
+                                <label for="contact-company">Firma (optional)</label>
+                                <input id="contact-company" name="company" type="text" maxlength="160" autocomplete="organization">
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="contact-subject">Betreff *</label>
                             <select id="contact-subject" name="subject" required>
@@ -675,8 +699,8 @@
                             <input id="contact-phone" name="phone" type="tel" autocomplete="tel">
                         </div>
                         <div class="form-group" style="position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
-                            <label for="contact-company">Firma (bitte frei lassen)</label>
-                            <input id="contact-company" name="company" type="text" tabindex="-1" autocomplete="off">
+                            <label for="contact-website">Ihre Website</label>
+                            <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off">
                         </div>
                         <button type="submit" class="btn-primary btn-large">Nachricht senden</button>
                     </form>

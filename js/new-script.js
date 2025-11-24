@@ -64,6 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileMenuBtn.addEventListener('click', toggleMobileMenu);
     }
 
+    initOptionalFieldToggles();
+
     // Navbar Scroll Effect
     const navbar = document.querySelector('.navbar');
 
@@ -165,6 +167,54 @@ document.addEventListener('DOMContentLoaded', function() {
 
     syncBookingHiddenFields();
 });
+
+function initOptionalFieldToggles() {
+    const toggles = document.querySelectorAll('[data-optional-toggle]');
+    if (!toggles.length) {
+        return;
+    }
+
+    toggles.forEach(button => {
+        const targetSelector = button.getAttribute('data-target');
+        if (!targetSelector) {
+            return;
+        }
+
+        const target = document.querySelector(targetSelector);
+        if (!target) {
+            return;
+        }
+
+        const icon = button.querySelector('.toggle-icon');
+        const label = button.querySelector('.toggle-label');
+        const showText = button.getAttribute('data-label-show') || 'Details anzeigen';
+        const hideText = button.getAttribute('data-label-hide') || 'Details ausblenden';
+
+        const setExpanded = expanded => {
+            button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            button.classList.toggle('is-active', expanded);
+            target.classList.toggle('is-visible', expanded);
+            if (expanded) {
+                target.removeAttribute('hidden');
+            } else {
+                target.setAttribute('hidden', '');
+            }
+            if (icon) {
+                icon.textContent = expanded ? '–' : '＋';
+            }
+            if (label) {
+                label.textContent = expanded ? hideText : showText;
+            }
+        };
+
+        setExpanded(button.getAttribute('aria-expanded') === 'true');
+
+        button.addEventListener('click', () => {
+            const expanded = button.getAttribute('aria-expanded') === 'true';
+            setExpanded(!expanded);
+        });
+    });
+}
 
 // Room Counter State
 const bookingCounters = {
@@ -809,7 +859,7 @@ async function handleBookingSubmit(e) {
     syncBookingHiddenFields();
     // Formulardaten sammeln
     const formData = new FormData(e.target);
-    const honeypotValue = (formData.get('company') || '').toString().trim();
+    const honeypotValue = (formData.get('website') || '').toString().trim();
     if (honeypotValue !== '') {
         showBookingMessage('Die Anfrage konnte nicht gesendet werden. Bitte kontaktieren Sie uns telefonisch.', 'error');
         return;
@@ -818,6 +868,7 @@ async function handleBookingSubmit(e) {
     const bookingData = {
         vorname: (formData.get('vorname') || '').toString().trim(),
         nachname: (formData.get('nachname') || '').toString().trim(),
+        company: (formData.get('company') || '').toString().trim(),
         email: (formData.get('email') || '').toString().trim(),
         telefon: (formData.get('telefon') || '').toString().trim(),
         checkin: bookingSelectedCheckin ? serializeBookingDate(bookingSelectedCheckin) : null,
@@ -829,7 +880,6 @@ async function handleBookingSubmit(e) {
         origin: window.location.origin,
         userAgent: navigator.userAgent,
         privacyAccepted: document.getElementById('bookingPrivacy')?.checked ?? false,
-        company: honeypotValue,
     };
 
     // Validierung
@@ -855,6 +905,7 @@ async function handleBookingSubmit(e) {
     // FormData für den Versand vorbereiten
     formData.set('vorname', bookingData.vorname);
     formData.set('nachname', bookingData.nachname);
+    formData.set('company', bookingData.company);
     formData.set('email', bookingData.email);
     formData.set('telefon', bookingData.telefon);
     formData.set('wuensche', bookingData.wuensche);
@@ -946,6 +997,10 @@ function validateBookingForm(data, checkinDate, checkoutDate) {
     const phoneRegex = /^[0-9+()\s-]{6,}$/;
     if (!phoneRegex.test(data.telefon)) {
         return { valid: false, message: 'Bitte geben Sie eine gültige Telefonnummer an.' };
+    }
+
+    if (data.company && data.company.length > 160) {
+        return { valid: false, message: 'Der Firmenname ist zu lang.' };
     }
 
     const totalRooms = (data.einzelzimmer || 0) + (data.doppelzimmer || 0) + (data.familienzimmer || 0);

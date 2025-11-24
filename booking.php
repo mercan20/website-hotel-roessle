@@ -32,6 +32,7 @@ const BOOKING_MAX_ROOMS_TOTAL = 18;
 const BOOKING_RATE_LIMIT_FILE = 'hotel_roessle_booking_limits.json';
 const BOOKING_LOG_CONTEXT = 'booking';
 const BOOKING_MAX_NOTES_LENGTH = 1000;
+const BOOKING_MAX_COMPANY_LENGTH = 160;
 
 const BOOKING_ROOM_LIMITS = [
     'einzelzimmer' => 5,
@@ -70,7 +71,7 @@ if (!form_is_origin_allowed(BOOKING_ALLOWED_ORIGINS)) {
     ]);
 }
 
-$honeypot = form_get_post_value('company');
+$honeypot = form_get_post_value('website');
 if ($honeypot !== '') {
     respondWithJson(400, [
         'success' => false,
@@ -80,6 +81,7 @@ if ($honeypot !== '') {
 
 $firstName = form_get_post_value('vorname');
 $lastName = form_get_post_value('nachname');
+$company = form_get_post_value('company');
 $emailRaw = form_get_post_value('email');
 $email = filter_var($emailRaw, FILTER_SANITIZE_EMAIL) ?: '';
 $phone = form_get_post_value('telefon');
@@ -113,6 +115,10 @@ if (!preg_match(BOOKING_PHONE_PATTERN, $phone)) {
 
 if ($notes !== '' && mb_strlen($notes) > BOOKING_MAX_NOTES_LENGTH) {
     $errors[] = 'Die Nachricht für besondere Wünsche ist zu lang.';
+}
+
+if ($company !== '' && mb_strlen($company) > BOOKING_MAX_COMPANY_LENGTH) {
+    $errors[] = 'Der Firmenname ist zu lang.';
 }
 
 $checkin = DateTimeImmutable::createFromFormat('Y-m-d', $checkinRaw) ?: null;
@@ -212,6 +218,9 @@ $lines[] = '';
 $lines[] = 'Name: ' . $firstName . ' ' . $lastName;
 $lines[] = 'E-Mail: ' . $email;
 $lines[] = 'Telefon: ' . $phone;
+if ($company !== '') {
+    $lines[] = 'Firma: ' . $company;
+}
 $lines[] = '';
 $lines[] = 'Reisedaten:';
 $lines[] = '  Check-in: ' . $checkinForMail;
@@ -312,6 +321,11 @@ $ackLines = [];
 $ackLines[] = 'Guten Tag ' . trim($firstName . ' ' . $lastName) . ',';
 $ackLines[] = '';
 $ackLines[] = 'vielen Dank für Ihre Buchungsanfrage. Wir haben Ihre Nachricht erhalten und melden uns zeitnah.';
+
+if ($company !== '') {
+    $ackLines[] = '';
+    $ackLines[] = 'Hinterlegter Firmenname: ' . $company;
+}
 
 if ($checkin !== null && $checkout !== null) {
     $roomParts = [];

@@ -53,7 +53,8 @@ $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
 $subject = form_get_post_value('subject');
 $message = form_get_post_value('message');
 $phone = form_get_post_value('phone');
-$honeypot = form_get_post_value('company');
+$company = form_get_post_value('company');
+$honeypot = form_get_post_value('website');
 
 $clientIpRaw = $_SERVER['REMOTE_ADDR'] ?? '';
 $clientIp = filter_var($clientIpRaw, FILTER_VALIDATE_IP) ?: 'unknown';
@@ -90,6 +91,10 @@ if ($message === '') {
 
 if ($phone !== '' && mb_strlen($phone) > 60) {
     $errors[] = 'Die Telefonnummer ist zu lang.';
+}
+
+if ($company !== '' && mb_strlen($company) > 160) {
+    $errors[] = 'Der Firmenname ist zu lang.';
 }
 
 if ($errors !== []) {
@@ -143,6 +148,10 @@ $lines = [
 
 if ($phone !== '') {
     $lines[] = 'Telefon: ' . $phone;
+}
+
+if ($company !== '') {
+    $lines[] = 'Firma: ' . $company;
 }
 
 $lines[] = 'Betreff: ' . $subject;
@@ -207,6 +216,11 @@ $ackLines[] = 'vielen Dank für Ihre Nachricht. Wir haben Ihre Anfrage erhalten 
 if ($subject !== '') {
     $ackLines[] = '';
     $ackLines[] = 'Betreff: ' . $subject;
+}
+
+if ($company !== '') {
+    $ackLines[] = '';
+    $ackLines[] = 'Hinterlegter Firmenname: ' . $company;
 }
 
 $ackLines[] = '';
