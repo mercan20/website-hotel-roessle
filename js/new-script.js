@@ -107,6 +107,63 @@ document.addEventListener('DOMContentLoaded', function() {
         bookingForm.addEventListener('submit', handleBookingSubmit);
     }
 
+    // Company Information Toggle
+    const addCompanyBtn = document.getElementById('addCompanyBtn');
+    const companyNameSection = document.getElementById('companyNameSection');
+    const deleteCompanyNameBtn = document.getElementById('deleteCompanyNameBtn');
+    const addCompanyAddressBtn = document.getElementById('addCompanyAddressBtn');
+    const companyAddressSection = document.getElementById('companyAddressSection');
+    const deleteCompanyAddressBtn = document.getElementById('deleteCompanyAddressBtn');
+
+    if (addCompanyBtn) {
+        addCompanyBtn.addEventListener('click', function() {
+            addCompanyBtn.style.display = 'none';
+            companyNameSection.style.display = 'block';
+        });
+    }
+
+    if (deleteCompanyNameBtn) {
+        deleteCompanyNameBtn.addEventListener('click', function() {
+            // Clear company name field
+            const companyNameInput = document.getElementById('bookingCompanyName');
+            if (companyNameInput) {
+                companyNameInput.value = '';
+            }
+            
+            // Hide company name section and show add button again
+            companyNameSection.style.display = 'none';
+            addCompanyBtn.style.display = 'inline-block';
+            
+            // Also hide and clear address section if visible
+            if (companyAddressSection.style.display === 'block') {
+                companyAddressSection.style.display = 'none';
+                document.getElementById('bookingCompanyStreet').value = '';
+                document.getElementById('bookingCompanyZip').value = '';
+                document.getElementById('bookingCompanyCity').value = '';
+            }
+        });
+    }
+
+    if (addCompanyAddressBtn) {
+        addCompanyAddressBtn.addEventListener('click', function() {
+            addCompanyAddressBtn.style.display = 'none';
+            companyAddressSection.style.display = 'block';
+        });
+    }
+
+    if (deleteCompanyAddressBtn) {
+        deleteCompanyAddressBtn.addEventListener('click', function() {
+            // Clear address fields
+            document.getElementById('bookingCompanyStreet').value = '';
+            document.getElementById('bookingCompanyZip').value = '';
+            document.getElementById('bookingCompanyCity').value = '';
+            
+            // Hide address section and show add button again
+            companyAddressSection.style.display = 'none';
+            addCompanyAddressBtn.style.display = 'inline-block';
+        });
+    }
+
     // Animate Elements on Scroll
     const observerOptions = {
         threshold: 0.1,
@@ -1095,6 +1152,26 @@ function resetBookingForm() {
 
     // Submit-Button deaktivieren
     document.getElementById('bookingSubmitBtn').disabled = true;
+
+    // Company information zurücksetzen
+    const addCompanyBtn = document.getElementById('addCompanyBtn');
+    const companyNameSection = document.getElementById('companyNameSection');
+    const companyAddressSection = document.getElementById('companyAddressSection');
+    const addCompanyAddressBtn = document.getElementById('addCompanyAddressBtn');
+    
+    if (addCompanyBtn && companyNameSection) {
+        addCompanyBtn.style.display = 'inline-block';
+        companyNameSection.style.display = 'none';
+        document.getElementById('bookingCompanyName').value = '';
+    }
+    
+    if (companyAddressSection && addCompanyAddressBtn) {
+        companyAddressSection.style.display = 'none';
+        addCompanyAddressBtn.style.display = 'inline-block';
+        document.getElementById('bookingCompanyStreet').value = '';
+        document.getElementById('bookingCompanyZip').value = '';
+        document.getElementById('bookingCompanyCity').value = '';
+    }
 
     syncBookingHiddenFields();
 }

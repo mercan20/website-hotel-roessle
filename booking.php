@@ -89,6 +89,12 @@ $checkoutRaw = form_get_post_value('checkout');
 $originSent = form_get_post_value('origin');
 $userAgentSent = form_get_post_value('userAgent');
 
+// Company information (optional)
+$companyName = form_get_post_value('firmenname');
+$companyStreet = form_get_post_value('firma_strasse');
+$companyZip = form_get_post_value('firma_plz');
+$companyCity = form_get_post_value('firma_ort');
+
 $errors = [];
 
 if ($firstName === '' || $lastName === '' || $email === '' || $phone === '') {
@@ -213,6 +219,21 @@ $lines[] = 'Name: ' . $firstName . ' ' . $lastName;
 $lines[] = 'E-Mail: ' . $email;
 $lines[] = 'Telefon: ' . $phone;
 $lines[] = '';
+
+// Add company information if provided
+if ($companyName !== '') {
+    $lines[] = 'Firmeninformationen:';
+    $lines[] = '  Firmenname: ' . $companyName;
+    
+    if ($companyStreet !== '' || $companyZip !== '' || $companyCity !== '') {
+        $addressParts = array_filter([$companyStreet, $companyZip . ' ' . $companyCity]);
+        if (!empty($addressParts)) {
+            $lines[] = '  Adresse: ' . implode(', ', $addressParts);
+        }
+    }
+    $lines[] = '';
+}
+
 $lines[] = 'Reisedaten:';
 $lines[] = '  Check-in: ' . $checkinForMail;
 $lines[] = '  Check-out: ' . $checkoutForMail;
