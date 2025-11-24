@@ -566,40 +566,31 @@
                 </div>
 
                 <div class="company-section" data-company-section>
-                    <button type="button" class="company-add-btn" data-company-add aria-expanded="false">
-                        <span class="plus-circle" aria-hidden="true">+</span>
-                        Firma hinzufügen
-                    </button>
-                    <div class="company-card" data-company-card hidden>
-                        <div class="company-card-grid">
-                            <div class="company-main">
-                                <div class="form-group">
-                                    <label for="bookingCompany">Firmenname</label>
-                                    <input type="text" id="bookingCompany" name="company" maxlength="160" autocomplete="organization" data-company-name>
-                                </div>
-                                <button type="button" class="company-address-btn" data-company-address-toggle aria-expanded="false">
-                                    + Firmenadresse hinzufügen?
-                                </button>
-                                <div class="company-address-fields" data-company-address-fields hidden>
-                                    <div class="form-group">
-                                        <label for="bookingCompanyStreet">Firma Straße</label>
-                                        <input type="text" id="bookingCompanyStreet" name="company_street" maxlength="160" autocomplete="street-address">
-                                    </div>
-                                    <div class="form-group form-group-inline">
-                                        <div>
-                                            <label for="bookingCompanyPostal">Firma PLZ</label>
-                                            <input type="text" id="bookingCompanyPostal" name="company_postal" maxlength="20" inputmode="numeric" autocomplete="postal-code">
-                                        </div>
-                                        <div>
-                                            <label for="bookingCompanyCity">Firma Ort</label>
-                                            <input type="text" id="bookingCompanyCity" name="company_city" maxlength="120" autocomplete="address-level2">
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="form-grid company-inline-grid">
+                        <div class="form-group company-toggle-group">
+                            <button type="button" class="company-add-btn" data-company-add aria-expanded="false">+ Firma hinzufügen</button>
+                        </div>
+                        <div class="form-group company-name-group" data-company-card hidden>
+                            <label for="bookingCompany">Firmenname</label>
+                            <div class="input-with-remove">
+                                <input type="text" id="bookingCompany" name="company" maxlength="160" autocomplete="organization" data-company-name>
+                                <button type="button" class="company-remove-btn" data-company-remove aria-label="Firma entfernen">🗑</button>
                             </div>
-                            <button type="button" class="company-remove-btn" data-company-remove aria-label="Firma entfernen">
-                                <span aria-hidden="true">🗑</span>
-                            </button>
+                            <button type="button" class="company-address-btn" data-company-address-toggle aria-expanded="false">Firmenadresse hinzufügen?</button>
+                        </div>
+                    </div>
+                    <div class="form-grid company-address-grid" data-company-address-fields hidden>
+                        <div class="form-group">
+                            <label for="bookingCompanyStreet">Firma Straße</label>
+                            <input type="text" id="bookingCompanyStreet" name="company_street" maxlength="160" autocomplete="street-address">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingCompanyPostal">Firma PLZ</label>
+                            <input type="text" id="bookingCompanyPostal" name="company_postal" maxlength="20" inputmode="numeric" autocomplete="postal-code">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingCompanyCity">Firma Ort</label>
+                            <input type="text" id="bookingCompanyCity" name="company_city" maxlength="120" autocomplete="address-level2">
                         </div>
                     </div>
                 </div>
@@ -696,40 +687,31 @@
                             <input id="contact-email" name="email" type="email" required autocomplete="email">
                         </div>
                         <div class="company-section" data-company-section>
-                            <button type="button" class="company-add-btn" data-company-add aria-expanded="false">
-                                <span class="plus-circle" aria-hidden="true">+</span>
-                                Firma hinzufügen
-                            </button>
-                            <div class="company-card" data-company-card hidden>
-                                <div class="company-card-grid">
-                                    <div class="company-main">
-                                        <div class="form-group">
-                                            <label for="contact-company">Firmenname</label>
-                                            <input id="contact-company" name="company" type="text" maxlength="160" autocomplete="organization" data-company-name>
-                                        </div>
-                                        <button type="button" class="company-address-btn" data-company-address-toggle aria-expanded="false">
-                                            + Firmenadresse hinzufügen?
-                                        </button>
-                                        <div class="company-address-fields" data-company-address-fields hidden>
-                                            <div class="form-group">
-                                                <label for="contactCompanyStreet">Firma Straße</label>
-                                                <input id="contactCompanyStreet" name="company_street" type="text" maxlength="160" autocomplete="street-address">
-                                            </div>
-                                            <div class="form-group form-group-inline">
-                                                <div>
-                                                    <label for="contactCompanyPostal">Firma PLZ</label>
-                                                    <input id="contactCompanyPostal" name="company_postal" type="text" maxlength="20" inputmode="numeric" autocomplete="postal-code">
-                                                </div>
-                                                <div>
-                                                    <label for="contactCompanyCity">Firma Ort</label>
-                                                    <input id="contactCompanyCity" name="company_city" type="text" maxlength="120" autocomplete="address-level2">
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="form-grid company-inline-grid">
+                                    <div class="form-group company-toggle-group">
+                                        <button type="button" class="company-add-btn" data-company-add aria-expanded="false">+ Firma hinzufügen</button>
                                     </div>
-                                    <button type="button" class="company-remove-btn" data-company-remove aria-label="Firma entfernen">
-                                        <span aria-hidden="true">🗑</span>
-                                    </button>
+                                    <div class="form-group company-name-group" data-company-card hidden>
+                                        <label for="contact-company">Firmenname</label>
+                                        <div class="input-with-remove">
+                                            <input id="contact-company" name="company" type="text" maxlength="160" autocomplete="organization" data-company-name>
+                                            <button type="button" class="company-remove-btn" data-company-remove aria-label="Firma entfernen">🗑</button>
+                                        </div>
+                                        <button type="button" class="company-address-btn" data-company-address-toggle aria-expanded="false">Firmenadresse hinzufügen?</button>
+                                    </div>
+                            </div>
+                            <div class="form-grid company-address-grid" data-company-address-fields hidden>
+                                <div class="form-group">
+                                    <label for="contactCompanyStreet">Firma Straße</label>
+                                    <input id="contactCompanyStreet" name="company_street" type="text" maxlength="160" autocomplete="street-address">
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactCompanyPostal">Firma PLZ</label>
+                                    <input id="contactCompanyPostal" name="company_postal" type="text" maxlength="20" inputmode="numeric" autocomplete="postal-code">
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactCompanyCity">Firma Ort</label>
+                                    <input id="contactCompanyCity" name="company_city" type="text" maxlength="120" autocomplete="address-level2">
                                 </div>
                             </div>
                         </div>
