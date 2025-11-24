@@ -109,38 +109,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Company Information Toggle
     const addCompanyBtn = document.getElementById('addCompanyBtn');
+    const companyFieldsWrapper = document.getElementById('companyFieldsWrapper');
     const companyNameSection = document.getElementById('companyNameSection');
-    const deleteCompanyNameBtn = document.getElementById('deleteCompanyNameBtn');
+    const deleteAllCompanyBtn = document.getElementById('deleteAllCompanyBtn');
     const addCompanyAddressBtn = document.getElementById('addCompanyAddressBtn');
     const companyAddressSection = document.getElementById('companyAddressSection');
-    const deleteCompanyAddressBtn = document.getElementById('deleteCompanyAddressBtn');
 
     if (addCompanyBtn) {
         addCompanyBtn.addEventListener('click', function() {
             addCompanyBtn.style.display = 'none';
-            companyNameSection.style.display = 'block';
+            companyFieldsWrapper.style.display = 'block';
         });
     }
 
-    if (deleteCompanyNameBtn) {
-        deleteCompanyNameBtn.addEventListener('click', function() {
-            // Clear company name field
-            const companyNameInput = document.getElementById('bookingCompanyName');
-            if (companyNameInput) {
-                companyNameInput.value = '';
-            }
+    if (deleteAllCompanyBtn) {
+        deleteAllCompanyBtn.addEventListener('click', function() {
+            // Clear all company fields
+            document.getElementById('bookingCompanyName').value = '';
+            document.getElementById('bookingCompanyStreet').value = '';
+            document.getElementById('bookingCompanyZip').value = '';
+            document.getElementById('bookingCompanyCity').value = '';
             
-            // Hide company name section and show add button again
-            companyNameSection.style.display = 'none';
+            // Hide all company sections
+            companyFieldsWrapper.style.display = 'none';
+            companyAddressSection.style.display = 'none';
+            addCompanyAddressBtn.style.display = 'inline-block';
+            
+            // Show add button again
             addCompanyBtn.style.display = 'inline-block';
-            
-            // Also hide and clear address section if visible
-            if (companyAddressSection.style.display === 'block') {
-                companyAddressSection.style.display = 'none';
-                document.getElementById('bookingCompanyStreet').value = '';
-                document.getElementById('bookingCompanyZip').value = '';
-                document.getElementById('bookingCompanyCity').value = '';
-            }
         });
     }
 
@@ -148,19 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
         addCompanyAddressBtn.addEventListener('click', function() {
             addCompanyAddressBtn.style.display = 'none';
             companyAddressSection.style.display = 'block';
-        });
-    }
-
-    if (deleteCompanyAddressBtn) {
-        deleteCompanyAddressBtn.addEventListener('click', function() {
-            // Clear address fields
-            document.getElementById('bookingCompanyStreet').value = '';
-            document.getElementById('bookingCompanyZip').value = '';
-            document.getElementById('bookingCompanyCity').value = '';
-            
-            // Hide address section and show add button again
-            companyAddressSection.style.display = 'none';
-            addCompanyAddressBtn.style.display = 'inline-block';
         });
     }
 
@@ -1155,13 +1138,13 @@ function resetBookingForm() {
 
     // Company information zurücksetzen
     const addCompanyBtn = document.getElementById('addCompanyBtn');
-    const companyNameSection = document.getElementById('companyNameSection');
+    const companyFieldsWrapper = document.getElementById('companyFieldsWrapper');
     const companyAddressSection = document.getElementById('companyAddressSection');
     const addCompanyAddressBtn = document.getElementById('addCompanyAddressBtn');
     
-    if (addCompanyBtn && companyNameSection) {
+    if (addCompanyBtn && companyFieldsWrapper) {
         addCompanyBtn.style.display = 'inline-block';
-        companyNameSection.style.display = 'none';
+        companyFieldsWrapper.style.display = 'none';
         document.getElementById('bookingCompanyName').value = '';
     }
     
