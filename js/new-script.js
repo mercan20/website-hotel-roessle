@@ -236,16 +236,20 @@ function initCompanySections() {
             return;
         }
 
-        const setAddressVisible = (isVisible) => {
-            if (!addressToggle || !addressFields) {
-                return;
+        const addLabel = addButton?.getAttribute('data-label-add')?.trim() || '+ Firma hinzufügen';
+        const removeLabel = addButton?.getAttribute('data-label-remove')?.trim() || '🗑 Firma entfernen';
+
+        const setAddressVisible = (isVisible, { focus } = { focus: true }) => {
+            if (addressFields) {
+                addressFields.hidden = !isVisible;
             }
 
-            addressFields.hidden = !isVisible;
-            addressToggle.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
-            addressToggle.classList.toggle('is-active', isVisible);
+            if (addressToggle) {
+                addressToggle.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+                addressToggle.classList.toggle('is-active', isVisible);
+            }
 
-            if (isVisible) {
+            if (isVisible && focus) {
                 const firstAddress = addressInputs[0];
                 if (firstAddress) {
                     firstAddress.focus({ preventScroll: true });
@@ -260,8 +264,10 @@ function initCompanySections() {
         const showCard = () => {
             card.hidden = false;
             card.classList.add('is-visible');
-            addButton.hidden = true;
             addButton.setAttribute('aria-expanded', 'true');
+            addButton.classList.add('is-active');
+            addButton.textContent = removeLabel;
+            setAddressVisible(true, { focus: false });
             if (nameInput) {
                 nameInput.focus({ preventScroll: true });
             }
@@ -270,15 +276,23 @@ function initCompanySections() {
         const hideCard = () => {
             card.hidden = true;
             card.classList.remove('is-visible');
-            addButton.hidden = false;
             addButton.setAttribute('aria-expanded', 'false');
+            addButton.classList.remove('is-active');
+            addButton.textContent = addLabel;
             if (nameInput) {
                 nameInput.value = '';
             }
             setAddressVisible(false);
         };
 
-        addButton.addEventListener('click', showCard);
+        addButton.addEventListener('click', () => {
+            const expanded = addButton.getAttribute('aria-expanded') === 'true';
+            if (expanded) {
+                hideCard();
+            } else {
+                showCard();
+            }
+        });
 
         if (removeButton) {
             removeButton.addEventListener('click', () => {
