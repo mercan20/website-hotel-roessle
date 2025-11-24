@@ -33,6 +33,10 @@ const BOOKING_RATE_LIMIT_FILE = 'hotel_roessle_booking_limits.json';
 const BOOKING_LOG_CONTEXT = 'booking';
 const BOOKING_MAX_NOTES_LENGTH = 1000;
 const BOOKING_MAX_COMPANY_LENGTH = 160;
+const BOOKING_MAX_COMPANY_STREET_LENGTH = 160;
+const BOOKING_MAX_COMPANY_CITY_LENGTH = 120;
+const BOOKING_MAX_COMPANY_POSTAL_LENGTH = 20;
+const BOOKING_POSTAL_PATTERN = "/^[A-Za-z0-9 \-]{3,20}$/u";
 
 const BOOKING_ROOM_LIMITS = [
     'einzelzimmer' => 5,
@@ -82,6 +86,9 @@ if ($honeypot !== '') {
 $firstName = form_get_post_value('vorname');
 $lastName = form_get_post_value('nachname');
 $company = form_get_post_value('company');
+$companyStreet = form_get_post_value('company_street');
+$companyPostal = form_get_post_value('company_postal');
+$companyCity = form_get_post_value('company_city');
 $emailRaw = form_get_post_value('email');
 $email = filter_var($emailRaw, FILTER_SANITIZE_EMAIL) ?: '';
 $phone = form_get_post_value('telefon');
@@ -119,6 +126,18 @@ if ($notes !== '' && mb_strlen($notes) > BOOKING_MAX_NOTES_LENGTH) {
 
 if ($company !== '' && mb_strlen($company) > BOOKING_MAX_COMPANY_LENGTH) {
     $errors[] = 'Der Firmenname ist zu lang.';
+}
+
+if ($companyStreet !== '' && mb_strlen($companyStreet) > BOOKING_MAX_COMPANY_STREET_LENGTH) {
+    $errors[] = 'Die Firmenstraße ist zu lang.';
+}
+
+if ($companyCity !== '' && mb_strlen($companyCity) > BOOKING_MAX_COMPANY_CITY_LENGTH) {
+    $errors[] = 'Der Firmenort ist zu lang.';
+}
+
+if ($companyPostal !== '' && (mb_strlen($companyPostal) > BOOKING_MAX_COMPANY_POSTAL_LENGTH || !preg_match(BOOKING_POSTAL_PATTERN, $companyPostal))) {
+    $errors[] = 'Bitte geben Sie eine gültige Firmen-PLZ ein.';
 }
 
 $checkin = DateTimeImmutable::createFromFormat('Y-m-d', $checkinRaw) ?: null;
@@ -218,9 +237,17 @@ $lines[] = '';
 $lines[] = 'Name: ' . $firstName . ' ' . $lastName;
 $lines[] = 'E-Mail: ' . $email;
 $lines[] = 'Telefon: ' . $phone;
-if ($company !== '') {
-    $lines[] = 'Firma: ' . $company;
+
+if ($company !== '' || $companyStreet !== '' || $companyPostal !== '' || $companyCity !== '') {
+    $lines[] = 'Firma: ' . ($company !== '' ? $company : 'keine Angabe');
+    if ($companyStreet !== '') {
+        $lines[] = '  Straße: ' . $companyStreet;
+    }
+    if ($companyPostal !== '' || $companyCity !== '') {
+        $lines[] = '  PLZ/Ort: ' . trim($companyPostal . ' ' . $companyCity);
+    }
 }
+
 $lines[] = '';
 $lines[] = 'Reisedaten:';
 $lines[] = '  Check-in: ' . $checkinForMail;
@@ -322,9 +349,16 @@ $ackLines[] = 'Guten Tag ' . trim($firstName . ' ' . $lastName) . ',';
 $ackLines[] = '';
 $ackLines[] = 'vielen Dank für Ihre Buchungsanfrage. Wir haben Ihre Nachricht erhalten und melden uns zeitnah.';
 
-if ($company !== '') {
+if ($company !== '' || $companyStreet !== '' || $companyPostal !== '' || $companyCity !== '') {
     $ackLines[] = '';
-    $ackLines[] = 'Hinterlegter Firmenname: ' . $company;
+    $ackLines[] = 'Ihre Firmenangaben:';
+    $ackLines[] = '  Name: ' . ($company !== '' ? $company : 'keine Angabe');
+    if ($companyStreet !== '') {
+        $ackLines[] = '  Straße: ' . $companyStreet;
+    }
+    if ($companyPostal !== '' || $companyCity !== '') {
+        $ackLines[] = '  PLZ/Ort: ' . trim($companyPostal . ' ' . $companyCity);
+    }
 }
 
 if ($checkin !== null && $checkout !== null) {

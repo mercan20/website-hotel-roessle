@@ -31,6 +31,11 @@ const MAX_EMAILS_PER_DAY = 3;
 const MAX_EMAILS_PER_IP_PER_HOUR = 5;
 const MIN_MESSAGE_LENGTH = 20;
 const MAX_MESSAGE_LENGTH = 4000;
+const MAX_COMPANY_LENGTH = 160;
+const MAX_COMPANY_STREET_LENGTH = 160;
+const MAX_COMPANY_CITY_LENGTH = 120;
+const MAX_COMPANY_POSTAL_LENGTH = 20;
+const COMPANY_POSTAL_PATTERN = "/^[A-Za-z0-9 \-]{3,20}$/u";
 const RATE_LIMIT_FILE = 'hotel_roessle_contact_limits.json';
 const CONTACT_LOG_CONTEXT = 'contact';
 
@@ -54,6 +59,9 @@ $subject = form_get_post_value('subject');
 $message = form_get_post_value('message');
 $phone = form_get_post_value('phone');
 $company = form_get_post_value('company');
+$companyStreet = form_get_post_value('company_street');
+$companyPostal = form_get_post_value('company_postal');
+$companyCity = form_get_post_value('company_city');
 $honeypot = form_get_post_value('website');
 
 $clientIpRaw = $_SERVER['REMOTE_ADDR'] ?? '';
@@ -93,8 +101,20 @@ if ($phone !== '' && mb_strlen($phone) > 60) {
     $errors[] = 'Die Telefonnummer ist zu lang.';
 }
 
-if ($company !== '' && mb_strlen($company) > 160) {
+if ($company !== '' && mb_strlen($company) > MAX_COMPANY_LENGTH) {
     $errors[] = 'Der Firmenname ist zu lang.';
+}
+
+if ($companyStreet !== '' && mb_strlen($companyStreet) > MAX_COMPANY_STREET_LENGTH) {
+    $errors[] = 'Die Firmenstraße ist zu lang.';
+}
+
+if ($companyCity !== '' && mb_strlen($companyCity) > MAX_COMPANY_CITY_LENGTH) {
+    $errors[] = 'Der Firmenort ist zu lang.';
+}
+
+if ($companyPostal !== '' && (mb_strlen($companyPostal) > MAX_COMPANY_POSTAL_LENGTH || !preg_match(COMPANY_POSTAL_PATTERN, $companyPostal))) {
+    $errors[] = 'Bitte geben Sie eine gültige Firmen-PLZ ein.';
 }
 
 if ($errors !== []) {
@@ -150,8 +170,14 @@ if ($phone !== '') {
     $lines[] = 'Telefon: ' . $phone;
 }
 
-if ($company !== '') {
-    $lines[] = 'Firma: ' . $company;
+if ($company !== '' || $companyStreet !== '' || $companyPostal !== '' || $companyCity !== '') {
+    $lines[] = 'Firma: ' . ($company !== '' ? $company : 'keine Angabe');
+    if ($companyStreet !== '') {
+        $lines[] = '  Straße: ' . $companyStreet;
+    }
+    if ($companyPostal !== '' || $companyCity !== '') {
+        $lines[] = '  PLZ/Ort: ' . trim($companyPostal . ' ' . $companyCity);
+    }
 }
 
 $lines[] = 'Betreff: ' . $subject;
@@ -218,9 +244,16 @@ if ($subject !== '') {
     $ackLines[] = 'Betreff: ' . $subject;
 }
 
-if ($company !== '') {
+if ($company !== '' || $companyStreet !== '' || $companyPostal !== '' || $companyCity !== '') {
     $ackLines[] = '';
-    $ackLines[] = 'Hinterlegter Firmenname: ' . $company;
+    $ackLines[] = 'Ihre Firmenangaben:';
+    $ackLines[] = '  Name: ' . ($company !== '' ? $company : 'keine Angabe');
+    if ($companyStreet !== '') {
+        $ackLines[] = '  Straße: ' . $companyStreet;
+    }
+    if ($companyPostal !== '' || $companyCity !== '') {
+        $ackLines[] = '  PLZ/Ort: ' . trim($companyPostal . ' ' . $companyCity);
+    }
 }
 
 $ackLines[] = '';

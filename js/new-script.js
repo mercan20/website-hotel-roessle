@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     initOptionalFieldToggles();
+    initCompanySections();
 
     // Navbar Scroll Effect
     const navbar = document.querySelector('.navbar');
@@ -213,6 +214,93 @@ function initOptionalFieldToggles() {
             const expanded = button.getAttribute('aria-expanded') === 'true';
             setExpanded(!expanded);
         });
+    });
+}
+
+function initCompanySections() {
+    const sections = document.querySelectorAll('[data-company-section]');
+    if (!sections.length) {
+        return;
+    }
+
+    sections.forEach(section => {
+        const addButton = section.querySelector('[data-company-add]');
+        const card = section.querySelector('[data-company-card]');
+        const removeButton = section.querySelector('[data-company-remove]');
+        const nameInput = section.querySelector('[data-company-name]');
+        const addressToggle = section.querySelector('[data-company-address-toggle]');
+        const addressFields = section.querySelector('[data-company-address-fields]');
+        const addressInputs = addressFields ? Array.from(addressFields.querySelectorAll('input')) : [];
+
+        if (!addButton || !card) {
+            return;
+        }
+
+        const setAddressVisible = (isVisible) => {
+            if (!addressToggle || !addressFields) {
+                return;
+            }
+
+            addressFields.hidden = !isVisible;
+            addressToggle.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+            addressToggle.classList.toggle('is-active', isVisible);
+
+            if (isVisible) {
+                const firstAddress = addressInputs[0];
+                if (firstAddress) {
+                    firstAddress.focus({ preventScroll: true });
+                }
+            } else {
+                addressInputs.forEach(input => {
+                    input.value = '';
+                });
+            }
+        };
+
+        const showCard = () => {
+            card.hidden = false;
+            card.classList.add('is-visible');
+            addButton.hidden = true;
+            addButton.setAttribute('aria-expanded', 'true');
+            if (nameInput) {
+                nameInput.focus({ preventScroll: true });
+            }
+        };
+
+        const hideCard = () => {
+            card.hidden = true;
+            card.classList.remove('is-visible');
+            addButton.hidden = false;
+            addButton.setAttribute('aria-expanded', 'false');
+            if (nameInput) {
+                nameInput.value = '';
+            }
+            setAddressVisible(false);
+        };
+
+        addButton.addEventListener('click', showCard);
+
+        if (removeButton) {
+            removeButton.addEventListener('click', () => {
+                hideCard();
+                addButton.focus({ preventScroll: true });
+            });
+        }
+
+        if (addressToggle) {
+            addressToggle.addEventListener('click', () => {
+                const expanded = addressToggle.getAttribute('aria-expanded') === 'true';
+                setAddressVisible(!expanded);
+            });
+        }
+
+        const hasInitialValues = (nameInput && nameInput.value !== '') || addressInputs.some(input => input.value !== '');
+        if (hasInitialValues) {
+            showCard();
+            if (addressInputs.some(input => input.value !== '')) {
+                setAddressVisible(true);
+            }
+        }
     });
 }
 
