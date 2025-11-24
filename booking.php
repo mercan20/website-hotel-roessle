@@ -254,11 +254,20 @@ if ($checkin !== null && $checkout !== null) {
     $subjectParts[] = $checkinForMail . ' – ' . $checkoutForMail;
 }
 
-$subject = form_sanitize_header_value(implode(' | ', array_filter($subjectParts)));
+$subjectRaw = form_sanitize_header_value(implode(' | ', array_filter($subjectParts)));
+$subject = mb_encode_mimeheader($subjectRaw, 'UTF-8', 'B', "\r\n");
+
+$fromNameEncoded = mb_encode_mimeheader('Hotel Rössle', 'UTF-8', 'B', "\r\n");
+$replyToNameRaw = form_sanitize_header_value(trim($firstName . ' ' . $lastName));
+$replyToNameEncoded = $replyToNameRaw !== ''
+    ? mb_encode_mimeheader($replyToNameRaw, 'UTF-8', 'B', "\r\n")
+    : '';
 
 $headers = [
-    'From: Hotel Rössle <' . $recipient . '>',
-    'Reply-To: ' . form_sanitize_header_value($firstName . ' ' . $lastName . ' <' . $email . '>'),
+    sprintf('From: "%s" <%s>', $fromNameEncoded, $recipient),
+    'Reply-To: ' . ($replyToNameEncoded !== ''
+        ? sprintf('"%s" <%s>', $replyToNameEncoded, $email)
+        : $email),
     'MIME-Version: 1.0',
     'Content-Type: text/plain; charset=UTF-8',
     'X-Mailer: PHP/' . PHP_VERSION,
@@ -292,7 +301,12 @@ form_save_rate_limits(BOOKING_RATE_LIMIT_FILE, $rateLimitResult['data']);
 
 form_log_event(BOOKING_LOG_CONTEXT, 'Booking email sent successfully', $mailContext);
 
-$ackSubject = form_sanitize_header_value('Ihre Buchungsanfrage beim Hotel Rössle');
+$ackSubject = mb_encode_mimeheader(
+    form_sanitize_header_value('Ihre Buchungsanfrage beim Hotel Rössle'),
+    'UTF-8',
+    'B',
+    "\r\n"
+);
 $ackLines = [];
 $ackLines[] = 'Guten Tag ' . trim($firstName . ' ' . $lastName) . ',';
 $ackLines[] = '';
@@ -332,8 +346,8 @@ if ($signature !== '') {
 $ackBody = implode("\n", $ackLines) . "\n";
 
 $ackHeaders = [
-    'From: Hotel Rössle <' . $recipient . '>',
-    'Reply-To: Hotel Rössle <' . $recipient . '>',
+    sprintf('From: "%s" <%s>', $fromNameEncoded, $recipient),
+    sprintf('Reply-To: "%s" <%s>', $fromNameEncoded, $recipient),
     'MIME-Version: 1.0',
     'Content-Type: text/plain; charset=UTF-8',
     'X-Mailer: PHP/' . PHP_VERSION,
