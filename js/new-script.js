@@ -56,8 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileMenu = document.querySelector('.nav-menu');
 
     function toggleMobileMenu() {
-        mobileMenu.classList.toggle('active');
+        const isActive = mobileMenu.classList.toggle('active');
         mobileMenuBtn.classList.toggle('active');
+        
+        // Update ARIA attributes for accessibility
+        mobileMenuBtn.setAttribute('aria-expanded', isActive);
+        mobileMenuBtn.setAttribute('aria-label', isActive ? 'Menü schließen' : 'Menü öffnen');
     }
 
     if (mobileMenuBtn) {
