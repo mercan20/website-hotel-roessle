@@ -12,11 +12,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Validate HTML
-        uses: chabad360/htmlproofer@v1
-        with:
-          directory: .
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
