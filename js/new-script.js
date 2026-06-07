@@ -251,9 +251,9 @@ const bookingRoomLimitWarned = {
 };
 
 const bookingPrices = {
-    einzelzimmer: 56,
-    doppelzimmer: 80,
-    familienzimmer: 109
+    einzelzimmer: 62,
+    doppelzimmer: 86,
+    familienzimmer: 114
 };
 
 // Calendar State
