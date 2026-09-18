@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /php/
+Disallow: /var/
+Disallow: /logs/
+Disallow: /scripts/
+Disallow: /docus/
+
+Sitemap: https://www.hotelroessle.eu/sitemap.xml

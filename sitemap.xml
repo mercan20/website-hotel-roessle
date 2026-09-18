@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+    <!-- Startseite: Hotel Rössle Tuttlingen – Zimmer, Räumlichkeiten, Freizeit, Buchung, Kontakt -->
+    <url>
+        <loc>https://www.hotelroessle.eu/</loc>
+        <lastmod>2026-09-18</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://www.hotelroessle.eu/images/zimmer/Zimmer_EZ_small.jpg</image:loc>
+            <image:title>Einzelzimmer im Hotel Rössle Tuttlingen</image:title>
+            <image:caption>Komfortables Einzelzimmer im familiengeführten Hotel Rössle in zentraler, ruhiger Lage in Tuttlingen.</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://www.hotelroessle.eu/images/zimmer/Zimmer_DZ_small.jpg</image:loc>
+            <image:title>Doppelzimmer im Hotel Rössle Tuttlingen</image:title>
+            <image:caption>Geräumiges Doppelzimmer für Paare und Geschäftsreisende im Hotel Rössle Tuttlingen.</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://www.hotelroessle.eu/images/zimmer/Zimmer_FZ_small.jpg</image:loc>
+            <image:title>Familienzimmer im Hotel Rössle Tuttlingen</image:title>
+            <image:caption>Familienzimmer mit Platz für die ganze Familie im Hotel Rössle Tuttlingen.</image:caption>
+        </image:image>
+    </url>
+
+    <!-- Impressum: rechtliche Anbieterkennzeichnung -->
+    <url>
+        <loc>https://www.hotelroessle.eu/impressum.html</loc>
+        <lastmod>2026-09-18</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+
+    <!-- Datenschutzerklärung: Informationen zum Umgang mit personenbezogenen Daten -->
+    <url>
+        <loc>https://www.hotelroessle.eu/datenschutz.html</loc>
+        <lastmod>2026-09-18</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+
+</urlset>
