@@ -30,7 +30,6 @@ const BOOKING_MIN_NIGHTS = 1;
 const BOOKING_MAX_NIGHTS = 30;
 const BOOKING_MAX_ROOMS_TOTAL = 18;
 const BOOKING_RATE_LIMIT_FILE = 'hotel_roessle_booking_limits.json';
-const BOOKING_LOG_CONTEXT = 'booking';
 const BOOKING_MAX_NOTES_LENGTH = 1000;
 
 const BOOKING_ROOM_LIMITS = [
@@ -199,10 +198,6 @@ $rateLimitResult = form_enforce_rate_limits(
     'Von Ihrer IP-Adresse sind bereits mehrere Anfragen eingegangen. Bitte versuchen Sie es später erneut.'
 );
 if ($rateLimitResult['status'] === false) {
-    form_log_event(BOOKING_LOG_CONTEXT, 'Rate limit triggered', [
-        'email' => $email,
-        'ip' => $clientIp,
-    ]);
     respondWithJson(429, [
         'success' => false,
         'message' => $rateLimitResult['message'] ?? 'Zu viele Anfragen. Bitte versuchen Sie es später erneut.',
@@ -295,14 +290,6 @@ $headers = [
     'X-Mailer: PHP/' . PHP_VERSION,
 ];
 
-$mailContext = [
-    'email' => $email,
-    'recipient' => $recipient,
-    'ip' => $clientIp,
-];
-
-form_log_event(BOOKING_LOG_CONTEXT, 'Attempting to send booking email', $mailContext);
-
 $mailSent = mail(
     $recipient,
     $subject,
@@ -312,7 +299,6 @@ $mailSent = mail(
 );
 
 if (!$mailSent) {
-    form_log_event(BOOKING_LOG_CONTEXT, 'Booking email send failed', $mailContext);
     respondWithJson(500, [
         'success' => false,
         'message' => 'Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.',
@@ -320,8 +306,6 @@ if (!$mailSent) {
 }
 
 form_save_rate_limits(BOOKING_RATE_LIMIT_FILE, $rateLimitResult['data']);
-
-form_log_event(BOOKING_LOG_CONTEXT, 'Booking email sent successfully', $mailContext);
 
 $ackSubject = mb_encode_mimeheader(
     form_sanitize_header_value('Ihre Buchungsanfrage beim Hotel Rössle'),
@@ -375,19 +359,13 @@ $ackHeaders = [
     'X-Mailer: PHP/' . PHP_VERSION,
 ];
 
-$ackSent = mail(
+mail(
     $email,
     $ackSubject,
     $ackBody,
     implode("\r\n", $ackHeaders),
     '-f' . $returnPath
 );
-
-if (!$ackSent) {
-    form_log_event(BOOKING_LOG_CONTEXT, 'Booking acknowledgement email failed', ['email' => $email]);
-} else {
-    form_log_event(BOOKING_LOG_CONTEXT, 'Booking acknowledgement email sent', ['email' => $email]);
-}
 
 respondWithJson(200, [
     'success' => true,

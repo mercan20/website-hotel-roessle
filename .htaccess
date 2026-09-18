@@ -1,0 +1,6 @@
+# Interne Dateien und Verzeichnisse nicht öffentlich ausliefern
+<IfModule mod_alias.c>
+    RedirectMatch 404 ^/(logs|var|docus|scripts|php)(/|$)
+    RedirectMatch 404 /\.(?!well-known/)
+    RedirectMatch 404 \.(md|sh|log|csv|bat|py|gs)$
+</IfModule>

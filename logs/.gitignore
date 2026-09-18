@@ -1,3 +1,0 @@
-# Keep log directory but ignore runtime files
-*
-!.gitignore
