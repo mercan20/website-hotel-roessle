@@ -33,4 +33,4 @@ jobs:
         run: |
           sshpass -p "$DEPLOY_PASSWORD" \
             ssh -o StrictHostKeyChecking=yes -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
-            'cd website-hotel-roessle && git pull'
+            'cd website-hotel-roessle && git pull && rm -f logs/*.log var/hotel_roessle_*_limits.json'

@@ -13,10 +13,6 @@ if (!defined('FORM_STORAGE_DIR')) {
     define('FORM_STORAGE_DIR', FORM_PROJECT_ROOT . '/var');
 }
 
-if (!defined('FORM_LOG_DIR')) {
-    define('FORM_LOG_DIR', FORM_PROJECT_ROOT . '/logs');
-}
-
 /**
  * Ensure that a directory exists and is writable.
  */
@@ -136,42 +132,6 @@ function form_get_rate_limit_path(string $storageFile): string
 }
 
 /**
- * Build the path to the log file and make sure the log directory exists.
- */
-function form_get_log_path(string $fileName): string
-{
-    form_ensure_directory(FORM_LOG_DIR);
-
-    return FORM_LOG_DIR . DIRECTORY_SEPARATOR . $fileName;
-}
-
-/**
- * Write a structured entry to a log file.
- *
- * @param array<string, scalar|null> $context
- */
-function form_log_event(string $channel, string $message, array $context = []): void
-{
-    $timestamp = (new DateTimeImmutable('now', new DateTimeZone('Europe/Berlin')))
-        ->format('Y-m-d H:i:s');
-
-    $logLine = sprintf('[%s] %s: %s', $timestamp, $channel, $message);
-
-    if ($context !== []) {
-        $encodedContext = json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        if ($encodedContext !== false) {
-            $logLine .= ' ' . $encodedContext;
-        }
-    }
-
-    $logLine .= PHP_EOL;
-
-    $logFile = form_get_log_path('form_mail.log');
-
-    file_put_contents($logFile, $logLine, FILE_APPEND | LOCK_EX);
-}
-
-/**
  * @return array{email: array<string, array<int, int>>, ip: array<string, array<int, int>>}
  */
 function form_load_rate_limits(string $storageFile): array
@@ -243,6 +203,26 @@ function form_save_rate_limits(string $storageFile, array $data): void
 }
 
 /**
+ * @param array<string, array<int, int>> $entries
+ * @return array<string, array<int, int>>
+ */
+function form_prune_rate_limit_entries(array $entries, int $cutoff): array
+{
+    $pruned = [];
+    foreach ($entries as $key => $timestamps) {
+        $recent = array_values(array_filter(
+            $timestamps,
+            static fn (int $timestamp): bool => $timestamp >= $cutoff
+        ));
+        if ($recent !== []) {
+            $pruned[$key] = $recent;
+        }
+    }
+
+    return $pruned;
+}
+
+/**
  * @param array{email: array<string, array<int, int>>, ip: array<string, array<int, int>>} $data
  * @return array{data: array{email: array<string, array<int, int>>, ip: array<string, array<int, int>>}, status: bool, message:?string}
  */
@@ -265,23 +245,16 @@ function form_enforce_rate_limits(
         $data['ip'] = [];
     }
 
-    $normalizedEmail = strtolower($email);
-    $emailTimestamps = $data['email'][$normalizedEmail] ?? [];
-    $ipTimestamps = $data['ip'][$ip] ?? [];
+    // Store only hashes and drop expired entries so no address list accumulates on disk.
+    $data['email'] = form_prune_rate_limit_entries($data['email'], $now - 86400);
+    $data['ip'] = form_prune_rate_limit_entries($data['ip'], $now - 3600);
 
-    $emailTimestamps = array_values(array_filter(
-        $emailTimestamps,
-        static fn (int $timestamp): bool => $timestamp >= $now - 86400
-    ));
-    $ipTimestamps = array_values(array_filter(
-        $ipTimestamps,
-        static fn (int $timestamp): bool => $timestamp >= $now - 3600
-    ));
+    $emailKey = hash('sha256', strtolower($email));
+    $ipKey = hash('sha256', $ip);
+    $emailTimestamps = $data['email'][$emailKey] ?? [];
+    $ipTimestamps = $data['ip'][$ipKey] ?? [];
 
     if (count($emailTimestamps) >= $maxEmailPerDay) {
-        $data['email'][$normalizedEmail] = $emailTimestamps;
-        $data['ip'][$ip] = $ipTimestamps;
-
         return [
             'data' => $data,
             'status' => false,
@@ -290,9 +263,6 @@ function form_enforce_rate_limits(
     }
 
     if (count($ipTimestamps) >= $maxIpPerHour) {
-        $data['email'][$normalizedEmail] = $emailTimestamps;
-        $data['ip'][$ip] = $ipTimestamps;
-
         return [
             'data' => $data,
             'status' => false,
@@ -303,8 +273,8 @@ function form_enforce_rate_limits(
     $emailTimestamps[] = $now;
     $ipTimestamps[] = $now;
 
-    $data['email'][$normalizedEmail] = $emailTimestamps;
-    $data['ip'][$ip] = $ipTimestamps;
+    $data['email'][$emailKey] = $emailTimestamps;
+    $data['ip'][$ipKey] = $ipTimestamps;
 
     return [
         'data' => $data,

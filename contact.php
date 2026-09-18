@@ -32,7 +32,6 @@ const MAX_EMAILS_PER_IP_PER_HOUR = 5;
 const MIN_MESSAGE_LENGTH = 20;
 const MAX_MESSAGE_LENGTH = 4000;
 const RATE_LIMIT_FILE = 'hotel_roessle_contact_limits.json';
-const CONTACT_LOG_CONTEXT = 'contact';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -93,10 +92,6 @@ if ($phone !== '' && mb_strlen($phone) > 60) {
 }
 
 if ($errors !== []) {
-    form_log_event(CONTACT_LOG_CONTEXT, 'Validation failed', [
-        'email' => $email,
-        'ip' => $clientIp,
-    ]);
     http_response_code(400);
     echo '<h1>Fehler beim Versenden</h1>';
     echo '<ul>';
@@ -120,10 +115,6 @@ $rateLimitResult = form_enforce_rate_limits(
 );
 
 if ($rateLimitResult['status'] === false) {
-    form_log_event(CONTACT_LOG_CONTEXT, 'Rate limit triggered', [
-        'email' => $email,
-        'ip' => $clientIp,
-    ]);
     http_response_code(429);
     echo '<h1>Zu viele Anfragen</h1>';
     echo '<p>' . htmlspecialchars($rateLimitResult['message'], ENT_QUOTES, 'UTF-8') . '</p>';
@@ -169,14 +160,6 @@ foreach ($headers as $key => $value) {
 
 $additionalParameters = sprintf('-f%s', $returnPath);
 
-$mailContext = [
-    'email' => $email,
-    'recipient' => $recipient,
-    'ip' => $clientIp,
-];
-
-form_log_event(CONTACT_LOG_CONTEXT, 'Attempting to send contact email', $mailContext);
-
 $mailSent = mail(
     $recipient,
     $emailSubject,
@@ -186,7 +169,6 @@ $mailSent = mail(
 );
 
 if (!$mailSent) {
-    form_log_event(CONTACT_LOG_CONTEXT, 'Contact email send failed', $mailContext);
     http_response_code(500);
     echo '<h1>Versand fehlgeschlagen</h1>';
     echo '<p>Bitte versuchen Sie es später erneut oder kontaktieren Sie uns telefonisch.</p>';
@@ -195,8 +177,6 @@ if (!$mailSent) {
 }
 
 form_save_rate_limits(RATE_LIMIT_FILE, $rateLimitResult['data']);
-
-form_log_event(CONTACT_LOG_CONTEXT, 'Contact email sent successfully', $mailContext);
 
 $ackSubject = form_sanitize_header_value('Ihre Nachricht an das Hotel Rössle');
 $ackLines = [];
@@ -232,19 +212,13 @@ foreach ($ackHeaders as $key => $value) {
     $ackFormattedHeaders .= $key . ': ' . $value . "\r\n";
 }
 
-$ackSent = mail(
+mail(
     $email,
     $ackSubject,
     $ackBody,
     $ackFormattedHeaders,
     $additionalParameters
 );
-
-if (!$ackSent) {
-    form_log_event(CONTACT_LOG_CONTEXT, 'Contact acknowledgement email failed', ['email' => $email]);
-} else {
-    form_log_event(CONTACT_LOG_CONTEXT, 'Contact acknowledgement email sent', ['email' => $email]);
-}
 
 ?>
 <!DOCTYPE html>
