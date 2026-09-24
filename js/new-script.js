@@ -14,10 +14,15 @@ const BOOKING_SECURITY_CONFIG = {
     minNights: 1,
     maxNights: 30,
     maxAdvanceDays: 365,
-    clientEmailLimitPerDay: 3,
 };
 
-const BOOKING_RATE_LIMIT_STORAGE_KEY = 'hotel_roessle_booking_rate_limits';
+// Frühere Versionen haben Buchungsanfragen samt E-Mail-Adresse im localStorage gezählt.
+// Die Begrenzung läuft nur noch serverseitig, daher alten Eintrag bei Besuchern entfernen.
+try {
+    localStorage.removeItem('hotel_roessle_booking_rate_limits');
+} catch (error) {
+    // Speicher nicht verfügbar (z. B. blockiert) – dann gibt es auch nichts zu entfernen.
+}
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -888,12 +893,6 @@ async function handleBookingSubmit(e) {
         return;
     }
 
-    const rateLimitCheck = enforceClientRateLimit(bookingData.email);
-    if (!rateLimitCheck.allowed) {
-        showBookingMessage(rateLimitCheck.message, 'error');
-        return;
-    }
-
     delete bookingData.privacyAccepted;
 
     // FormData für den Versand vorbereiten
@@ -1180,60 +1179,6 @@ function calculateBookingNights(checkinDate, checkoutDate) {
     const start = Date.UTC(checkinDate.getFullYear(), checkinDate.getMonth(), checkinDate.getDate());
     const end = Date.UTC(checkoutDate.getFullYear(), checkoutDate.getMonth(), checkoutDate.getDate());
     return Math.round((end - start) / (1000 * 60 * 60 * 24));
-}
-
-function getBookingRateLimitStore() {
-    try {
-        const raw = localStorage.getItem(BOOKING_RATE_LIMIT_STORAGE_KEY);
-        if (!raw) {
-            return {};
-        }
-        const parsed = JSON.parse(raw);
-        return typeof parsed === 'object' && parsed !== null ? parsed : {};
-    } catch (error) {
-        console.warn('Rate-Limit-Speicher nicht verfügbar', error);
-        return {};
-    }
-}
-
-function saveBookingRateLimitStore(store) {
-    try {
-        localStorage.setItem(BOOKING_RATE_LIMIT_STORAGE_KEY, JSON.stringify(store));
-    } catch (error) {
-        console.warn('Rate-Limit-Speicher konnte nicht aktualisiert werden', error);
-    }
-}
-
-function enforceClientRateLimit(email) {
-    if (!email) {
-        return { allowed: true };
-    }
-
-    const store = getBookingRateLimitStore();
-    const normalizedEmail = email.toLowerCase();
-    const now = Date.now();
-    const windowStart = now - 24 * 60 * 60 * 1000;
-
-    const timestampsRaw = Array.isArray(store[normalizedEmail]) ? store[normalizedEmail] : [];
-    const timestamps = timestampsRaw
-        .map(ts => Number(ts))
-        .filter(ts => Number.isFinite(ts) && ts >= windowStart);
-
-    store[normalizedEmail] = timestamps;
-
-    if (timestamps.length >= BOOKING_SECURITY_CONFIG.clientEmailLimitPerDay) {
-        saveBookingRateLimitStore(store);
-        return {
-            allowed: false,
-            message: 'Sie haben bereits mehrere Buchungsanfragen gesendet. Bitte warten Sie auf unsere Antwort.',
-        };
-    }
-
-    timestamps.push(now);
-    store[normalizedEmail] = timestamps;
-    saveBookingRateLimitStore(store);
-
-    return { allowed: true };
 }
 
 // CSS für Booking Messages
