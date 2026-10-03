@@ -130,7 +130,6 @@ img {
 }
 
 /* <picture> in Bildrahmen mit festem Seitenverhältnis muss die volle Höhe einnehmen */
-.hero-panorama picture,
 .room-image picture,
 .leisure-image picture,
 .booking-room-image-container picture {
@@ -721,30 +720,69 @@ strong {
     }
 }
 
-/* ---------- Hero ---------- */
+/* ---------- Hero (Fassadenfoto im Hintergrund) ---------- */
 .hero {
     position: relative;
-    padding-top: clamp(2.5rem, 6vw, 5rem);
-    padding-bottom: clamp(3rem, 6vw, 4.5rem);
+    display: flex;
+    align-items: center;
+    min-height: min(80vh, 720px);
+    padding-block: clamp(3.5rem, 6vw, 5rem);
+    background: var(--ink);
+    color: var(--on-dark);
     overflow: hidden;
 }
 
-.hero::before {
+.hero-media {
+    position: absolute;
+    inset: 0;
+}
+
+.hero-media picture,
+.hero-media img {
+    width: 100%;
+    height: 100%;
+}
+
+.hero-media img {
+    object-fit: cover;
+    object-position: 62% 50%;
+}
+
+/* Dunkler Verlauf: links kräftig für die Lesbarkeit, rechts lässt er die Fassade durchscheinen */
+.hero-media::after {
     content: '';
     position: absolute;
-    inset: 0 0 auto auto;
-    width: min(55vw, 760px);
-    height: min(55vw, 760px);
-    background: radial-gradient(circle at 70% 30%, rgba(226, 176, 74, 0.22), transparent 62%);
-    pointer-events: none;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(31, 27, 22, 0.93) 0%, rgba(31, 27, 22, 0.8) 42%, rgba(31, 27, 22, 0.45) 100%),
+        linear-gradient(0deg, rgba(31, 27, 22, 0.35), transparent 40%);
+}
+
+/* Ocker-Linie als Abschluss des Fotos */
+.hero::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 5px;
+    background: var(--ochre);
+}
+
+.hero > .container {
+    position: relative;
+    z-index: 1;
 }
 
 .hero-grid {
-    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.9fr);
     gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: end;
+    align-items: center;
+}
+
+.hero .eyebrow {
+    color: var(--ochre);
 }
 
 .hero-eyebrow {
@@ -752,27 +790,18 @@ strong {
 }
 
 .hero-title {
-    font-size: clamp(2.6rem, 6.4vw, 5rem);
+    font-size: clamp(2.4rem, 5.2vw, 4.25rem);
     font-weight: 450;
-    line-height: 1.02;
-    letter-spacing: -0.025em;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
     margin-bottom: var(--space-lg);
-}
-
-.hero-title-sub {
-    display: block;
-    margin-top: 0.6rem;
-    font-size: 0.48em;
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    color: var(--bronze);
+    color: var(--on-dark);
 }
 
 .hero-lead {
     max-width: 38rem;
-    font-size: clamp(1.0625rem, 1.7vw, 1.25rem);
-    color: var(--ink-soft);
+    font-size: clamp(1.0625rem, 1.6vw, 1.1875rem);
+    color: rgba(250, 246, 238, 0.86);
     margin-bottom: var(--space-xl);
 }
 
@@ -860,12 +889,12 @@ strong {
     object-fit: contain;
 }
 
-/* Hero-Karte „Direkt anfragen“ */
+/* Hero-Karte „Direkt anfragen“ – hell auf dem Foto */
 .hero-card {
     position: relative;
     padding: clamp(1.5rem, 3vw, 2.25rem);
-    background: var(--ink);
-    color: var(--on-dark);
+    background: var(--cream);
+    color: var(--ink);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
 }
@@ -886,7 +915,7 @@ strong {
     font-weight: 650;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--ochre);
+    color: var(--bronze);
     margin-bottom: var(--space-xs);
 }
 
@@ -902,7 +931,7 @@ strong {
     font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 400;
-    color: var(--on-dark-muted);
+    color: var(--muted);
 }
 
 .check-list {
@@ -920,12 +949,12 @@ strong {
 
 .check-list .icon {
     margin-top: 0.2em;
-    color: var(--ochre);
+    color: var(--bronze);
     stroke-width: 2.2;
 }
 
-.hero-card .btn-accent,
-.hero-card .btn-ghost-light {
+.hero-card .btn-primary,
+.hero-card .btn-secondary {
     width: 100%;
 }
 
@@ -937,53 +966,27 @@ strong {
 .hero-card-note {
     margin-top: var(--space-md);
     font-size: 0.875rem;
-    color: var(--on-dark-muted);
+    color: var(--muted);
     text-align: center;
 }
 
-/* Panorama-Foto */
-.hero-panorama {
-    position: relative;
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    aspect-ratio: 1200 / 350;
-    background: var(--sand);
+/* Vorteile-Leiste direkt unter dem Hero */
+.usp-section {
+    background: var(--cream);
 }
 
-.hero-panorama img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.hero-panorama::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 5px;
-    background: var(--ochre);
-}
-
-/* Vorteile-Leiste */
 .usp-bar {
     list-style: none;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0;
-    margin-top: clamp(1.5rem, 3vw, 2.25rem);
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
 }
 
 .usp {
     display: flex;
     align-items: flex-start;
     gap: 0.9rem;
-    padding: var(--space-lg) var(--space-lg) var(--space-lg) 0;
+    padding: var(--space-xl) var(--space-lg) var(--space-xl) 0;
 }
 
 .usp + .usp {
@@ -1018,6 +1021,33 @@ strong {
 }
 
 @media (max-width: 960px) {
+    /* Mobil: Foto als Banner oben, damit es nicht stark hochskaliert wird; Text darunter auf Dunkel */
+    .hero {
+        display: block;
+        min-height: 0;
+        padding-block: 0 clamp(2.5rem, 6vw, 3.5rem);
+    }
+
+    .hero-media {
+        position: relative;
+        inset: auto;
+        aspect-ratio: 16 / 9;
+        max-height: 420px;
+        width: 100%;
+    }
+
+    .hero-media::after {
+        background: linear-gradient(0deg, var(--ink) 0%, rgba(31, 27, 22, 0.15) 45%, transparent 70%);
+    }
+
+    .hero::after {
+        display: none;
+    }
+
+    .hero > .container {
+        margin-top: calc(-1 * clamp(1.5rem, 6vw, 3rem));
+    }
+
     .hero-grid {
         grid-template-columns: 1fr;
         align-items: start;
@@ -1042,14 +1072,9 @@ strong {
 }
 
 @media (max-width: 560px) {
-    .hero-actions .btn-primary,
-    .hero-actions .btn-secondary {
+    .hero-actions .btn-accent,
+    .hero-actions .btn-ghost-light {
         width: 100%;
-    }
-
-    .hero-panorama {
-        aspect-ratio: 16 / 9;
-        border-radius: var(--radius);
     }
 
     .usp-bar {
@@ -1064,6 +1089,10 @@ strong {
 
     .usp + .usp {
         border-top: 1px solid var(--line);
+    }
+
+    .usp-section {
+        padding-block: var(--space-sm);
     }
 }
 
@@ -2460,6 +2489,93 @@ strong {
 @media (max-width: 960px) {
     .contact-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Google Maps per Klick: stilisierte Kartenfläche als Platzhalter, echte Karte erst nach Einwilligung */
+.map-consent {
+    position: relative;
+    margin-top: clamp(1.5rem, 4vw, 3rem);
+    min-height: 380px;
+    aspect-ratio: 21 / 8;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background:
+        linear-gradient(115deg, transparent 46%, rgba(255, 255, 255, 0.8) 46%, rgba(255, 255, 255, 0.8) 48.5%, transparent 48.5%),
+        linear-gradient(28deg, transparent 60%, rgba(255, 255, 255, 0.75) 60%, rgba(255, 255, 255, 0.75) 61.8%, transparent 61.8%),
+        linear-gradient(80deg, transparent 22%, rgba(255, 255, 255, 0.7) 22%, rgba(255, 255, 255, 0.7) 23.5%, transparent 23.5%),
+        linear-gradient(172deg, transparent 68%, rgba(150, 190, 206, 0.6) 68%, rgba(150, 190, 206, 0.6) 74%, transparent 74%),
+        repeating-linear-gradient(0deg, transparent 0 47px, rgba(31, 27, 22, 0.05) 47px 48px),
+        repeating-linear-gradient(90deg, transparent 0 47px, rgba(31, 27, 22, 0.05) 47px 48px),
+        var(--sand);
+}
+
+.map-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+}
+
+.map-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 440px;
+    padding: clamp(1.5rem, 3vw, 2rem);
+    background: rgba(250, 246, 238, 0.96);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.map-pin {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: var(--space-sm);
+    border-radius: 50%;
+    background: var(--ochre);
+    color: var(--ink);
+}
+
+.map-pin .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.map-panel h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.15rem;
+}
+
+.map-address {
+    color: var(--muted);
+    margin-bottom: var(--space-lg);
+}
+
+.map-note {
+    margin-top: var(--space-md);
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+
+.map-consent iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+@media (max-width: 760px) {
+    .map-consent {
+        aspect-ratio: auto;
+        min-height: 440px;
     }
 }
 

@@ -62,8 +62,7 @@
             { "@type": "LocationFeatureSpecification", "name": "Kostenloses WLAN", "value": true },
             { "@type": "LocationFeatureSpecification", "name": "Kostenlose Parkplätze in der Nähe", "value": true },
             { "@type": "LocationFeatureSpecification", "name": "Tagungs- und Veranstaltungsräume", "value": true },
-            { "@type": "LocationFeatureSpecification", "name": "Bett+Bike – fahrradfreundlicher Gastbetrieb", "value": true },
-            { "@type": "LocationFeatureSpecification", "name": "Babybett auf Anfrage", "value": true }
+            { "@type": "LocationFeatureSpecification", "name": "Bett+Bike – fahrradfreundlicher Gastbetrieb", "value": true }
         ],
         "makesOffer": [
             {
@@ -166,33 +165,38 @@
 
     <!-- Hero -->
     <section id="home" class="hero">
+        <!-- FOTO-TODO: Fassade in hoher Auflösung (mind. 2400×1350 px) -->
+        <div class="hero-media">
+            <picture>
+                <source srcset="images/optimized/home_hotelroessle.avif" type="image/avif">
+                <source srcset="images/optimized/home_hotelroessle.webp" type="image/webp">
+                <img src="images/home_hotelroessle.jpg" alt="Gelbe Fassade des Hotel Rössle mit Blumenkästen an der Honbergstrasse in Tuttlingen" width="1200" height="350" fetchpriority="high">
+            </picture>
+        </div>
         <div class="container">
             <div class="hero-grid">
                 <div class="hero-text">
                     <p class="eyebrow hero-eyebrow">Tuttlingen · Obere Donau</p>
-                    <h1 class="hero-title">
-                        Familiengeführt, zentral &amp; ruhig.
-                        <span class="hero-title-sub">Ihr Hotel in Tuttlingen</span>
-                    </h1>
-                    <p class="hero-lead">Komfortable Zimmer mitten in der Stadt, kostenloses WLAN und persönlicher Service. Als zertifiziertes Bett+Bike-Hotel sind wir der ideale Ausgangspunkt für den Donauradweg, Wanderungen im Donaubergland und Ihre Geschäftsreise.</p>
+                    <h1 class="hero-title">Ihr komfortables Hotel im Herzen von Tuttlingen</h1>
+                    <p class="hero-lead">Familiengeführt, zentral und trotzdem ruhig: Bei uns erwarten Sie gepflegte Zimmer, kostenloses WLAN und persönlicher Service. Als zertifiziertes Bett+Bike-Hotel sind wir der ideale Ausgangspunkt für den Donauradweg, Wanderungen im Donaubergland und Ihre Geschäftsreise.</p>
                     <div class="hero-actions">
-                        <a href="#buchen" class="btn-primary btn-large">
+                        <a href="#buchen" class="btn-accent btn-large">
                             Zimmer anfragen
                             <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
                         </a>
-                        <a href="tel:+4974612913" class="btn-secondary btn-large">
+                        <a href="tel:+4974612913" class="btn-ghost-light btn-large">
                             <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
                             07461 2913 anrufen
                         </a>
                     </div>
                     <div class="hero-trust">
-                        <!-- Bewertung laut Google-Profil (Stand: September 2026) – bei Änderung hier und im Bewertungs-Band anpassen -->
+                        <!-- Bewertung laut Google-Profil (Stand: Oktober 2026, 61 Bewertungen) – bei Änderung hier und im Bewertungs-Band anpassen -->
                         <a class="rating-link" href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20R%C3%B6ssle%20Tuttlingen" target="_blank" rel="noopener noreferrer">
-                            <span class="stars" style="--rating: 4.4;" aria-hidden="true">
+                            <span class="stars" style="--rating: 4.5;" aria-hidden="true">
                                 <svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg>
                                 <span class="stars-fill"><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg></span>
                             </span>
-                            <span><strong>4,4</strong> von 5 bei Google<span class="visually-hidden"> – Bewertungen ansehen (öffnet in neuem Fenster)</span></span>
+                            <span><strong>4,5</strong> von 5 bei Google<span class="visually-hidden"> – Bewertungen ansehen (öffnet in neuem Fenster)</span></span>
                         </a>
                         <div class="trust-badges">
                             <a href="https://www.bettundbike.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="Bett+Bike – fahrradfreundlicher Gastbetrieb">
@@ -219,23 +223,19 @@
                         <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Rezeption täglich 9–22 Uhr</li>
                     </ul>
                     <div class="hero-card-actions">
-                        <a href="#buchen" class="btn-accent">Verfügbarkeit anfragen</a>
-                        <a href="#zimmer" class="btn-ghost-light">Zimmer ansehen</a>
+                        <a href="#buchen" class="btn-primary">Verfügbarkeit anfragen</a>
+                        <a href="#zimmer" class="btn-secondary">Zimmer ansehen</a>
                     </div>
                     <p class="hero-card-note">Ohne Buchungsportal – Ihre Anfrage geht direkt an uns.</p>
                 </aside>
             </div>
+        </div>
+    </section>
 
-            <!-- FOTO-TODO: Fassade in hoher Auflösung (mind. 2400×1350 px) – dann das Seitenverhältnis von .hero-panorama anpassen -->
-            <div class="hero-panorama">
-                <picture>
-                    <source srcset="images/optimized/home_hotelroessle.avif" type="image/avif">
-                    <source srcset="images/optimized/home_hotelroessle.webp" type="image/webp">
-                    <img src="images/home_hotelroessle.jpg" alt="Gelbe Fassade des Hotel Rössle mit Blumenkästen an der Honbergstrasse in Tuttlingen" width="1200" height="350" fetchpriority="high">
-                </picture>
-            </div>
-
-            <h2 class="visually-hidden">Ihre Vorteile</h2>
+    <!-- Vorteile -->
+    <section class="usp-section" aria-labelledby="usp-title">
+        <div class="container">
+            <h2 id="usp-title" class="visually-hidden">Ihre Vorteile</h2>
             <ul class="usp-bar" role="list">
                 <li class="usp">
                     <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
@@ -375,7 +375,6 @@
                             <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Eigenes Bad mit Dusche, WC &amp; Föhn</li>
                             <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> TV mit Kabelanschluss</li>
                             <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenloses WLAN</li>
-                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Babybett auf Anfrage</li>
                         </ul>
                         <a href="#buchen" class="btn-secondary" data-book-room="familienzimmer">Familienzimmer anfragen</a>
                     </div>
@@ -467,8 +466,8 @@
         <div class="container">
             <div class="reviews-band reveal">
                 <div class="reviews-score">
-                    <span class="reviews-score-value">4,4</span>
-                    <span class="stars" style="--rating: 4.4;" role="img" aria-label="4,4 von 5 Sternen">
+                    <span class="reviews-score-value">4,5</span>
+                    <span class="stars" style="--rating: 4.5;" role="img" aria-label="4,5 von 5 Sternen">
                         <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
                         <span class="stars-fill" aria-hidden="true"><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg></span>
                     </span>
@@ -476,7 +475,7 @@
                 </div>
                 <div class="reviews-text">
                     <h2 id="reviews-title">Unsere Gäste fühlen sich wohl</h2>
-                    <p>Gäste bewerten das Hotel Rössle bei Google mit durchschnittlich 4,4 von 5 Sternen. Lesen Sie selbst, was sie über ihren Aufenthalt schreiben – und erzählen Sie uns nach Ihrem Besuch gern, wie es Ihnen gefallen hat.</p>
+                    <p>Gäste bewerten das Hotel Rössle bei Google mit durchschnittlich 4,5 von 5 Sternen. Lesen Sie selbst, was sie über ihren Aufenthalt schreiben – und erzählen Sie uns nach Ihrem Besuch gern, wie es Ihnen gefallen hat.</p>
                 </div>
                 <a class="btn-secondary" href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20R%C3%B6ssle%20Tuttlingen" target="_blank" rel="noopener noreferrer">
                     Bewertungen lesen
@@ -898,7 +897,7 @@
 
                         <div class="form-group">
                             <label for="bookingNotes">Besondere Wünsche</label>
-                            <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z. B. Babybett gewünscht, späte Anreise"></textarea>
+                            <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z. B. späte Anreise"></textarea>
                         </div>
                         <div class="form-group honeypot" aria-hidden="true">
                             <label for="bookingCompany">Firma</label>
@@ -948,12 +947,6 @@
                     <div class="faq-answer">
                         <p>Sie wählen Zimmer und Reisedaten und senden uns Ihre Anfrage über das Formular. Sie erhalten sofort eine Eingangsbestätigung per E-Mail. Verbindlich wird die Buchung, sobald wir sie Ihnen bestätigen.</p>
                         <p>Natürlich können Sie auch einfach anrufen: <a href="tel:+4974612913">07461 2913</a>.</p>
-                    </div>
-                </details>
-                <details class="faq-item">
-                    <summary>Kann ich ein Babybett bekommen? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
-                    <div class="faq-answer">
-                        <p>Ja, für das Familienzimmer stellen wir auf Anfrage ein Babybett bereit. Bitte geben Sie es bei Ihrer Anfrage an.</p>
                     </div>
                 </details>
                 <details class="faq-item">
@@ -1081,6 +1074,20 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Google Maps per Klick: Vor dem Klick werden keine Daten an Google übertragen (siehe datenschutz.html#google-maps).
+                 Die Karten-Adresse steht in data-map-src und kann durch den offiziellen Einbettungscode aus Google Maps („Teilen“ → „Karte einbetten“) ersetzt werden. -->
+            <div class="map-consent" id="hotelMap" data-map-src="https://www.google.com/maps?q=Hotel%20R%C3%B6ssle%2C%20Honbergstrasse%208%2C%2078532%20Tuttlingen&amp;hl=de&amp;z=16&amp;output=embed">
+                <div class="map-placeholder">
+                    <div class="map-panel">
+                        <span class="map-pin" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
+                        <h3>Hier finden Sie uns</h3>
+                        <p class="map-address">Honbergstrasse&nbsp;8, 78532&nbsp;Tuttlingen</p>
+                        <button type="button" class="btn-primary" id="loadMapBtn">Google Maps laden</button>
+                        <p class="map-note">Mit dem Laden der Karte werden Daten, z. B. Ihre IP-Adresse, an Google übertragen. Mehr dazu in der <a href="datenschutz.html#google-maps">Datenschutzerklärung</a>.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1137,7 +1144,7 @@
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2026 Hotel Rössle Tuttlingen</p>
-                <p>Ohne Cookies, ohne Tracking.</p>
+                <p>Kein Tracking, keine Cookies ohne Ihre Zustimmung.</p>
             </div>
         </div>
     </footer>

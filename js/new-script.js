@@ -86,6 +86,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Google Maps erst nach Klick laden (vorher werden keine Daten an Google übertragen)
+    const loadMapBtn = document.getElementById('loadMapBtn');
+    if (loadMapBtn) {
+        loadMapBtn.addEventListener('click', function() {
+            const mapContainer = document.getElementById('hotelMap');
+            const mapFrame = document.createElement('iframe');
+            mapFrame.src = mapContainer.dataset.mapSrc;
+            mapFrame.title = 'Karte: Hotel Rössle, Honbergstrasse 8, 78532 Tuttlingen';
+            mapFrame.allowFullscreen = true;
+            mapContainer.replaceChildren(mapFrame);
+            mapContainer.classList.add('is-loaded');
+            mapFrame.focus();
+        });
+    }
+
     // Navbar Scroll Effect
     const navbar = document.querySelector('.navbar');
 
