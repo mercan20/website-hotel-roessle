@@ -24,75 +24,85 @@ try {
     // Speicher nicht verfügbar (z. B. blockiert) – dann gibt es auch nichts zu entfernen.
 }
 
+// Kennzeichnet, dass JavaScript läuft (CSS blendet Inhalte erst dann animiert ein)
+document.documentElement.classList.add('js');
+
 document.addEventListener('DOMContentLoaded', function() {
-
-    // Smooth Scroll for Navigation Links
-    const navLinks = document.querySelectorAll('.nav-menu a[href^="#"], .btn-primary[href^="#"], .btn-secondary[href^="#"], .footer-links a[href^="#"]');
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if (targetId === '#home') {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            } else {
-                const targetSection = document.querySelector(targetId);
-                if (targetSection) {
-                    const offset = 80; // Account for fixed navbar
-                    const targetPosition = targetSection.offsetTop - offset;
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            }
-            // Close mobile menu if open
-            if (mobileMenu.classList.contains('active')) {
-                toggleMobileMenu();
-            }
-        });
-    });
 
     // Mobile Menu Toggle
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const mobileMenu = document.querySelector('.nav-menu');
 
-    function toggleMobileMenu() {
-        const isActive = mobileMenu.classList.toggle('active');
-        mobileMenuBtn.classList.toggle('active');
-        
+    function toggleMobileMenu(forceOpen) {
+        if (!mobileMenu || !mobileMenuBtn) {
+            return;
+        }
+        const isActive = mobileMenu.classList.toggle('active', forceOpen);
+        mobileMenuBtn.classList.toggle('active', isActive);
+
         // Update ARIA attributes for accessibility
         mobileMenuBtn.setAttribute('aria-expanded', isActive);
         mobileMenuBtn.setAttribute('aria-label', isActive ? 'Menü schließen' : 'Menü öffnen');
     }
 
     if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        mobileMenuBtn.addEventListener('click', () => toggleMobileMenu());
     }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('active')) {
+            toggleMobileMenu(false);
+            mobileMenuBtn.focus();
+        }
+    });
+
+    // Jeder Menü-Link schließt das Mobilmenü (auch Links auf andere Seiten)
+    if (mobileMenu) {
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => toggleMobileMenu(false));
+        });
+    }
+
+    // In-Page-Links: Das Scrollen übernimmt CSS (scroll-behavior, scroll-padding-top).
+    // Hier wird nur das Mobilmenü geschlossen und ggf. eine Auswahl vorbelegt.
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+        link.addEventListener('click', function() {
+            if (mobileMenu && mobileMenu.classList.contains('active')) {
+                toggleMobileMenu(false);
+            }
+
+            // „Dieses Zimmer anfragen“: Zimmer im Buchungsformular vorauswählen
+            const roomToBook = this.dataset.bookRoom;
+            if (roomToBook && bookingCounters[roomToBook] === 0) {
+                updateRoomCounter(roomToBook, 1);
+            }
+
+            // „Raum anfragen“: Betreff im Kontaktformular vorbelegen
+            const contactSubject = this.dataset.contactSubject;
+            const subjectSelect = document.getElementById('contact-subject');
+            if (contactSubject && subjectSelect) {
+                subjectSelect.value = contactSubject;
+            }
+        });
+    });
 
     // Navbar Scroll Effect
     const navbar = document.querySelector('.navbar');
 
-    window.addEventListener('scroll', function() {
-        const currentScroll = window.pageYOffset;
-
-        if (currentScroll > 100) {
-            navbar.style.padding = '0.5rem 0';
-            navbar.style.boxShadow = '0 2px 30px rgba(0, 0, 0, 0.1)';
-        } else {
-            navbar.style.padding = '1rem 0';
-            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
-        }
-    });
+    if (navbar) {
+        const updateNavbar = () => navbar.classList.toggle('is-scrolled', window.scrollY > 8);
+        updateNavbar();
+        window.addEventListener('scroll', updateNavbar, { passive: true });
+    }
 
     // Active Navigation Link on Scroll
     const sections = document.querySelectorAll('section[id]');
 
     window.addEventListener('scroll', function() {
         const scrollPos = window.scrollY + 150;
+        if (!sections.length) {
+            return;
+        }
 
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -156,29 +166,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Animate Elements on Scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
+    // Animate Elements on Scroll (Klasse statt Inline-Styles, damit Hover-Effekte erhalten bleiben)
+    const animateElements = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -60px 0px'
         });
-    }, observerOptions);
-
-    // Observe elements for animation
-    const animateElements = document.querySelectorAll('.room-card, .leisure-card, .feature-card, .event-hall');
-    animateElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
+        animateElements.forEach(el => observer.observe(el));
+    } else {
+        animateElements.forEach(el => el.classList.add('is-visible'));
+    }
 
     // Set minimum date for booking form
     const dateInputs = document.querySelectorAll('input[type="date"]');
@@ -363,8 +368,21 @@ function toggleBookingCalendar() {
     const inputBox = document.querySelector('.date-input-box');
     calendar.classList.toggle('active');
     inputBox.classList.toggle('active');
+    inputBox.setAttribute('aria-expanded', calendar.classList.contains('active'));
     if (calendar.classList.contains('active')) {
         renderBookingCalendar();
+    }
+}
+
+function closeBookingCalendar() {
+    const calendar = document.getElementById('bookingCalendar');
+    const inputBox = document.querySelector('.date-input-box');
+    const focusWasInCalendar = calendar.contains(document.activeElement);
+    calendar.classList.remove('active');
+    inputBox.classList.remove('active');
+    inputBox.setAttribute('aria-expanded', 'false');
+    if (focusWasInCalendar) {
+        inputBox.focus();
     }
 }
 
@@ -416,7 +434,9 @@ function renderBookingCalendar() {
 
 // Create Day Element
 function createBookingDayElement(dayNum, disabled, year, month) {
-    const day = document.createElement('div');
+    // Echte Buttons, damit die Tage auch per Tastatur und Screenreader wählbar sind
+    const day = document.createElement('button');
+    day.type = 'button';
     day.className = 'calendar-day';
     day.textContent = dayNum;
 
@@ -428,16 +448,28 @@ function createBookingDayElement(dayNum, disabled, year, month) {
     maxDate.setHours(0, 0, 0, 0);
     maxDate.setDate(maxDate.getDate() + BOOKING_SECURITY_CONFIG.maxAdvanceDays);
 
+    day.setAttribute('aria-label', `${date.getDate()}. ${monthNames[date.getMonth()]} ${date.getFullYear()}`);
+
+    if (disabled) {
+        // Tage aus Nachbarmonaten sind nur Platzhalter im Raster
+        day.disabled = true;
+        day.tabIndex = -1;
+        day.setAttribute('aria-hidden', 'true');
+    }
+
     if (date < today || disabled || date > maxDate) {
         day.classList.add('disabled');
+        day.disabled = true;
     } else {
         day.onclick = () => selectBookingDate(date);
 
         if (bookingSelectedCheckin && date.getTime() === bookingSelectedCheckin.getTime()) {
             day.classList.add('start');
+            day.setAttribute('aria-pressed', 'true');
         }
         if (bookingSelectedCheckout && date.getTime() === bookingSelectedCheckout.getTime()) {
             day.classList.add('end');
+            day.setAttribute('aria-pressed', 'true');
         }
         if (bookingSelectedCheckin && bookingSelectedCheckout &&
             date > bookingSelectedCheckin && date < bookingSelectedCheckout) {
@@ -460,10 +492,7 @@ function selectBookingDate(date) {
             bookingSelectedCheckout = date;
             bookingSelectingCheckout = false;
             updateBookingDateDisplay();
-            setTimeout(() => {
-                document.getElementById('bookingCalendar').classList.remove('active');
-                document.querySelector('.date-input-box').classList.remove('active');
-            }, 300);
+            setTimeout(closeBookingCalendar, 300);
         } else {
             bookingSelectedCheckin = date;
             bookingSelectedCheckout = null;
@@ -471,6 +500,13 @@ function selectBookingDate(date) {
     }
     renderBookingCalendar();
     updateBookingSubmitButton();
+
+    // Fokus nach dem Neuzeichnen wieder auf den gewählten Tag setzen
+    const dayLabel = `${date.getDate()}. ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+    const dayButton = document.querySelector(`#bookingCalendarDays .calendar-day[aria-label="${dayLabel}"]:not([aria-hidden])`);
+    if (dayButton) {
+        dayButton.focus();
+    }
 }
 
 // Update Date Display
@@ -518,21 +554,25 @@ function formatBookingDate(date) {
 // Room Gallery (Lightbox)
 // ===================================
 
+// FOTO-TODO: Sobald neue Zimmerfotos (mind. 1600×1067 px) vorliegen, hier ergänzen.
 const roomGalleries = {
     einzelzimmer: [
-        { src: 'images/home_roessle4.jpg', caption: 'Einzelzimmer - Gemütliches Frühstück' },
-        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche' }
+        { src: 'images/zimmer/Zimmer_EZ_small.jpg', caption: 'Einzelzimmer – ruhig und gemütlich' },
+        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche und WC' }
     ],
     doppelzimmer: [
-        { src: 'images/zimmer/wohnen_roessle_5.jpg', caption: 'Doppelzimmer - Komfortabel und modern' },
-        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche' }
+        { src: 'images/zimmer/wohnen_roessle_5.jpg', caption: 'Doppelzimmer – komfortabel für zwei' },
+        { src: 'images/zimmer/Zimmer_DZ_small.jpg', caption: 'Doppelzimmer' },
+        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche und WC' }
     ],
     familienzimmer: [
-        { src: 'images/zimmer/wohnen_roessle1.jpg', caption: 'Familienzimmer - Geräumig für bis zu 4 Personen' },
-        { src: 'images/zimmer/wohnen_roessle4.jpg', caption: 'Familienzimmer - Gemütliche Atmosphäre' },
-        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche' }
+        { src: 'images/zimmer/wohnen_roessle4.jpg', caption: 'Familienzimmer – Platz für bis zu 4 Personen' },
+        { src: 'images/zimmer/Zimmer_FZ_small.jpg', caption: 'Familienzimmer mit Sitzecke' },
+        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche und WC' }
     ]
 };
+
+let galleryReturnFocus = null;
 
 let currentGallery = [];
 let currentImageIndex = 0;
@@ -548,12 +588,18 @@ function openRoomGallery(roomType) {
     if (currentGallery.length === 0) return;
 
     currentImageIndex = 0;
+    galleryReturnFocus = document.activeElement;
     const modal = document.getElementById('roomGalleryModal');
     modal.classList.add('active');
     document.body.style.overflow = 'hidden'; // Prevent scrolling
 
     updateGalleryImage();
     renderGalleryDots();
+
+    const closeButton = modal.querySelector('.gallery-close');
+    if (closeButton) {
+        closeButton.focus();
+    }
 
     // Add keyboard navigation
     document.addEventListener('keydown', handleGalleryKeyboard);
@@ -592,6 +638,11 @@ function closeRoomGallery() {
         imageWrapper.removeEventListener('touchstart', handleGalleryTouchStart);
         imageWrapper.removeEventListener('touchend', handleGalleryTouchEnd);
     }
+
+    if (galleryReturnFocus && typeof galleryReturnFocus.focus === 'function') {
+        galleryReturnFocus.focus();
+    }
+    galleryReturnFocus = null;
 }
 
 function nextRoomImage() {
@@ -704,8 +755,10 @@ function renderGalleryDots() {
     dotsContainer.innerHTML = '';
 
     currentGallery.forEach((_, index) => {
-        const dot = document.createElement('div');
+        const dot = document.createElement('button');
+        dot.type = 'button';
         dot.className = 'gallery-dot';
+        dot.setAttribute('aria-label', `Bild ${index + 1} von ${currentGallery.length}`);
         if (index === currentImageIndex) {
             dot.classList.add('active');
         }
@@ -732,6 +785,22 @@ function handleGalleryKeyboard(e) {
         nextRoomImage();
     } else if (e.key === 'Escape') {
         closeRoomGallery();
+    } else if (e.key === 'Tab') {
+        // Fokus innerhalb des Dialogs halten
+        const modal = document.getElementById('roomGalleryModal');
+        const focusable = Array.from(modal.querySelectorAll('button:not(:disabled)'));
+        if (focusable.length === 0) {
+            return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
     }
 }
 
@@ -795,52 +864,6 @@ function triggerHapticFeedback() {
         navigator.vibrate(10); // Short vibration (10ms)
     }
 }
-
-// Add mobile menu styles dynamically
-const style = document.createElement('style');
-style.textContent = `
-    @media (max-width: 768px) {
-        .nav-menu {
-            position: fixed;
-            top: 70px;
-            left: -100%;
-            width: 100%;
-            height: calc(100vh - 70px);
-            background: rgba(255, 255, 255, 0.98);
-            flex-direction: column;
-            padding: 2rem;
-            transition: left 0.3s ease;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-menu.active {
-            left: 0;
-            display: flex !important;
-        }
-
-        .mobile-menu-btn.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-
-        .mobile-menu-btn.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .mobile-menu-btn.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        .nav-menu li {
-            margin: 1rem 0;
-        }
-
-        .nav-menu a {
-            font-size: 1.2rem;
-        }
-    }
-`;
-document.head.appendChild(style);
 
 // ===================================
 // Booking API Integration
@@ -1071,15 +1094,25 @@ function showBookingMessage(message, type) {
         existingMessage.remove();
     }
 
-    // Erstelle neue Nachricht
+    // Erstelle neue Nachricht (Text per textContent, Zeilenumbrüche über CSS white-space)
     const messageDiv = document.createElement('div');
     messageDiv.className = `booking-message booking-message-${type}`;
-    messageDiv.innerHTML = `
-        <div class="booking-message-content">
-            <p>${message.replace(/\n/g, '<br>')}</p>
-            <button onclick="this.parentElement.parentElement.remove()" class="booking-message-close">Schließen</button>
-        </div>
-    `;
+    messageDiv.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+    const content = document.createElement('div');
+    content.className = 'booking-message-content';
+
+    const text = document.createElement('p');
+    text.textContent = message;
+
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'booking-message-close';
+    closeButton.textContent = 'Schließen';
+    closeButton.addEventListener('click', () => messageDiv.remove());
+
+    content.append(text, closeButton);
+    messageDiv.appendChild(content);
 
     // Einfügen vor dem Formular
     const bookingSection = document.getElementById('buchen');
@@ -1127,9 +1160,9 @@ function resetBookingForm() {
     bookingSelectedCheckout = null;
     bookingSelectingCheckout = false;
 
-    document.getElementById('bookingCheckinDisplay').textContent = 'Datum';
+    document.getElementById('bookingCheckinDisplay').textContent = 'Datum wählen';
     document.getElementById('bookingCheckinDisplay').classList.add('placeholder');
-    document.getElementById('bookingCheckoutDisplay').textContent = 'Datum';
+    document.getElementById('bookingCheckoutDisplay').textContent = 'Datum wählen';
     document.getElementById('bookingCheckoutDisplay').classList.add('placeholder');
     document.getElementById('bookingNightsInfo').style.display = 'none';
 
@@ -1180,74 +1213,3 @@ function calculateBookingNights(checkinDate, checkoutDate) {
     const end = Date.UTC(checkoutDate.getFullYear(), checkoutDate.getMonth(), checkoutDate.getDate());
     return Math.round((end - start) / (1000 * 60 * 60 * 24));
 }
-
-// CSS für Booking Messages
-const bookingMessageStyle = document.createElement('style');
-bookingMessageStyle.textContent = `
-    .booking-message {
-        margin: 2rem 0;
-        padding: 1.5rem;
-        border-radius: 8px;
-        animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .booking-message-success {
-        background: #d4edda;
-        border: 1px solid #c3e6cb;
-        color: #155724;
-    }
-
-    .booking-message-error {
-        background: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-    }
-
-    .booking-message-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .booking-message-content p {
-        margin: 0;
-        flex: 1;
-        line-height: 1.6;
-    }
-
-    .booking-message-close {
-        background: rgba(0, 0, 0, 0.1);
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 500;
-        white-space: nowrap;
-        transition: background 0.2s;
-    }
-
-    .booking-message-close:hover {
-        background: rgba(0, 0, 0, 0.2);
-    }
-
-    .booking-message-success .booking-message-close {
-        color: #155724;
-    }
-
-    .booking-message-error .booking-message-close {
-        color: #721c24;
-    }
-`;
-document.head.appendChild(bookingMessageStyle);

@@ -2,29 +2,158 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Familiengeführtes Hotel in zentraler, ruhiger Lage in Tuttlingen. Komfortable Zimmer, Bett+Bike‑zertifiziert, ideal für Radfahrer, Wanderer und Geschäftsreisende.">
-    <title>Hotel Rössle - Tuttlingen</title>
-    <link rel="stylesheet" href="css/new-style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Hotel Rössle Tuttlingen – familiengeführt, zentral &amp; ruhig</title>
+    <meta name="description" content="Familiengeführtes Hotel mitten in Tuttlingen: komfortable Zimmer ab 62 € pro Nacht, kostenloses WLAN, Bett+Bike am Donauradweg und Räume für Tagungen und Feiern. Direkt beim Hotel anfragen.">
+    <link rel="canonical" href="https://www.hotelroessle.eu/">
+    <meta name="theme-color" content="#faf6ee">
+
+    <link rel="icon" href="favicon.ico" sizes="48x48">
+    <link rel="icon" href="images/icons/favicon-32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Hotel Rössle Tuttlingen">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:title" content="Hotel Rössle Tuttlingen – familiengeführt, zentral &amp; ruhig">
+    <meta property="og:description" content="Komfortable Zimmer mitten in Tuttlingen, kostenloses WLAN, Bett+Bike am Donauradweg und Räume für Tagungen und Feiern. Direkt beim Hotel anfragen.">
+    <meta property="og:url" content="https://www.hotelroessle.eu/">
+    <meta property="og:image" content="https://www.hotelroessle.eu/images/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Fassade des Hotel Rössle in Tuttlingen mit Blumenkästen">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preload" href="fonts/fraunces-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/source-sans-3-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="css/new-style.css?v=20261003">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Hotel",
+        "@id": "https://www.hotelroessle.eu/#hotel",
+        "name": "Hotel Rössle",
+        "description": "Familiengeführtes Hotel in zentraler, ruhiger Lage in Tuttlingen. Komfortable Zimmer, Bett+Bike-zertifiziert, Räume für Tagungen und Feiern.",
+        "url": "https://www.hotelroessle.eu/",
+        "image": [
+            "https://www.hotelroessle.eu/images/home_hotelroessle.jpg",
+            "https://www.hotelroessle.eu/images/og-image.jpg"
+        ],
+        "logo": "https://www.hotelroessle.eu/images/icons/icon-512.png",
+        "telephone": "+49 7461 2913",
+        "faxNumber": "+49 7461 9697524",
+        "email": "info@hotelroessle.eu",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Honbergstrasse 8",
+            "postalCode": "78532",
+            "addressLocality": "Tuttlingen",
+            "addressRegion": "Baden-Württemberg",
+            "addressCountry": "DE"
+        },
+        "checkinTime": "14:00",
+        "checkoutTime": "11:00",
+        "priceRange": "62–114 €",
+        "currenciesAccepted": "EUR",
+        "availableLanguage": "de",
+        "amenityFeature": [
+            { "@type": "LocationFeatureSpecification", "name": "Kostenloses WLAN", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Kostenlose Parkplätze in der Nähe", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Tagungs- und Veranstaltungsräume", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Bett+Bike – fahrradfreundlicher Gastbetrieb", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Babybett auf Anfrage", "value": true }
+        ],
+        "makesOffer": [
+            {
+                "@type": "Offer",
+                "name": "Einzelzimmer",
+                "description": "Preis pro Nacht",
+                "price": "62.00",
+                "priceCurrency": "EUR",
+                "itemOffered": { "@type": "HotelRoom", "name": "Einzelzimmer", "occupancy": { "@type": "QuantitativeValue", "maxValue": 1 } }
+            },
+            {
+                "@type": "Offer",
+                "name": "Doppelzimmer",
+                "description": "Preis pro Nacht",
+                "price": "86.00",
+                "priceCurrency": "EUR",
+                "itemOffered": { "@type": "HotelRoom", "name": "Doppelzimmer", "occupancy": { "@type": "QuantitativeValue", "maxValue": 2 } }
+            },
+            {
+                "@type": "Offer",
+                "name": "Familienzimmer",
+                "description": "Preis pro Nacht",
+                "price": "114.00",
+                "priceCurrency": "EUR",
+                "itemOffered": { "@type": "HotelRoom", "name": "Familienzimmer", "occupancy": { "@type": "QuantitativeValue", "maxValue": 4 } }
+            }
+        ]
+    }
+    </script>
 </head>
 <body>
-    <!-- Skip to main content link for accessibility -->
+    <!-- Icon-Sprite (Linien-Icons, inline – keine zusätzlichen Requests) -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+        <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+        <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+        <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 9.8-9.8M17 6l3 3M14.5 8.5l2 2"/></symbol>
+        <symbol id="i-door" viewBox="0 0 24 24"><path d="M4 21h16M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17"/><path d="M14 12h.01"/></symbol>
+        <symbol id="i-parking" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9.5 17V7H13a3 3 0 0 1 0 6H9.5"/></symbol>
+        <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.6a11 11 0 0 1 14 0M1.5 9a16 16 0 0 1 21 0M8.5 16.1a6 6 0 0 1 7 0"/><path d="M12 20h.01"/></symbol>
+        <symbol id="i-bike" viewBox="0 0 24 24"><circle cx="5.5" cy="17" r="3.5"/><circle cx="18.5" cy="17" r="3.5"/><path d="M5.5 17 9 9h6l3.5 8M9 9 7.5 6H5M12 17l3-8"/></symbol>
+        <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+        <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2.5 2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="17" rx="2"/><path d="M16 2.5v4M8 2.5v4M3 10h18"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+        <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+        <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></symbol>
+        <symbol id="i-mountain" viewBox="0 0 24 24"><path d="m8 4 4 7 3-3 7 12H2z"/></symbol>
+        <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/><path d="M13 5v2M13 11v2M13 17v2"/></symbol>
+        <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M3 2v7a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6a2 2 0 0 0 2 2h3zm0 0v7"/></symbol>
+        <symbol id="i-area" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
+        <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></symbol>
+        <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+        <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+        <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+        <symbol id="i-bed" viewBox="0 0 24 24"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/></symbol>
+        <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+        <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></symbol>
+    </svg>
+
     <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
-    
+
     <!-- Navigation -->
-    <header>
+    <header class="site-header">
         <nav class="navbar" aria-label="Hauptnavigation">
             <div class="nav-container">
-                <a href="#home" class="logo">HOTEL RÖSSLE</a>
-                <ul class="nav-menu">
-                    <li><a href="#home">Home</a></li>
+                <a href="#home" class="logo">
+                    <span class="brand-mark" aria-hidden="true"></span>
+                    <span class="logo-text">
+                        <span class="logo-name">Hotel Rössle</span>
+                        <span class="logo-place">Tuttlingen</span>
+                    </span>
+                </a>
+                <ul class="nav-menu" id="main-menu">
                     <li><a href="#zimmer">Zimmer</a></li>
-                    <li><a href="#events">Räumlichkeiten</a></li>
-                    <li><a href="#freizeit">Freizeit</a></li>
+                    <li><a href="#events">Tagungen &amp; Feiern</a></li>
+                    <li><a href="#freizeit">Umgebung</a></li>
+                    <li><a href="#faq">Fragen</a></li>
                     <li><a href="#kontakt">Kontakt</a></li>
-                    <li><a href="#buchen" class="nav-btn">Buchen</a></li>
+                    <li><a href="#buchen" class="nav-btn">Zimmer anfragen</a></li>
+                    <li class="nav-menu-contact"><a href="tel:+4974612913">Telefon: 07461 2913</a></li>
                 </ul>
-                <button class="mobile-menu-btn" aria-label="Menü öffnen" aria-expanded="false">
+                <a href="tel:+4974612913" class="nav-phone">
+                    <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+                    07461 2913
+                </a>
+                <button class="mobile-menu-btn" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="main-menu">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -34,745 +163,972 @@
     </header>
 
     <main id="main-content">
-    <section id="home" class="hero">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1 class="hero-title">Willkommen im Hotel Rössle</h1>
-            <p class="hero-subtitle">Ihr komfortables Hotel im Herzen von Tuttlingen</p>
-            <a href="#buchen" class="btn-primary">Jetzt Buchen</a>
-        </div>
-        <div class="scroll-indicator">
-            <span></span>
-        </div>
-    </section>
 
-    <!-- Über uns Section -->
-    <section class="section-about">
+    <!-- Hero -->
+    <section id="home" class="hero">
         <div class="container">
-            <div class="about-grid">
-                <div class="about-text">
-                    <h2 class="section-title">Ihr Zuhause in Tuttlingen</h2>
-                    <p class="section-subtitle">Erleben Sie schwäbische Gastfreundschaft</p>
-                    <p>Das Hotel Rössle befindet sich im Herzen von Tuttlingen, dem Tor zum Naturpark an der Donau. Unser familiengeführtes Hotel bietet Ihnen komfortable Zimmer und persönlichen Service in zentraler, dennoch ruhiger Lage.</p>
-                    <p>Als zertifiziertes Bett & Bike Hotel sind wir der perfekte Ausgangspunkt für Radtouren entlang des Donauradwegs und Wanderungen im Donaubergland.</p>
-                    <div class="badges">
-                        <a href="https://www.bettundbike.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="Bett & Bike zertifiziertes Hotel">
-                            <picture>
-                                <source srcset="images/optimized/bett_und_bike_logo.avif" type="image/avif">
-                                <source srcset="images/optimized/bett_und_bike_logo.webp" type="image/webp">
-                                <img src="images/bett_und_bike_logo.svg" alt="Bett & Bike Logo">
-                            </picture>
+            <div class="hero-grid">
+                <div class="hero-text">
+                    <p class="eyebrow hero-eyebrow">Tuttlingen · Obere Donau</p>
+                    <h1 class="hero-title">
+                        Familiengeführt, zentral &amp; ruhig.
+                        <span class="hero-title-sub">Ihr Hotel in Tuttlingen</span>
+                    </h1>
+                    <p class="hero-lead">Komfortable Zimmer mitten in der Stadt, kostenloses WLAN und persönlicher Service. Als zertifiziertes Bett+Bike-Hotel sind wir der ideale Ausgangspunkt für den Donauradweg, Wanderungen im Donaubergland und Ihre Geschäftsreise.</p>
+                    <div class="hero-actions">
+                        <a href="#buchen" class="btn-primary btn-large">
+                            Zimmer anfragen
+                            <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
                         </a>
-                        <a href="https://www.dehogabw.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="DEHOGA Mitglied">
-                            <picture>
-                                <source srcset="images/optimized/dehoga.avif" type="image/avif">
-                                <source srcset="images/optimized/dehoga.webp" type="image/webp">
-                                <img src="images/dehoga.jpg" alt="DEHOGA Baden-Württemberg Logo">
-                            </picture>
+                        <a href="tel:+4974612913" class="btn-secondary btn-large">
+                            <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+                            07461 2913 anrufen
                         </a>
+                    </div>
+                    <div class="hero-trust">
+                        <!-- Bewertung laut Google-Profil (Stand: September 2026) – bei Änderung hier und im Bewertungs-Band anpassen -->
+                        <a class="rating-link" href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20R%C3%B6ssle%20Tuttlingen" target="_blank" rel="noopener noreferrer">
+                            <span class="stars" style="--rating: 4.4;" aria-hidden="true">
+                                <svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg>
+                                <span class="stars-fill"><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg></span>
+                            </span>
+                            <span><strong>4,4</strong> von 5 bei Google<span class="visually-hidden"> – Bewertungen ansehen (öffnet in neuem Fenster)</span></span>
+                        </a>
+                        <div class="trust-badges">
+                            <a href="https://www.bettundbike.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="Bett+Bike – fahrradfreundlicher Gastbetrieb">
+                                <img src="images/bett_und_bike_logo.svg" alt="Bett+Bike zertifiziert" width="115" height="30">
+                            </a>
+                            <a href="https://www.dehogabw.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="Mitglied im DEHOGA Baden-Württemberg">
+                                <picture>
+                                    <source srcset="images/optimized/dehoga.avif" type="image/avif">
+                                    <source srcset="images/optimized/dehoga.webp" type="image/webp">
+                                    <img src="images/dehoga.jpg" alt="DEHOGA Baden-Württemberg Mitglied" width="138" height="30">
+                                </picture>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="about-features">
-                    <div class="feature-card">
-                        <div class="feature-icon">🏨</div>
-                        <h3>Zentrale Lage</h3>
-                        <p>Mitten in Tuttlingen, fußläufig zu allen Sehenswürdigkeiten</p>
+
+                <aside class="hero-card" aria-labelledby="hero-card-title">
+                    <p class="hero-card-label" id="hero-card-title">Direkt beim Hotel anfragen</p>
+                    <p class="hero-card-price">ab 62 € <span>pro Zimmer und Nacht</span></p>
+                    <ul class="check-list">
+                        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Persönliche Bestätigung per E-Mail</li>
+                        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenloses WLAN in allen Zimmern</li>
+                        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenlose Parkplätze in der Nähe</li>
+                        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Rezeption täglich 9–22 Uhr</li>
+                    </ul>
+                    <div class="hero-card-actions">
+                        <a href="#buchen" class="btn-accent">Verfügbarkeit anfragen</a>
+                        <a href="#zimmer" class="btn-ghost-light">Zimmer ansehen</a>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🚴</div>
-                        <h3>Fahrradfreundlich</h3>
-                        <p>Zertifiziertes Bett & Bike Hotel am Donauradweg</p>
+                    <p class="hero-card-note">Ohne Buchungsportal – Ihre Anfrage geht direkt an uns.</p>
+                </aside>
+            </div>
+
+            <!-- FOTO-TODO: Fassade in hoher Auflösung (mind. 2400×1350 px) – dann das Seitenverhältnis von .hero-panorama anpassen -->
+            <div class="hero-panorama">
+                <picture>
+                    <source srcset="images/optimized/home_hotelroessle.avif" type="image/avif">
+                    <source srcset="images/optimized/home_hotelroessle.webp" type="image/webp">
+                    <img src="images/home_hotelroessle.jpg" alt="Gelbe Fassade des Hotel Rössle mit Blumenkästen an der Honbergstrasse in Tuttlingen" width="1200" height="350" fetchpriority="high">
+                </picture>
+            </div>
+
+            <h2 class="visually-hidden">Ihre Vorteile</h2>
+            <ul class="usp-bar" role="list">
+                <li class="usp">
+                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
+                    <div>
+                        <h3>Zentral &amp; ruhig</h3>
+                        <p>Mitten in Tuttlingen, zu Fuß zu allen Sehenswürdigkeiten</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🅿️</div>
+                </li>
+                <li class="usp">
+                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-parking"/></svg></span>
+                    <div>
                         <h3>Kostenlose Parkplätze</h3>
                         <p>Begrenzte Anzahl in der Nähe verfügbar</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📱</div>
-                        <h3>WLAN</h3>
-                        <p>Kostenloses WLAN auf Anfrage</p>
+                </li>
+                <li class="usp">
+                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-wifi"/></svg></span>
+                    <div>
+                        <h3>Kostenloses WLAN</h3>
+                        <p>In allen Zimmern inklusive</p>
+                    </div>
+                </li>
+                <li class="usp">
+                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-bike"/></svg></span>
+                    <div>
+                        <h3>Bett+Bike-Hotel</h3>
+                        <p>Fahrradfreundlich, direkt am Donauradweg</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Über uns -->
+    <section id="ueber-uns" class="section section-sand" aria-labelledby="about-title">
+        <div class="container about-grid">
+            <div class="about-text reveal">
+                <p class="eyebrow">Willkommen</p>
+                <h2 id="about-title" class="section-title">Schwäbische Gastfreundschaft im Herzen von Tuttlingen</h2>
+                <p>Das Hotel Rössle liegt mitten in Tuttlingen, dem Tor zum Naturpark Obere Donau. Unser familiengeführtes Haus bietet Ihnen komfortable Zimmer und persönlichen Service – zentral und trotzdem ruhig gelegen.</p>
+                <p>Die Innenstadt mit ihren Sehenswürdigkeiten erreichen Sie bequem zu Fuß. Als zertifiziertes Bett+Bike-Hotel sind wir der perfekte Ausgangspunkt für Radtouren entlang des Donauradwegs und Wanderungen im Donaubergland – und für Geschäftsreisende ein ruhiger Ort nach einem langen Tag.</p>
+                <div class="host">
+                    <span class="host-mark" aria-hidden="true"><span class="brand-mark"></span></span>
+                    <div>
+                        <p class="host-name">Osman Kücük</p>
+                        <p class="host-role">Inhaber und Gastgeber</p>
                     </div>
                 </div>
+            </div>
+            <div class="about-media reveal">
+                <!-- FOTO-TODO: Empfang/Rezeption oder Porträt der Gastgeber (mind. 1600×1200 px) -->
+                <picture>
+                    <source srcset="images/optimized/events/event_roessle4.avif" type="image/avif">
+                    <source srcset="images/optimized/events/event_roessle4.webp" type="image/webp">
+                    <img src="images/events/event_roessle4.jpg" alt="Gemütliche Gaststube im Hotel Rössle mit Holzvertäfelung und Theke" width="1200" height="350" loading="lazy">
+                </picture>
+                <p class="about-quote">Mitten in der Stadt – und trotzdem ruhig.</p>
             </div>
         </div>
     </section>
 
-    <!-- Zimmer Section -->
-    <section id="zimmer" class="section-rooms">
+    <!-- Zimmer -->
+    <section id="zimmer" class="section" aria-labelledby="rooms-title">
         <div class="container">
-            <h2 class="section-title">Unsere Zimmer</h2>
-            <p class="section-subtitle">Komfort für jeden Bedarf</p>
+            <div class="section-head">
+                <p class="eyebrow">Zimmer &amp; Preise</p>
+                <h2 id="rooms-title" class="section-title">Für jede Reise das passende Zimmer</h2>
+                <p class="section-lead">Ob allein auf Geschäftsreise, zu zweit oder mit der Familie: Alle Zimmer haben ein eigenes Bad mit Dusche und WC, TV und kostenloses WLAN.</p>
+            </div>
 
             <div class="rooms-grid">
                 <!-- Einzelzimmer -->
-                <div class="room-card">
-                    <div class="room-image" onclick="openRoomGallery('einzelzimmer')">
+                <article class="room-card reveal">
+                    <!-- FOTO-TODO: Einzelzimmer, 2–3 Fotos (mind. 1600×1067 px) -->
+                    <button type="button" class="room-image" onclick="openRoomGallery('einzelzimmer')" aria-label="Fotos vom Einzelzimmer ansehen">
                         <picture>
                             <source srcset="images/optimized/zimmer/Zimmer_EZ_small.avif" type="image/avif">
                             <source srcset="images/optimized/zimmer/Zimmer_EZ_small.webp" type="image/webp">
-                            <img src="images/zimmer/Zimmer_EZ_small.jpg" alt="Einzelzimmer">
+                            <img src="images/zimmer/Zimmer_EZ_small.jpg" alt="" width="300" height="187" loading="lazy">
                         </picture>
-                        <div class="image-overlay">
-                            <span class="view-gallery">📷 Galerie ansehen (2 Bilder)</span>
-                        </div>
-                    </div>
+                        <span class="view-gallery" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg> 2 Fotos</span>
+                    </button>
                     <div class="room-content">
                         <h3>Einzelzimmer</h3>
-                        <p class="room-price">62,00 € <span>pro Nacht</span></p>
+                        <p class="room-capacity"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg> 1 Person</p>
+                        <p class="room-price">62 € <span>pro Nacht</span></p>
                         <ul class="room-features">
-                            <li>1 Person</li>
-                            <li>1 Schlafzimmer & Badezimmer</li>
-                            <li>TV mit Kabelanschluss</li>
-                            <li>Dusche, WC & Föhn</li>
-                            <li>WLAN auf Anfrage</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Eigenes Bad mit Dusche, WC &amp; Föhn</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> TV mit Kabelanschluss</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenloses WLAN</li>
                         </ul>
-                        <a href="#buchen" class="btn-secondary">Buchen</a>
+                        <a href="#buchen" class="btn-secondary" data-book-room="einzelzimmer">Einzelzimmer anfragen</a>
                     </div>
-                </div>
+                </article>
 
                 <!-- Doppelzimmer -->
-                <div class="room-card featured">
-                    <div class="room-badge">Beliebt</div>
-                    <div class="room-image" onclick="openRoomGallery('doppelzimmer')">
+                <article class="room-card featured reveal">
+                    <span class="room-badge">Beliebt</span>
+                    <!-- FOTO-TODO: Doppelzimmer, 2–3 Fotos (mind. 1600×1067 px) -->
+                    <button type="button" class="room-image" onclick="openRoomGallery('doppelzimmer')" aria-label="Fotos vom Doppelzimmer ansehen">
                         <picture>
-                            <source srcset="images/optimized/zimmer/Zimmer_DZ_small.avif" type="image/avif">
-                            <source srcset="images/optimized/zimmer/Zimmer_DZ_small.webp" type="image/webp">
-                            <img src="images/zimmer/Zimmer_DZ_small.jpg" alt="Doppelzimmer">
+                            <source srcset="images/optimized/zimmer/wohnen_roessle_5.avif" type="image/avif">
+                            <source srcset="images/optimized/zimmer/wohnen_roessle_5.webp" type="image/webp">
+                            <img src="images/zimmer/wohnen_roessle_5.jpg" alt="" width="1150" height="350" loading="lazy">
                         </picture>
-                        <div class="image-overlay">
-                            <span class="view-gallery">📷 Galerie ansehen (2 Bilder)</span>
-                        </div>
-                    </div>
+                        <span class="view-gallery" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg> 3 Fotos</span>
+                    </button>
                     <div class="room-content">
                         <h3>Doppelzimmer</h3>
-                        <p class="room-price">86,00 € <span>pro Nacht</span></p>
+                        <p class="room-capacity"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg> 2 Personen</p>
+                        <p class="room-price">86 € <span>pro Nacht</span></p>
                         <ul class="room-features">
-                            <li>2 Personen</li>
-                            <li>1 Schlafzimmer & Badezimmer</li>
-                            <li>TV mit Kabelanschluss</li>
-                            <li>Dusche, WC & Föhn</li>
-                            <li>WLAN auf Anfrage</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Eigenes Bad mit Dusche, WC &amp; Föhn</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> TV mit Kabelanschluss</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenloses WLAN</li>
                         </ul>
-                        <a href="#buchen" class="btn-secondary">Buchen</a>
+                        <a href="#buchen" class="btn-primary" data-book-room="doppelzimmer">Doppelzimmer anfragen</a>
                     </div>
-                </div>
+                </article>
 
                 <!-- Familienzimmer -->
-                <div class="room-card">
-                    <div class="room-image" onclick="openRoomGallery('familienzimmer')">
+                <article class="room-card reveal">
+                    <!-- FOTO-TODO: Familienzimmer, 2–3 Fotos (mind. 1600×1067 px) -->
+                    <button type="button" class="room-image" onclick="openRoomGallery('familienzimmer')" aria-label="Fotos vom Familienzimmer ansehen">
                         <picture>
-                            <source srcset="images/optimized/zimmer/Zimmer_FZ_small.avif" type="image/avif">
-                            <source srcset="images/optimized/zimmer/Zimmer_FZ_small.webp" type="image/webp">
-                            <img src="images/zimmer/Zimmer_FZ_small.jpg" alt="Familienzimmer">
+                            <source srcset="images/optimized/zimmer/wohnen_roessle4.avif" type="image/avif">
+                            <source srcset="images/optimized/zimmer/wohnen_roessle4.webp" type="image/webp">
+                            <img src="images/zimmer/wohnen_roessle4.jpg" alt="" width="1200" height="350" loading="lazy">
                         </picture>
-                        <div class="image-overlay">
-                            <span class="view-gallery">📷 Galerie ansehen (3 Bilder)</span>
-                        </div>
-                    </div>
+                        <span class="view-gallery" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg> 3 Fotos</span>
+                    </button>
                     <div class="room-content">
                         <h3>Familienzimmer</h3>
-                        <p class="room-price">114,00 € <span>pro Nacht</span></p>
+                        <p class="room-capacity"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg> Bis zu 4 Personen</p>
+                        <p class="room-price">114 € <span>pro Nacht</span></p>
                         <ul class="room-features">
-                            <li>Bis zu 4 Personen</li>
-                            <li>1 Schlafzimmer & Badezimmer</li>
-                            <li>TV mit Kabelanschluss</li>
-                            <li>Dusche, WC & Föhn</li>
-                            <li>WLAN & Babybett verfügbar</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Eigenes Bad mit Dusche, WC &amp; Föhn</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> TV mit Kabelanschluss</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenloses WLAN</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Babybett auf Anfrage</li>
                         </ul>
-                        <a href="#buchen" class="btn-secondary">Buchen</a>
+                        <a href="#buchen" class="btn-secondary" data-book-room="familienzimmer">Familienzimmer anfragen</a>
                     </div>
-                </div>
+                </article>
             </div>
 
-            <!-- Check-In Info -->
             <div class="info-banner">
                 <div class="info-item">
-                    <strong>Check-In:</strong> Täglich 14:00 - 21:00 Uhr
+                    <svg class="icon" aria-hidden="true"><use href="#i-key"/></svg>
+                    <div><span>Check-in</span><strong>Täglich 14–21 Uhr</strong></div>
                 </div>
                 <div class="info-item">
-                    <strong>Check-Out:</strong> Bis 11:00 Uhr
+                    <svg class="icon" aria-hidden="true"><use href="#i-door"/></svg>
+                    <div><span>Check-out</span><strong>Bis 11 Uhr</strong></div>
                 </div>
                 <div class="info-item">
-                    <strong>Rezeption:</strong> Täglich 9:00 - 22:00 Uhr
+                    <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+                    <div><span>Rezeption</span><strong>Täglich 9–22 Uhr</strong></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Räumlichkeiten Section -->
-    <section id="events" class="section-events">
-        <div class="container">
-            <h2 class="section-title">Räumlichkeiten für Ihre Feierlichkeiten</h2>
-            <p class="section-subtitle">Der perfekte Ort für besondere Anlässe</p>
+    <!-- Tagungen & Feiern -->
+    <section id="events" class="section section-dark" aria-labelledby="events-title">
+        <div class="container events-grid">
+            <div class="events-text">
+                <p class="eyebrow">Tagungen &amp; Feiern</p>
+                <h2 id="events-title" class="section-title">Räume für Ihr Meeting&nbsp;– und für Ihr Fest</h2>
+                <p class="section-lead">Schulung, Teambesprechung oder Firmenfeier, Taufe, Konfirmation oder Geburtstag: Unsere beiden Räume buchen Sie einzeln oder zusammen – mitten in Tuttlingen und auf Wunsch mit Übernachtung für Ihre Gäste.</p>
 
-            <div class="events-grid">
-                <div class="event-hall">
-                    <div class="event-icon">🎉</div>
-                    <h3>Hauptraum</h3>
-                    <ul>
-                        <li>60 m² Fläche</li>
-                        <li>Bis zu 40 Personen</li>
-                        <li>Moderne Ausstattung</li>
-                        <li>Flexible Bestuhlung</li>
-                    </ul>
+                <div class="halls">
+                    <div class="event-hall reveal">
+                        <h3>Hauptraum</h3>
+                        <ul class="hall-facts">
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-area"/></svg> 60 m²</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg> bis 40 Personen</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Flexible Bestuhlung</li>
+                        </ul>
+                    </div>
+                    <div class="event-hall reveal">
+                        <h3>Nebenraum</h3>
+                        <ul class="hall-facts">
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-area"/></svg> 21 m²</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg> bis 15 Personen</li>
+                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Direkt angrenzend</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="event-hall">
-                    <div class="event-icon">🎊</div>
-                    <h3>Nebenraum</h3>
-                    <ul>
-                        <li>21 m² Fläche</li>
-                        <li>Bis zu 15 Personen</li>
-                        <li>Direkt angrenzend</li>
-                        <li>Für kleine Gruppen</li>
-                    </ul>
+
+                <p class="event-highlight">
+                    <svg class="icon" aria-hidden="true"><use href="#i-briefcase"/></svg>
+                    <span>Beide Räume kombiniert: <strong>81 m² für bis zu 60 Personen</strong> – modern ausgestattet</span>
+                </p>
+
+                <ul class="event-types" aria-label="Anlässe">
+                    <li class="event-type">Tagungen</li>
+                    <li class="event-type">Schulungen</li>
+                    <li class="event-type">Firmenfeiern</li>
+                    <li class="event-type">Taufen</li>
+                    <li class="event-type">Konfirmationen</li>
+                    <li class="event-type">Geburtstage</li>
+                </ul>
+
+                <div class="event-actions">
+                    <a href="#kontakt" class="btn-accent" data-contact-subject="Event-Anfrage">
+                        Raum anfragen
+                        <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+                    </a>
+                    <a href="tel:+4974612913" class="btn-ghost-light">
+                        <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+                        07461 2913
+                    </a>
                 </div>
             </div>
-
-            <div class="event-highlight">
-                <p>Beide Räume kombiniert: <strong>81 m² für bis zu 60 Personen</strong></p>
-            </div>
-
-            <div class="event-types">
-                <div class="event-type">👶 Taufen</div>
-                <div class="event-type">✝️ Konfirmationen</div>
-                <div class="event-type">🎂 Geburtstage</div>
-                <div class="event-type">💼 Firmenfeiern</div>
-                <div class="event-type">🎓 Schulungen</div>
-                <!-- <div class="event-type">🎉 Weitere Anlässe</div> -->
+            <div class="events-media reveal">
+                <!-- FOTO-TODO: Tagungsraum bestuhlt bzw. eingedeckt (mind. 1600×1200 px) -->
+                <picture>
+                    <source srcset="images/optimized/events/event_roessle1.avif" type="image/avif">
+                    <source srcset="images/optimized/events/event_roessle1.webp" type="image/webp">
+                    <img src="images/events/event_roessle1.jpg" alt="Hauptraum des Hotel Rössle mit hellen Fenstern, Tischen und gepolsterten Sitzbänken" width="1200" height="350" loading="lazy">
+                </picture>
             </div>
         </div>
     </section>
 
-    <!-- Freizeit Section -->
-    <section id="freizeit" class="section-leisure">
+    <!-- Bewertungen -->
+    <section class="section" aria-labelledby="reviews-title">
         <div class="container">
-            <h2 class="section-title">Entdecken Sie Tuttlingen</h2>
-            <p class="section-subtitle">Das Tor zum Naturpark an der Donau</p>
+            <div class="reviews-band reveal">
+                <div class="reviews-score">
+                    <span class="reviews-score-value">4,4</span>
+                    <span class="stars" style="--rating: 4.4;" role="img" aria-label="4,4 von 5 Sternen">
+                        <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                        <span class="stars-fill" aria-hidden="true"><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg></span>
+                    </span>
+                    <span class="reviews-score-source">Google-Bewertungen</span>
+                </div>
+                <div class="reviews-text">
+                    <h2 id="reviews-title">Unsere Gäste fühlen sich wohl</h2>
+                    <p>Gäste bewerten das Hotel Rössle bei Google mit durchschnittlich 4,4 von 5 Sternen. Lesen Sie selbst, was sie über ihren Aufenthalt schreiben – und erzählen Sie uns nach Ihrem Besuch gern, wie es Ihnen gefallen hat.</p>
+                </div>
+                <a class="btn-secondary" href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20R%C3%B6ssle%20Tuttlingen" target="_blank" rel="noopener noreferrer">
+                    Bewertungen lesen
+                    <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg>
+                    <span class="visually-hidden">(öffnet Google Maps in neuem Fenster)</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Freizeit & Umgebung -->
+    <section id="freizeit" class="section section-sand" aria-labelledby="leisure-title">
+        <div class="container">
+            <div class="section-head">
+                <p class="eyebrow">Umgebung</p>
+                <h2 id="leisure-title" class="section-title">Tuttlingen und das Obere Donautal entdecken</h2>
+                <p class="section-lead">Tuttlingen ist das Tor zum Naturpark Obere Donau. Burgruine, Freizeitbad und Stadthalle liegen ganz in der Nähe, die Donauversinkung und das Freilichtmuseum sind schnell erreicht.</p>
+            </div>
 
             <div class="leisure-grid">
-                <!-- Donauversinkung -->
-                <a href="https://www.immendingen.de/startseite/erleben/donauversinkung.html" target="_blank" rel="noopener noreferrer" class="leisure-card-link" aria-label="Besuchen Sie Donauversinkung">
-                    <div class="leisure-card">
+                <a href="https://www.immendingen.de/startseite/erleben/donauversinkung.html" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                    <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
                                 <source srcset="images/optimized/freizeit/ausflugsziel_donauversickerung_small.avif" type="image/avif">
                                 <source srcset="images/optimized/freizeit/ausflugsziel_donauversickerung_small.webp" type="image/webp">
-                                <img src="images/freizeit/ausflugsziel_donauversickerung_small.jpg" alt="Donauversinkung">
+                                <img src="images/freizeit/ausflugsziel_donauversickerung_small.jpg" alt="" width="300" height="187" loading="lazy">
                             </picture>
-                            <div class="leisure-overlay">
-                                <span class="visit-button">Besuchen →</span>
-                            </div>
                         </div>
-                        <h3>Donauversinkung</h3>
-                        <p>Einzigartiges Naturphänomen bei Immendingen</p>
-                        <span class="distance-badge">15 km</span>
-                    </div>
+                        <div class="leisure-body">
+                            <h3>Donauversinkung <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></h3>
+                            <p>Einzigartiges Naturphänomen bei Immendingen</p>
+                            <span class="distance-badge">15 km</span>
+                            <span class="visually-hidden">(öffnet in neuem Fenster)</span>
+                        </div>
+                    </article>
                 </a>
 
-                <!-- Honberg Ruine -->
-                <a href="https://www.tuttlingen.de/de/Kultur-Tourismus/Tourismus/Sehenswertes/Honberg" target="_blank" rel="noopener noreferrer" class="leisure-card-link" aria-label="Besuchen Sie Honberg Ruine">
-                    <div class="leisure-card">
+                <a href="https://www.tuttlingen.de/de/Kultur-Tourismus/Tourismus/Sehenswertes/Honberg" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                    <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
                                 <source srcset="images/optimized/freizeit/ausflugsziel_Burgruine_small.avif" type="image/avif">
                                 <source srcset="images/optimized/freizeit/ausflugsziel_Burgruine_small.webp" type="image/webp">
-                                <img src="images/freizeit/ausflugsziel_Burgruine_small.jpg" alt="Honberg Ruine">
+                                <img src="images/freizeit/ausflugsziel_Burgruine_small.jpg" alt="" width="300" height="187" loading="lazy">
                             </picture>
-                            <div class="leisure-overlay">
-                                <span class="visit-button">Besuchen →</span>
-                            </div>
                         </div>
-                        <h3>Honberg Ruine</h3>
-                        <p>Mittelalterliche Burgruine mit herrlichem Ausblick</p>
-                        <span class="distance-badge">Fußläufig</span>
-                    </div>
+                        <div class="leisure-body">
+                            <h3>Honberg Ruine <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></h3>
+                            <p>Mittelalterliche Burgruine mit herrlichem Ausblick</p>
+                            <span class="distance-badge">Fußläufig</span>
+                            <span class="visually-hidden">(öffnet in neuem Fenster)</span>
+                        </div>
+                    </article>
                 </a>
 
-                <!-- TuWass Freizeitbad -->
-                <a href="https://www.tuwass.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link" aria-label="Besuchen Sie TuWass Freizeitbad">
-                    <div class="leisure-card">
+                <a href="https://www.tuwass.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                    <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
                                 <source srcset="images/optimized/freizeit/ausflugsziel_Freizeitbad_small.avif" type="image/avif">
                                 <source srcset="images/optimized/freizeit/ausflugsziel_Freizeitbad_small.webp" type="image/webp">
-                                <img src="images/freizeit/ausflugsziel_Freizeitbad_small.jpg" alt="TuWass Freizeitbad">
+                                <img src="images/freizeit/ausflugsziel_Freizeitbad_small.jpg" alt="" width="300" height="187" loading="lazy">
                             </picture>
-                            <div class="leisure-overlay">
-                                <span class="visit-button">Besuchen →</span>
-                            </div>
                         </div>
-                        <h3>TuWass Freizeitbad</h3>
-                        <p>Erlebnisbad mit Schwimmbecken und Sauna</p>
-                        <span class="distance-badge">In Tuttlingen</span>
-                    </div>
+                        <div class="leisure-body">
+                            <h3>TuWass Freizeitbad <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></h3>
+                            <p>Erlebnisbad mit Schwimmbecken und Sauna</p>
+                            <span class="distance-badge">In Tuttlingen</span>
+                            <span class="visually-hidden">(öffnet in neuem Fenster)</span>
+                        </div>
+                    </article>
                 </a>
 
-                <!-- Naturpark Obere Donau -->
-                <a href="https://naturpark-obere-donau.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link" aria-label="Besuchen Sie Naturpark Obere Donau">
-                    <div class="leisure-card">
+                <a href="https://naturpark-obere-donau.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                    <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
                                 <source srcset="images/optimized/freizeit/ausflugsziel_Naturpark_small.avif" type="image/avif">
                                 <source srcset="images/optimized/freizeit/ausflugsziel_Naturpark_small.webp" type="image/webp">
-                                <img src="images/freizeit/ausflugsziel_Naturpark_small.jpg" alt="Naturpark Obere Donau">
+                                <img src="images/freizeit/ausflugsziel_Naturpark_small.jpg" alt="" width="300" height="187" loading="lazy">
                             </picture>
-                            <div class="leisure-overlay">
-                                <span class="visit-button">Besuchen →</span>
-                            </div>
                         </div>
-                        <h3>Naturpark Obere Donau</h3>
-                        <p>Wandern durch beeindruckende Landschaften</p>
-                        <span class="distance-badge">Beginnt hier</span>
-                    </div>
+                        <div class="leisure-body">
+                            <h3>Naturpark Obere Donau <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></h3>
+                            <p>Wandern durch beeindruckende Landschaften</p>
+                            <span class="distance-badge">Beginnt hier</span>
+                            <span class="visually-hidden">(öffnet in neuem Fenster)</span>
+                        </div>
+                    </article>
                 </a>
 
-                <!-- Bootsverleih (Special case - no external link) -->
-                <div class="leisure-card">
+                <article class="leisure-card reveal">
                     <div class="leisure-image">
                         <picture>
                             <source srcset="images/optimized/freizeit/ausflugsziel_Bootsgelände_small.avif" type="image/avif">
                             <source srcset="images/optimized/freizeit/ausflugsziel_Bootsgelände_small.webp" type="image/webp">
-                            <img src="images/freizeit/ausflugsziel_Bootsgelände_small.jpg" alt="Bootsverleih">
+                            <img src="images/freizeit/ausflugsziel_Bootsgelände_small.jpg" alt="" width="300" height="187" loading="lazy">
                         </picture>
                     </div>
-                    <h3>Bootsverleih</h3>
-                    <p>Erkunden Sie die Donau vom Wasser aus</p>
-                    <span class="distance-badge">An der Rezeption anfragen</span>
-                </div>
+                    <div class="leisure-body">
+                        <h3>Bootsverleih</h3>
+                        <p>Erkunden Sie die Donau vom Wasser aus</p>
+                        <span class="distance-badge">An der Rezeption anfragen</span>
+                    </div>
+                </article>
 
-                <!-- Freilichtmuseum -->
-                <a href="https://freilichtmuseum-neuhausen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link" aria-label="Besuchen Sie Freilichtmuseum Neuhausen ob Eck">
-                    <div class="leisure-card">
+                <a href="https://freilichtmuseum-neuhausen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                    <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
                                 <source srcset="images/optimized/freizeit/ausflugsziel_Freilichtmuseum_small.avif" type="image/avif">
                                 <source srcset="images/optimized/freizeit/ausflugsziel_Freilichtmuseum_small.webp" type="image/webp">
-                                <img src="images/freizeit/ausflugsziel_Freilichtmuseum_small.jpg" alt="Freilichtmuseum">
+                                <img src="images/freizeit/ausflugsziel_Freilichtmuseum_small.jpg" alt="" width="300" height="187" loading="lazy">
                             </picture>
-                            <div class="leisure-overlay">
-                                <span class="visit-button">Besuchen →</span>
-                            </div>
                         </div>
-                        <h3>Freilichtmuseum</h3>
-                        <p>Ländliches Leben vergangener Zeiten</p>
-                        <span class="distance-badge">20 km</span>
-                    </div>
+                        <div class="leisure-body">
+                            <h3>Freilichtmuseum <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></h3>
+                            <p>Ländliches Leben vergangener Zeiten in Neuhausen ob Eck</p>
+                            <span class="distance-badge">20 km</span>
+                            <span class="visually-hidden">(öffnet in neuem Fenster)</span>
+                        </div>
+                    </article>
                 </a>
 
-                <!-- Donaubergland -->
-                <a href="https://www.donaubergland.de/" target="_blank" rel="noopener noreferrer" class="leisure-card-link" aria-label="Besuchen Sie Donaubergland">
-                    <div class="leisure-card">
+                <a href="https://www.donaubergland.de/" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                    <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
                                 <source srcset="images/optimized/freizeit/ausflugsziel_Donaubergland_small.avif" type="image/avif">
                                 <source srcset="images/optimized/freizeit/ausflugsziel_Donaubergland_small.webp" type="image/webp">
-                                <img src="images/freizeit/ausflugsziel_Donaubergland_small.jpg" alt="Donaubergland">
+                                <img src="images/freizeit/ausflugsziel_Donaubergland_small.jpg" alt="" width="300" height="187" loading="lazy">
                             </picture>
-                            <div class="leisure-overlay">
-                                <span class="visit-button">Besuchen →</span>
-                            </div>
                         </div>
-                        <h3>Donaubergland</h3>
-                        <p>Entdecken Sie die wunderschöne Region</p>
-                        <span class="distance-badge">Region</span>
-                    </div>
+                        <div class="leisure-body">
+                            <h3>Donaubergland <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></h3>
+                            <p>Entdecken Sie die wunderschöne Region</p>
+                            <span class="distance-badge">Region</span>
+                            <span class="visually-hidden">(öffnet in neuem Fenster)</span>
+                        </div>
+                    </article>
                 </a>
 
-                <!-- Stadthalle Tuttlingen -->
-                <a href="https://www.tuttlinger-hallen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link" aria-label="Besuchen Sie Stadthalle Tuttlingen">
-                    <div class="leisure-card">
+                <a href="https://www.tuttlinger-hallen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                    <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
                                 <source srcset="images/optimized/freizeit/ausflugsziel_stadtmitte_small.avif" type="image/avif">
                                 <source srcset="images/optimized/freizeit/ausflugsziel_stadtmitte_small.webp" type="image/webp">
-                                <img src="images/freizeit/ausflugsziel_stadtmitte_small.jpg" alt="Stadthalle Tuttlingen">
+                                <img src="images/freizeit/ausflugsziel_stadtmitte_small.jpg" alt="" width="300" height="187" loading="lazy">
                             </picture>
-                            <div class="leisure-overlay">
-                                <span class="visit-button">Besuchen →</span>
-                            </div>
                         </div>
-                        <h3>Stadthalle Tuttlingen</h3>
-                        <p>Veranstaltungen, Konzerte und Events</p>
-                        <span class="distance-badge">In Tuttlingen</span>
-                    </div>
+                        <div class="leisure-body">
+                            <h3>Stadthalle Tuttlingen <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></h3>
+                            <p>Veranstaltungen, Konzerte und Events</p>
+                            <span class="distance-badge">In Tuttlingen</span>
+                            <span class="visually-hidden">(öffnet in neuem Fenster)</span>
+                        </div>
+                    </article>
                 </a>
 
-                <!-- Donauwellen -->
-                <a href="https://www.donau-wellen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link" aria-label="Besuchen Sie Donauwellen">
-                    <div class="leisure-card">
+                <a href="https://www.donau-wellen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                    <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
                                 <source srcset="images/optimized/freizeit/donauwellen.avif" type="image/avif">
                                 <source srcset="images/optimized/freizeit/donauwellen.webp" type="image/webp">
-                                <img src="images/freizeit/donauwellen.jpg" alt="Donauwellen Wandergenuss">
+                                <img src="images/freizeit/donauwellen.jpg" alt="" width="300" height="187" loading="lazy">
                             </picture>
-                            <div class="leisure-overlay">
-                                <span class="visit-button">Besuchen →</span>
-                            </div>
                         </div>
-                        <h3>Donauwellen</h3>
-                        <p>Wandergenuss entlang der Donau</p>
-                        <span class="distance-badge">Wanderrouten</span>
-                    </div>
+                        <div class="leisure-body">
+                            <h3>Donauwellen <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></h3>
+                            <p>Wandergenuss entlang der Donau</p>
+                            <span class="distance-badge">Wanderrouten</span>
+                            <span class="visually-hidden">(öffnet in neuem Fenster)</span>
+                        </div>
+                    </article>
                 </a>
             </div>
 
-            <div class="activities">
-                <div class="activity">
-                    <div class="activity-icon">🚴</div>
-                    <h4>Radfahren</h4>
-                    <p>Perfekter Ausgangspunkt am Donauradweg</p>
-                </div>
-                <div class="activity">
-                    <div class="activity-icon">🥾</div>
-                    <h4>Wandern</h4>
-                    <p>Zahlreiche Wanderwege im Donaubergland</p>
-                </div>
-                <div class="activity">
-                    <div class="activity-icon">🎭</div>
-                    <h4>Kultur</h4>
-                    <p>Konzerte und Events das ganze Jahr</p>
-                </div>
-                <div class="activity">
-                    <div class="activity-icon">🍽️</div>
-                    <h4>Gastronomie</h4>
-                    <p>Schwäbische Küche in der Region</p>
-                </div>
-            </div>
+            <ul class="activities" role="list">
+                <li class="activity">
+                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-bike"/></svg></span>
+                    <div>
+                        <h3>Radfahren</h3>
+                        <p>Perfekter Ausgangspunkt am Donauradweg</p>
+                    </div>
+                </li>
+                <li class="activity">
+                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-mountain"/></svg></span>
+                    <div>
+                        <h3>Wandern</h3>
+                        <p>Zahlreiche Wanderwege im Donaubergland</p>
+                    </div>
+                </li>
+                <li class="activity">
+                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-ticket"/></svg></span>
+                    <div>
+                        <h3>Kultur</h3>
+                        <p>Konzerte und Events das ganze Jahr</p>
+                    </div>
+                </li>
+                <li class="activity">
+                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-utensils"/></svg></span>
+                    <div>
+                        <h3>Gastronomie</h3>
+                        <p>Schwäbische Küche in der Region</p>
+                    </div>
+                </li>
+            </ul>
         </div>
     </section>
 
-    <!-- Buchung Section -->
-    <section id="buchen" class="section-booking">
+    <!-- Buchung -->
+    <section id="buchen" class="section section-booking" aria-labelledby="booking-title">
         <div class="container">
-            <h2 class="section-title">Jetzt Buchen</h2>
-            <p class="section-subtitle">Wählen Sie Ihre Zimmer und Reisedaten</p>
-
-            <!-- Room Selection with Counters -->
-            <div class="rooms-selection">
-                <h3 class="booking-subtitle">Wählen Sie Ihre Zimmer</h3>
-                <div class="booking-rooms-grid">
-                    <!-- Einzelzimmer -->
-                    <div class="booking-room-card" data-room="einzelzimmer" data-price="62">
-                        <div class="booking-room-image-container">
-                            <picture>
-                                <source srcset="images/optimized/zimmer/Zimmer_EZ_small.avif" type="image/avif">
-                                <source srcset="images/optimized/zimmer/Zimmer_EZ_small.webp" type="image/webp">
-                                <img src="images/zimmer/Zimmer_EZ_small.jpg" alt="Einzelzimmer" class="booking-room-image">
-                            </picture>
-                        </div>
-                        <h4>Einzelzimmer</h4>
-                        <div class="booking-room-price">62,00 € <span>/ Nacht</span></div>
-                        <div class="booking-counter">
-                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('einzelzimmer', -1)">−</button>
-                            <span class="booking-counter-value" id="booking-count-einzelzimmer">0</span>
-                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('einzelzimmer', 1)">+</button>
-                        </div>
-                    </div>
-
-                    <!-- Doppelzimmer -->
-                    <div class="booking-room-card" data-room="doppelzimmer" data-price="86">
-                        <div class="booking-room-image-container">
-                            <picture>
-                                <source srcset="images/optimized/zimmer/Zimmer_DZ_small.avif" type="image/avif">
-                                <source srcset="images/optimized/zimmer/Zimmer_DZ_small.webp" type="image/webp">
-                                <img src="images/zimmer/Zimmer_DZ_small.jpg" alt="Doppelzimmer" class="booking-room-image">
-                            </picture>
-                        </div>
-                        <h4>Doppelzimmer</h4>
-                        <div class="booking-room-price">86,00 € <span>/ Nacht</span></div>
-                        <div class="booking-counter">
-                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('doppelzimmer', -1)">−</button>
-                            <span class="booking-counter-value" id="booking-count-doppelzimmer">0</span>
-                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('doppelzimmer', 1)">+</button>
-                        </div>
-                    </div>
-
-                    <!-- Familienzimmer -->
-                    <div class="booking-room-card" data-room="familienzimmer" data-price="114">
-                        <div class="booking-room-image-container">
-                            <picture>
-                                <source srcset="images/optimized/zimmer/Zimmer_FZ_small.avif" type="image/avif">
-                                <source srcset="images/optimized/zimmer/Zimmer_FZ_small.webp" type="image/webp">
-                                <img src="images/zimmer/Zimmer_FZ_small.jpg" alt="Familienzimmer" class="booking-room-image">
-                            </picture>
-                        </div>
-                        <h4>Familienzimmer</h4>
-                        <div class="booking-room-price">114,00 € <span>/ Nacht</span></div>
-                        <div class="booking-counter">
-                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('familienzimmer', -1)">−</button>
-                            <span class="booking-counter-value" id="booking-count-familienzimmer">0</span>
-                            <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('familienzimmer', 1)">+</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="section-head section-head--center">
+                <p class="eyebrow">Zimmer anfragen</p>
+                <h2 id="booking-title" class="section-title">In drei Schritten zu Ihrem Zimmer</h2>
+                <p class="section-lead">Direkt beim Hotel, ohne Buchungsportal – wir melden uns persönlich bei Ihnen.</p>
             </div>
 
-            <!-- Summary -->
-            <div class="booking-summary" id="bookingSummary" style="display: none;">
-                <h3>📋 Ihre Auswahl</h3>
-                <div id="bookingSummaryContent"></div>
-            </div>
+            <ol class="steps">
+                <li class="step">
+                    <h3>Anfrage senden</h3>
+                    <p>Zimmer und Reisedaten wählen, Kontaktdaten eintragen und absenden.</p>
+                </li>
+                <li class="step">
+                    <h3>Bestätigung erhalten</h3>
+                    <p>Sie bekommen sofort eine Eingangsbestätigung. Verbindlich wird die Buchung mit unserer Bestätigung per E-Mail.</p>
+                </li>
+                <li class="step">
+                    <h3>Ankommen &amp; wohlfühlen</h3>
+                    <p>Check-in täglich von 14 bis 21 Uhr. Sie kommen später? Sagen Sie uns einfach Bescheid.</p>
+                </li>
+            </ol>
 
-            <!-- Booking Form -->
-            <form class="booking-form" id="mainBookingForm" action="booking.php" method="post">
-                <h3 class="booking-subtitle">Reisedaten & Kontaktdaten</h3>
-
-                <input type="hidden" name="checkin" id="bookingCheckinInput">
-                <input type="hidden" name="checkout" id="bookingCheckoutInput">
-                <input type="hidden" name="einzelzimmer" id="bookingCountEinzelzimmer" value="0">
-                <input type="hidden" name="doppelzimmer" id="bookingCountDoppelzimmer" value="0">
-                <input type="hidden" name="familienzimmer" id="bookingCountFamilienzimmer" value="0">
-
-                <!-- Calendar Date Picker -->
-                <div class="date-picker-container">
-                    <div class="date-input-box" onclick="toggleBookingCalendar()">
-                        <div class="date-input-header">
-                            <span style="font-size: 1.5rem;">📅</span>
-                            <div class="date-label">Reisedaten auswählen</div>
-                        </div>
-                        <div class="date-range-display">
-                            <div class="date-item">
-                                <div class="date-item-label">Check-In</div>
-                                <div class="date-value placeholder" id="bookingCheckinDisplay">Datum</div>
+            <div class="booking-layout">
+                <!-- Schritt 1: Zimmer -->
+                <div class="booking-panel rooms-selection">
+                    <h3 class="booking-subtitle"><span class="booking-step-no" aria-hidden="true">1</span> Zimmer wählen</h3>
+                    <div class="booking-rooms-grid">
+                        <div class="booking-room-card" data-room="einzelzimmer" data-price="62">
+                            <div class="booking-room-image-container">
+                                <picture>
+                                    <source srcset="images/optimized/zimmer/Zimmer_EZ_small.avif" type="image/avif">
+                                    <source srcset="images/optimized/zimmer/Zimmer_EZ_small.webp" type="image/webp">
+                                    <img src="images/zimmer/Zimmer_EZ_small.jpg" alt="" class="booking-room-image" width="300" height="187" loading="lazy">
+                                </picture>
                             </div>
-                            <div class="date-separator">→</div>
-                            <div class="date-item">
-                                <div class="date-item-label">Check-Out</div>
-                                <div class="date-value placeholder" id="bookingCheckoutDisplay">Datum</div>
-                            </div>
-                        </div>
-                        <div class="nights-info" id="bookingNightsInfo" style="display: none;">
-                            <span id="bookingNightsCount"></span>
-                        </div>
-                    </div>
-
-                    <!-- Calendar -->
-                    <div class="calendar-wrapper" id="bookingCalendar">
-                        <div class="calendar-header">
-                            <h4 id="bookingCalendarMonth"></h4>
-                            <div class="calendar-nav">
-                                <button type="button" onclick="changeBookingMonth(-1)">‹</button>
-                                <button type="button" onclick="changeBookingMonth(1)">›</button>
-                            </div>
-                        </div>
-                        <div class="calendar-weekdays">
-                            <div class="weekday">So</div>
-                            <div class="weekday">Mo</div>
-                            <div class="weekday">Di</div>
-                            <div class="weekday">Mi</div>
-                            <div class="weekday">Do</div>
-                            <div class="weekday">Fr</div>
-                            <div class="weekday">Sa</div>
-                        </div>
-                        <div class="calendar-days" id="bookingCalendarDays"></div>
-                    </div>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="bookingFirstName">Vorname *</label>
-                        <input type="text" id="bookingFirstName" name="vorname" minlength="2" maxlength="120" autocomplete="given-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bookingLastName">Nachname *</label>
-                        <input type="text" id="bookingLastName" name="nachname" minlength="2" maxlength="120" autocomplete="family-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bookingEmail">E-Mail *</label>
-                        <input type="email" id="bookingEmail" name="email" maxlength="160" autocomplete="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="bookingPhone">Telefon *</label>
-                        <input type="tel" id="bookingPhone" name="telefon" minlength="6" maxlength="40" pattern="[0-9+()\s-]{6,}" autocomplete="tel" required>
-                    </div>
-                </div>
-
-                <!-- Firmeninformationen -->
-                <div id="companyInfoSection">
-                    <button type="button" id="addCompanyBtn" class="add-company-btn">+ Firmendaten hinzufügen?</button>
-                    
-                    <div id="companyFieldsWrapper" style="display: none;">
-                        <div id="companyNameSection" class="company-section">
-                            <div class="form-group">
-                                <label for="bookingCompanyName">Firmenname</label>
-                                <input type="text" id="bookingCompanyName" name="firmenname" maxlength="120" autocomplete="organization">
-                            </div>
-                            <button type="button" id="addCompanyAddressBtn" class="add-company-btn" style="margin-top: 0.5rem;">+ Firmenadresse hinzufügen?</button>
-                        </div>
-
-                        <div id="companyAddressSection" class="company-section" style="display: none;">
-                            <div class="form-group">
-                                <label for="bookingCompanyStreet">Firma Straße</label>
-                                <input type="text" id="bookingCompanyStreet" name="firma_strasse" maxlength="120" autocomplete="off">
-                            </div>
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label for="bookingCompanyZip">Firma PLZ</label>
-                                    <input type="text" id="bookingCompanyZip" name="firma_plz" maxlength="10" autocomplete="off">
-                                </div>
-                                <div class="form-group">
-                                    <label for="bookingCompanyCity">Firma Ort</label>
-                                    <input type="text" id="bookingCompanyCity" name="firma_ort" maxlength="120" autocomplete="off">
+                            <div class="booking-room-info">
+                                <h4>Einzelzimmer</h4>
+                                <p class="booking-room-price"><strong>62 €</strong> pro Nacht · 1 Person</p>
+                                <div class="booking-counter" role="group" aria-label="Anzahl Einzelzimmer">
+                                    <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('einzelzimmer', -1)" aria-label="Ein Einzelzimmer weniger">−</button>
+                                    <span class="booking-counter-value" id="booking-count-einzelzimmer" aria-live="polite">0</span>
+                                    <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('einzelzimmer', 1)" aria-label="Ein Einzelzimmer mehr">+</button>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="button" class="delete-company-all-btn" id="deleteAllCompanyBtn" title="Alle Firmendaten entfernen">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
-                            </svg>
-                        </button>
+                        <div class="booking-room-card" data-room="doppelzimmer" data-price="86">
+                            <div class="booking-room-image-container">
+                                <picture>
+                                    <source srcset="images/optimized/zimmer/Zimmer_DZ_small.avif" type="image/avif">
+                                    <source srcset="images/optimized/zimmer/Zimmer_DZ_small.webp" type="image/webp">
+                                    <img src="images/zimmer/Zimmer_DZ_small.jpg" alt="" class="booking-room-image" width="300" height="187" loading="lazy">
+                                </picture>
+                            </div>
+                            <div class="booking-room-info">
+                                <h4>Doppelzimmer</h4>
+                                <p class="booking-room-price"><strong>86 €</strong> pro Nacht · 2 Personen</p>
+                                <div class="booking-counter" role="group" aria-label="Anzahl Doppelzimmer">
+                                    <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('doppelzimmer', -1)" aria-label="Ein Doppelzimmer weniger">−</button>
+                                    <span class="booking-counter-value" id="booking-count-doppelzimmer" aria-live="polite">0</span>
+                                    <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('doppelzimmer', 1)" aria-label="Ein Doppelzimmer mehr">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="booking-room-card" data-room="familienzimmer" data-price="114">
+                            <div class="booking-room-image-container">
+                                <picture>
+                                    <source srcset="images/optimized/zimmer/Zimmer_FZ_small.avif" type="image/avif">
+                                    <source srcset="images/optimized/zimmer/Zimmer_FZ_small.webp" type="image/webp">
+                                    <img src="images/zimmer/Zimmer_FZ_small.jpg" alt="" class="booking-room-image" width="300" height="187" loading="lazy">
+                                </picture>
+                            </div>
+                            <div class="booking-room-info">
+                                <h4>Familienzimmer</h4>
+                                <p class="booking-room-price"><strong>114 €</strong> pro Nacht · bis 4 Personen</p>
+                                <div class="booking-counter" role="group" aria-label="Anzahl Familienzimmer">
+                                    <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('familienzimmer', -1)" aria-label="Ein Familienzimmer weniger">−</button>
+                                    <span class="booking-counter-value" id="booking-count-familienzimmer" aria-live="polite">0</span>
+                                    <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('familienzimmer', 1)" aria-label="Ein Familienzimmer mehr">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="booking-summary" id="bookingSummary" style="display: none;" aria-live="polite">
+                        <h3>Ihre Auswahl</h3>
+                        <div id="bookingSummaryContent"></div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="bookingNotes">Besondere Wünsche</label>
-                    <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z.B. Babybett gewünscht, späte Anreise, etc."></textarea>
-                </div>
-                <div class="form-group" style="position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
-                    <label for="bookingCompany">Firma</label>
-                    <input type="text" id="bookingCompany" name="company" tabindex="-1" autocomplete="off">
-                </div>
-                <div class="form-checkbox">
-                    <input type="checkbox" id="bookingPrivacy" required>
-                    <label for="bookingPrivacy">Ich habe die Datenschutzerklärung gelesen und akzeptiert *</label>
-                </div>
-                <button type="submit" class="btn-primary btn-large" id="bookingSubmitBtn" disabled>Buchungsanfrage senden</button>
-            </form>
+
+                <!-- Schritt 2 + 3: Reisedaten und Kontaktdaten -->
+                <form class="booking-panel booking-form" id="mainBookingForm" action="booking.php" method="post">
+                    <input type="hidden" name="checkin" id="bookingCheckinInput">
+                    <input type="hidden" name="checkout" id="bookingCheckoutInput">
+                    <input type="hidden" name="einzelzimmer" id="bookingCountEinzelzimmer" value="0">
+                    <input type="hidden" name="doppelzimmer" id="bookingCountDoppelzimmer" value="0">
+                    <input type="hidden" name="familienzimmer" id="bookingCountFamilienzimmer" value="0">
+
+                    <div class="booking-form-section">
+                        <h3 class="booking-subtitle"><span class="booking-step-no" aria-hidden="true">2</span> Reisedaten wählen</h3>
+                        <div class="date-picker-container">
+                            <button type="button" class="date-input-box" onclick="toggleBookingCalendar()" aria-expanded="false" aria-controls="bookingCalendar">
+                                <span class="date-input-header">
+                                    <svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>
+                                    Anreise und Abreise auswählen
+                                </span>
+                                <span class="date-range-display">
+                                    <span class="date-item">
+                                        <span class="date-item-label">Anreise</span>
+                                        <span class="date-value placeholder" id="bookingCheckinDisplay">Datum wählen</span>
+                                    </span>
+                                    <span class="date-separator" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+                                    <span class="date-item">
+                                        <span class="date-item-label">Abreise</span>
+                                        <span class="date-value placeholder" id="bookingCheckoutDisplay">Datum wählen</span>
+                                    </span>
+                                </span>
+                                <span class="nights-info" id="bookingNightsInfo" style="display: none;">
+                                    <span id="bookingNightsCount"></span>
+                                </span>
+                            </button>
+
+                            <div class="calendar-wrapper" id="bookingCalendar" role="group" aria-label="Kalender für Anreise und Abreise">
+                                <div class="calendar-header">
+                                    <h4 id="bookingCalendarMonth" aria-live="polite"></h4>
+                                    <div class="calendar-nav">
+                                        <button type="button" onclick="changeBookingMonth(-1)" aria-label="Vorheriger Monat"><svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg></button>
+                                        <button type="button" onclick="changeBookingMonth(1)" aria-label="Nächster Monat"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+                                    </div>
+                                </div>
+                                <div class="calendar-weekdays" aria-hidden="true">
+                                    <div class="weekday">So</div>
+                                    <div class="weekday">Mo</div>
+                                    <div class="weekday">Di</div>
+                                    <div class="weekday">Mi</div>
+                                    <div class="weekday">Do</div>
+                                    <div class="weekday">Fr</div>
+                                    <div class="weekday">Sa</div>
+                                </div>
+                                <div class="calendar-days" id="bookingCalendarDays"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="booking-form-section">
+                        <h3 class="booking-subtitle"><span class="booking-step-no" aria-hidden="true">3</span> Ihre Kontaktdaten</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="bookingFirstName">Vorname *</label>
+                                <input type="text" id="bookingFirstName" name="vorname" minlength="2" maxlength="120" autocomplete="given-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingLastName">Nachname *</label>
+                                <input type="text" id="bookingLastName" name="nachname" minlength="2" maxlength="120" autocomplete="family-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingEmail">E-Mail *</label>
+                                <input type="email" id="bookingEmail" name="email" maxlength="160" autocomplete="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingPhone">Telefon *</label>
+                                <input type="tel" id="bookingPhone" name="telefon" minlength="6" maxlength="40" pattern="[0-9+()\s-]{6,}" autocomplete="tel" required>
+                            </div>
+                        </div>
+
+                        <!-- Firmeninformationen (optional, z. B. für Geschäftsreisen) -->
+                        <div id="companyInfoSection">
+                            <button type="button" id="addCompanyBtn" class="add-company-btn">+ Firmendaten hinzufügen (für Geschäftsreisen)</button>
+
+                            <div id="companyFieldsWrapper" style="display: none;">
+                                <div id="companyNameSection" class="company-section">
+                                    <div class="form-group">
+                                        <label for="bookingCompanyName">Firmenname</label>
+                                        <input type="text" id="bookingCompanyName" name="firmenname" maxlength="120" autocomplete="organization">
+                                    </div>
+                                    <button type="button" id="addCompanyAddressBtn" class="add-company-btn">+ Firmenadresse hinzufügen</button>
+                                </div>
+
+                                <div id="companyAddressSection" class="company-section" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="bookingCompanyStreet">Straße und Hausnummer</label>
+                                        <input type="text" id="bookingCompanyStreet" name="firma_strasse" maxlength="120" autocomplete="off">
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="bookingCompanyZip">PLZ</label>
+                                            <input type="text" id="bookingCompanyZip" name="firma_plz" maxlength="10" autocomplete="off">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="bookingCompanyCity">Ort</label>
+                                            <input type="text" id="bookingCompanyCity" name="firma_ort" maxlength="120" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="delete-company-all-btn" id="deleteAllCompanyBtn" aria-label="Alle Firmendaten entfernen" title="Alle Firmendaten entfernen">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bookingNotes">Besondere Wünsche</label>
+                            <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z. B. Babybett gewünscht, späte Anreise"></textarea>
+                        </div>
+                        <div class="form-group honeypot" aria-hidden="true">
+                            <label for="bookingCompany">Firma</label>
+                            <input type="text" id="bookingCompany" name="company" tabindex="-1" autocomplete="off">
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="bookingPrivacy" required>
+                            <label for="bookingPrivacy">Ich habe die <a href="datenschutz.html#buchungsanfragen">Hinweise zum Datenschutz</a> zur Kenntnis genommen. *</label>
+                        </div>
+                        <button type="submit" class="btn-primary btn-large btn-block" id="bookingSubmitBtn" disabled>Buchungsanfrage senden</button>
+                        <p class="form-required-note">* Pflichtfelder. Der Button wird aktiv, sobald Zimmer und Reisedaten gewählt sind. Ihre Anfrage ist unverbindlich – verbindlich wird die Buchung erst mit unserer Bestätigung.</p>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
 
-    <!-- Kontakt Section -->
-    <section id="kontakt" class="section-contact">
+    <!-- Häufige Fragen -->
+    <section id="faq" class="section section-sand" aria-labelledby="faq-title">
+        <div class="container container--narrow">
+            <div class="section-head section-head--center">
+                <p class="eyebrow">Gut zu wissen</p>
+                <h2 id="faq-title" class="section-title">Häufige Fragen</h2>
+            </div>
+
+            <div class="faq-list">
+                <details class="faq-item">
+                    <summary>Wann kann ich ein- und auschecken? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <div class="faq-answer">
+                        <p>Der Check-in ist täglich von 14 bis 21 Uhr möglich, der Check-out bis 11 Uhr. Sie kommen später an? Geben Sie es bei Ihrer Anfrage unter „Besondere Wünsche“ an oder rufen Sie uns an.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Gibt es Parkplätze am Hotel? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <div class="faq-answer">
+                        <p>Ja, in der Nähe stehen kostenlose Parkplätze zur Verfügung. Die Anzahl ist begrenzt.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Gibt es WLAN in den Zimmern? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <div class="faq-answer">
+                        <p>Ja, WLAN ist in allen Zimmern kostenlos.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Wie läuft eine Buchung ab? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <div class="faq-answer">
+                        <p>Sie wählen Zimmer und Reisedaten und senden uns Ihre Anfrage über das Formular. Sie erhalten sofort eine Eingangsbestätigung per E-Mail. Verbindlich wird die Buchung, sobald wir sie Ihnen bestätigen.</p>
+                        <p>Natürlich können Sie auch einfach anrufen: <a href="tel:+4974612913">07461 2913</a>.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Kann ich ein Babybett bekommen? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <div class="faq-answer">
+                        <p>Ja, für das Familienzimmer stellen wir auf Anfrage ein Babybett bereit. Bitte geben Sie es bei Ihrer Anfrage an.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Kann ich Räume für Tagungen oder Feiern mieten? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <div class="faq-answer">
+                        <p>Ja. Der Hauptraum (60 m², bis 40 Personen) und der Nebenraum (21 m², bis 15 Personen) lassen sich einzeln oder zusammen buchen – kombiniert für bis zu 60 Personen. Schreiben Sie uns über das <a href="#kontakt" data-contact-subject="Event-Anfrage">Kontaktformular</a> oder rufen Sie an.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Wann ist die Rezeption besetzt? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <div class="faq-answer">
+                        <p>Die Rezeption ist täglich von 9 bis 22 Uhr für Sie da.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Wie weit ist es in die Innenstadt? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <div class="faq-answer">
+                        <p>Das Hotel liegt mitten in Tuttlingen. Die Sehenswürdigkeiten der Innenstadt und die Burgruine Honberg erreichen Sie zu Fuß.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kontakt -->
+    <section id="kontakt" class="section" aria-labelledby="contact-title">
         <div class="container">
-            <h2 class="section-title">Kontakt</h2>
-            <p class="section-subtitle">Wir freuen uns auf Ihre Nachricht</p>
+            <div class="section-head">
+                <p class="eyebrow">Kontakt</p>
+                <h2 id="contact-title" class="section-title">Wir sind für Sie da</h2>
+                <p class="section-lead">Fragen zu Zimmern, Räumen oder Ihrer Anreise? Rufen Sie uns an oder schreiben Sie uns – wir antworten persönlich.</p>
+            </div>
 
             <div class="contact-grid">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon">📍</div>
-                        <div>
-                            <h3>Adresse</h3>
-                            <p>Hotel Rössle<br>Honbergstrasse 8<br>78532 Tuttlingen<br>Deutschland</p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">📞</div>
-                        <div>
-                            <h3>Telefon & E-Mail</h3>
-                            <p>
-                                Tel: <a href="tel:+4974612913">+49 (0) 7461 2913</a><br>
-                                Fax: +49 (0) 7461 9697524<br>
-                                <a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">⏰</div>
-                        <div>
-                            <h3>Öffnungszeiten</h3>
-                            <p>
-                                <strong>Check-In:</strong> 14:00 - 21:00<br>
-                                <strong>Check-Out:</strong> Bis 11:00<br>
-                                <strong>Rezeption:</strong> 9:00 - 22:00
-                            </p>
-                        </div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">👤</div>
-                        <div>
-                            <h3>Inhaber</h3>
-                            <p>Osman Kücük</p>
-                        </div>
-                    </div>
+                <div class="contact-card">
+                    <h3>Hotel Rössle</h3>
+                    <ul class="contact-list">
+                        <li class="contact-item">
+                            <span class="contact-icon" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
+                            <div>
+                                <h4>Adresse</h4>
+                                <p>Honbergstrasse 8<br>78532 Tuttlingen</p>
+                            </div>
+                        </li>
+                        <li class="contact-item">
+                            <span class="contact-icon" aria-hidden="true"><svg class="icon"><use href="#i-phone"/></svg></span>
+                            <div>
+                                <h4>Telefon</h4>
+                                <p><a href="tel:+4974612913">+49 (0) 7461 2913</a><br>Fax: +49 (0) 7461 9697524</p>
+                            </div>
+                        </li>
+                        <li class="contact-item">
+                            <span class="contact-icon" aria-hidden="true"><svg class="icon"><use href="#i-mail"/></svg></span>
+                            <div>
+                                <h4>E-Mail</h4>
+                                <p><a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a></p>
+                            </div>
+                        </li>
+                        <li class="contact-item">
+                            <span class="contact-icon" aria-hidden="true"><svg class="icon"><use href="#i-clock"/></svg></span>
+                            <div>
+                                <h4>Zeiten</h4>
+                                <p>Rezeption täglich 9–22 Uhr<br>Check-in 14–21 Uhr · Check-out bis 11 Uhr</p>
+                            </div>
+                        </li>
+                        <li class="contact-item">
+                            <span class="contact-icon" aria-hidden="true"><svg class="icon"><use href="#i-user"/></svg></span>
+                            <div>
+                                <h4>Inhaber</h4>
+                                <p>Osman Kücük</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <a class="btn-accent" href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel%20R%C3%B6ssle%2C%20Honbergstrasse%208%2C%2078532%20Tuttlingen" target="_blank" rel="noopener noreferrer">
+                        <svg class="icon" aria-hidden="true"><use href="#i-route"/></svg>
+                        Route planen
+                        <span class="visually-hidden">(öffnet Google Maps in neuem Fenster)</span>
+                    </a>
                 </div>
 
                 <div class="contact-form-wrapper">
+                    <h3>Nachricht schreiben</h3>
+                    <p>Für Zimmeranfragen nutzen Sie am besten das <a href="#buchen">Buchungsformular</a>. Für alles andere schreiben Sie uns hier.</p>
                     <form class="contact-form" action="contact.php" method="post">
-                        <div class="form-group">
-                            <label for="contact-name">Name *</label>
-                            <input id="contact-name" name="name" type="text" required autocomplete="name">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="contact-name">Name *</label>
+                                <input id="contact-name" name="name" type="text" required autocomplete="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-email">E-Mail *</label>
+                                <input id="contact-email" name="email" type="email" required autocomplete="email">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="contact-email">E-Mail *</label>
-                            <input id="contact-email" name="email" type="email" required autocomplete="email">
-                        </div>
-                        <div class="form-group">
-                            <label for="contact-subject">Betreff *</label>
-                            <select id="contact-subject" name="subject" required>
-                                <option value="">Bitte wählen...</option>
-                                <option value="Allgemeine Anfrage">Allgemeine Anfrage</option>
-                                <option value="Zimmeranfrage">Zimmeranfrage</option>
-                                <option value="Event-Anfrage">Event-Anfrage</option>
-                                <option value="Sonstiges">Sonstiges</option>
-                            </select>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="contact-subject">Betreff *</label>
+                                <select id="contact-subject" name="subject" required>
+                                    <option value="">Bitte wählen …</option>
+                                    <option value="Allgemeine Anfrage">Allgemeine Anfrage</option>
+                                    <option value="Zimmeranfrage">Zimmeranfrage</option>
+                                    <option value="Event-Anfrage">Tagung oder Feier</option>
+                                    <option value="Sonstiges">Sonstiges</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-phone">Telefon (optional)</label>
+                                <input id="contact-phone" name="phone" type="tel" autocomplete="tel">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="contact-message">Nachricht *</label>
-                            <textarea id="contact-message" name="message" rows="5" required minlength="20" maxlength="4000"></textarea>
+                            <textarea id="contact-message" name="message" rows="5" required minlength="20" maxlength="4000" aria-describedby="contact-message-hint"></textarea>
+                            <p class="form-hint" id="contact-message-hint">Mindestens 20 Zeichen.</p>
                         </div>
-                        <div class="form-group">
-                            <label for="contact-phone">Telefon (optional)</label>
-                            <input id="contact-phone" name="phone" type="tel" autocomplete="tel">
-                        </div>
-                        <div class="form-group" style="position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
+                        <div class="form-group honeypot" aria-hidden="true">
                             <label for="contact-company">Firma (bitte frei lassen)</label>
                             <input id="contact-company" name="company" type="text" tabindex="-1" autocomplete="off">
                         </div>
-                        <button type="submit" class="btn-primary btn-large">Nachricht senden</button>
+                        <button type="submit" class="btn-primary btn-large">
+                            Nachricht senden
+                            <svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>
+                        </button>
+                        <p class="form-required-note">* Pflichtfelder. Hinweise zur Verarbeitung Ihrer Daten finden Sie in der <a href="datenschutz.html#kontaktformular">Datenschutzerklärung</a>.</p>
                     </form>
                 </div>
             </div>
         </div>
     </section>
 
+    </main>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>HOTEL RÖSSLE</h3>
-                    <p>Ihr komfortables Hotel im Herzen von Tuttlingen</p>
+                    <a href="#home" class="logo">
+                        <span class="brand-mark" aria-hidden="true"></span>
+                        <span class="logo-text">
+                            <span class="logo-name">Hotel Rössle</span>
+                            <span class="logo-place">Tuttlingen</span>
+                        </span>
+                    </a>
+                    <p>Familiengeführtes Hotel in zentraler, ruhiger Lage – Ihr Zuhause auf Zeit in Tuttlingen.</p>
                     <div class="footer-badges">
-                        <a href="https://www.bettundbike.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="Bett & Bike zertifiziertes Hotel">
-                            <picture>
-                                <source srcset="images/optimized/bett_und_bike_logo.avif" type="image/avif">
-                                <source srcset="images/optimized/bett_und_bike_logo.webp" type="image/webp">
-                                <img src="images/bett_und_bike_logo.svg" alt="Bett & Bike Logo">
-                            </picture>
+                        <a href="https://www.bettundbike.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="Bett+Bike – fahrradfreundlicher Gastbetrieb">
+                            <img src="images/bett_und_bike_logo.svg" alt="Bett+Bike zertifiziert" width="115" height="30" loading="lazy">
                         </a>
-                        <a href="https://www.dehogabw.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="DEHOGA Mitglied">
+                        <a href="https://www.dehogabw.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="Mitglied im DEHOGA Baden-Württemberg">
                             <picture>
                                 <source srcset="images/optimized/dehoga.avif" type="image/avif">
                                 <source srcset="images/optimized/dehoga.webp" type="image/webp">
-                                <img src="images/dehoga.jpg" alt="DEHOGA Baden-Württemberg Logo">
+                                <img src="images/dehoga.jpg" alt="DEHOGA Baden-Württemberg Mitglied" width="138" height="30" loading="lazy">
                             </picture>
                         </a>
                     </div>
                 </div>
                 <div class="footer-section">
-                    <h4>Kontakt</h4>
-                    <p>
-                        Honbergstrasse 8<br>
-                        78532 Tuttlingen<br>
-                        Tel: <a href="tel:+4974612913">+49 (0) 7461 2913</a><br>
-                        <a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a>
-                    </p>
+                    <h2 class="footer-heading">Kontakt</h2>
+                    <p>Honbergstrasse 8<br>78532 Tuttlingen</p>
+                    <p><a href="tel:+4974612913">+49 (0) 7461 2913</a><br><a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a></p>
                 </div>
                 <div class="footer-section">
-                    <h4>Navigation</h4>
+                    <h2 class="footer-heading">Hotel</h2>
                     <ul class="footer-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#zimmer">Zimmer</a></li>
-                        <li><a href="#events">Räumlichkeiten</a></li>
-                        <li><a href="#freizeit">Freizeit</a></li>
-                        <li><a href="#kontakt">Kontakt</a></li>
+                        <li><a href="#zimmer">Zimmer &amp; Preise</a></li>
+                        <li><a href="#events">Tagungen &amp; Feiern</a></li>
+                        <li><a href="#freizeit">Umgebung</a></li>
+                        <li><a href="#faq">Häufige Fragen</a></li>
+                        <li><a href="#buchen">Zimmer anfragen</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Rechtliches</h4>
+                    <h2 class="footer-heading">Rechtliches</h2>
                     <ul class="footer-links">
                         <li><a href="impressum.html">Impressum</a></li>
                         <li><a href="datenschutz.html">Datenschutz</a></li>
@@ -780,33 +1136,41 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Hotel Rössle Tuttlingen. Alle Rechte vorbehalten.</p>
+                <p>&copy; 2026 Hotel Rössle Tuttlingen</p>
+                <p>Ohne Cookies, ohne Tracking.</p>
             </div>
         </div>
     </footer>
 
-    </main>
+    <!-- Schnellzugriff auf dem Smartphone -->
+    <nav class="mobile-cta" aria-label="Schnellkontakt">
+        <a href="tel:+4974612913" class="btn-secondary">
+            <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+            Anrufen
+        </a>
+        <a href="#buchen" class="btn-primary">Zimmer anfragen</a>
+    </nav>
 
-    <!-- Room Gallery Modal -->
-    <div id="roomGalleryModal" class="gallery-modal">
+    <!-- Zimmergalerie (Lightbox) -->
+    <div id="roomGalleryModal" class="gallery-modal" role="dialog" aria-modal="true" aria-label="Zimmerfotos">
         <div class="gallery-overlay" onclick="closeRoomGallery()"></div>
         <div class="gallery-container">
-            <button class="gallery-close" onclick="closeRoomGallery()" aria-label="Schließen">&times;</button>
-            <button class="gallery-prev" onclick="prevRoomImage()" aria-label="Vorheriges Bild">‹</button>
+            <button type="button" class="gallery-close" onclick="closeRoomGallery()" aria-label="Galerie schließen">&times;</button>
+            <button type="button" class="gallery-prev" onclick="prevRoomImage()" aria-label="Vorheriges Bild"><svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg></button>
             <div class="gallery-image-wrapper">
                 <picture id="galleryImageWrapper">
                     <source srcset="images/optimized/zimmer/Zimmer_EZ_small.avif" type="image/avif">
                     <source srcset="images/optimized/zimmer/Zimmer_EZ_small.webp" type="image/webp">
-                    <img id="galleryImage" src="images/zimmer/Zimmer_EZ_small.jpg" alt="Zimmer Galerie">
+                    <img id="galleryImage" src="images/zimmer/Zimmer_EZ_small.jpg" alt="Zimmerfoto">
                 </picture>
                 <div class="gallery-caption" id="galleryCaption"></div>
             </div>
-            <button class="gallery-next" onclick="nextRoomImage()" aria-label="Nächstes Bild">›</button>
+            <button type="button" class="gallery-next" onclick="nextRoomImage()" aria-label="Nächstes Bild"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
             <div class="gallery-dots" id="galleryDots"></div>
-            <div class="gallery-counter" id="galleryCounter"></div>
+            <div class="gallery-counter" id="galleryCounter" aria-live="polite"></div>
         </div>
     </div>
 
-    <script src="js/new-script.js"></script>
+    <script src="js/new-script.js?v=20261003"></script>
 </body>
 </html>
