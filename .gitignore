@@ -58,3 +58,7 @@ var/*
 # Claude local settings
 .claude/settings.local.json
 TELEGRAM-CREDENTIALS.txt
+
+# Externe Website-Analyse (enthält persönlichen Zugangscode, nicht veröffentlichen)
+Website-Analyse.html
+Website-Analyse_files/

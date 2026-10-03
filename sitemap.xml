@@ -5,9 +5,14 @@
     <!-- Startseite: Hotel Rössle Tuttlingen – Zimmer, Räumlichkeiten, Freizeit, Buchung, Kontakt -->
     <url>
         <loc>https://www.hotelroessle.eu/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-10-03</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://www.hotelroessle.eu/images/home_hotelroessle.jpg</image:loc>
+            <image:title>Hotel Rössle Tuttlingen – Fassade</image:title>
+            <image:caption>Die gelbe Fassade des familiengeführten Hotel Rössle an der Honbergstrasse in Tuttlingen.</image:caption>
+        </image:image>
         <image:image>
             <image:loc>https://www.hotelroessle.eu/images/zimmer/Zimmer_EZ_small.jpg</image:loc>
             <image:title>Einzelzimmer im Hotel Rössle Tuttlingen</image:title>
@@ -28,7 +33,7 @@
     <!-- Impressum: rechtliche Anbieterkennzeichnung -->
     <url>
         <loc>https://www.hotelroessle.eu/impressum.html</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-10-03</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
@@ -36,7 +41,7 @@
     <!-- Datenschutzerklärung: Informationen zum Umgang mit personenbezogenen Daten -->
     <url>
         <loc>https://www.hotelroessle.eu/datenschutz.html</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-10-03</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
