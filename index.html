@@ -57,6 +57,7 @@
         "checkoutTime": "11:00",
         "priceRange": "62–114 €",
         "currenciesAccepted": "EUR",
+        "paymentAccepted": "Bargeld, PayPal",
         "availableLanguage": "de",
         "amenityFeature": [
             { "@type": "LocationFeatureSpecification", "name": "Kostenloses WLAN", "value": true },
@@ -122,6 +123,7 @@
         <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
         <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
         <symbol id="i-bed" viewBox="0 0 24 24"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/></symbol>
+        <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3"/><path d="M21 12h-5a2 2 0 0 0 0 4h5v-4z"/><path d="M3 7h16a2 2 0 0 1 2 2v3"/></symbol>
         <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
         <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></symbol>
     </svg>
@@ -393,6 +395,10 @@
                 <div class="info-item">
                     <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
                     <div><span>Rezeption</span><strong>Täglich 9–21 Uhr</strong></div>
+                </div>
+                <div class="info-item">
+                    <svg class="icon" aria-hidden="true"><use href="#i-wallet"/></svg>
+                    <div><span>Zahlung</span><strong>Bar oder PayPal</strong></div>
                 </div>
             </div>
         </div>
@@ -696,7 +702,7 @@
                 </li>
                 <li class="step">
                     <h3>Ankommen &amp; wohlfühlen</h3>
-                    <p>Check-in täglich von 14 bis 21 Uhr. Sie kommen später? Sagen Sie uns einfach Bescheid.</p>
+                    <p>Check-in täglich von 14 bis 21 Uhr. Teilen Sie uns gern Ihre voraussichtliche Anreisezeit mit.</p>
                 </li>
             </ol>
 
@@ -884,7 +890,7 @@
 
                         <div class="form-group">
                             <label for="bookingNotes">Besondere Wünsche</label>
-                            <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z. B. späte Anreise"></textarea>
+                            <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z. B. voraussichtliche Anreisezeit"></textarea>
                         </div>
                         <div class="form-group honeypot" aria-hidden="true">
                             <label for="bookingCompany">Firma</label>
@@ -895,7 +901,7 @@
                             <label for="bookingPrivacy">Ich habe die <a href="datenschutz.html#buchungsanfragen">Hinweise zum Datenschutz</a> zur Kenntnis genommen. *</label>
                         </div>
                         <button type="submit" class="btn-primary btn-large btn-block" id="bookingSubmitBtn" disabled>Buchungsanfrage senden</button>
-                        <p class="form-required-note">* Pflichtfelder. Der Button wird aktiv, sobald Zimmer und Reisedaten gewählt sind. Ihre Anfrage ist unverbindlich – verbindlich wird die Buchung erst mit unserer Bestätigung.</p>
+                        <p class="form-required-note">* Pflichtfelder. Der Button wird aktiv, sobald Zimmer und Reisedaten gewählt sind. Ihre Anfrage ist unverbindlich – verbindlich wird die Buchung erst mit unserer Bestätigung. Bezahlung bar oder per PayPal (derzeit keine Kartenzahlung).</p>
                     </div>
                 </form>
             </div>
@@ -914,7 +920,13 @@
                 <details class="faq-item">
                     <summary>Wann kann ich ein- und auschecken? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
                     <div class="faq-answer">
-                        <p>Der Check-in ist täglich von 14 bis 21 Uhr möglich, der Check-out bis 11 Uhr. Sie kommen später an? Geben Sie es bei Ihrer Anfrage unter „Besondere Wünsche“ an oder rufen Sie uns an.</p>
+                        <p>Der Check-in ist täglich von 14 bis 21 Uhr möglich, der Check-out bis 11 Uhr. Bitte geben Sie bei Ihrer Anfrage unter „Besondere Wünsche“ Ihre voraussichtliche Anreisezeit an.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Wo kann ich bei der Anreise mit dem Auto halten? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <div class="faq-answer">
+                        <p>Direkt gegenüber dem Hotel befindet sich eine Ladezone. Dort können Sie bei der Ankunft kurz halten, um Ihr Gepäck auszuladen und einzuchecken.</p>
                     </div>
                 </details>
                 <details class="faq-item">
@@ -943,7 +955,13 @@
                     </div>
                 </details>
                 <details class="faq-item">
-                    <summary>Wann ist die Rezeption besetzt? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <summary>Wie kann ich bezahlen? <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+                    <div class="faq-answer">
+                        <p>Sie können bar oder per PayPal bezahlen. Kartenzahlung (EC- oder Kreditkarte) ist derzeit leider nicht möglich.</p>
+                    </div>
+                </details>
+                <details class="faq-item">
+                    <summary>Wann ist die Rezeption besetzt?<svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
                     <div class="faq-answer">
                         <p>Die Rezeption ist täglich von 9 bis 21 Uhr für Sie da.</p>
                     </div>

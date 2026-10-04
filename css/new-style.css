@@ -1346,7 +1346,7 @@ strong {
 
 .info-banner {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--space-md);
     margin-top: clamp(2rem, 4vw, 3rem);
     padding: var(--space-lg) clamp(1.25rem, 3vw, 2rem);
@@ -1387,6 +1387,12 @@ strong {
         margin-inline: auto;
     }
 
+    .info-banner {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
     .info-banner {
         grid-template-columns: 1fr;
     }
