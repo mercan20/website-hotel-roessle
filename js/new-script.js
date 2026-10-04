@@ -602,6 +602,13 @@ const roomGalleries = {
         { src: 'images/zimmer/wohnen_roessle4.jpg', caption: 'Familienzimmer – Platz für bis zu 4 Personen' },
         { src: 'images/zimmer/Zimmer_FZ_small.jpg', caption: 'Familienzimmer mit Sitzecke' },
         { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche und WC' }
+    ],
+    apartment: [
+        { src: 'images/apartment/apartment-wohnraum.jpg', caption: 'Apartment – Wohn- und Schlafbereich mit Sitzecke' },
+        { src: 'images/apartment/apartment-schlafbereich.jpg', caption: 'Apartment – Schlafbereich mit TV' },
+        { src: 'images/apartment/apartment-kueche.jpg', caption: 'Apartment – eigene Küche mit Geschirr' },
+        { src: 'images/apartment/apartment-kuechenzeile.jpg', caption: 'Apartment – Küchenzeile mit Spüle' },
+        { src: 'images/apartment/apartment-bad.jpg', caption: 'Apartment – Bad mit Dusche und Waschmaschine' }
     ]
 };
 

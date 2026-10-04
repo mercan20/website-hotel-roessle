@@ -1351,36 +1351,14 @@ strong {
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
 }
 
+.room-card--wide .room-image {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 300px;
+}
+
 .room-card--wide .room-content {
     padding: clamp(1.5rem, 3.5vw, 2.75rem);
-}
-
-.apartment-visual {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-md);
-    min-height: 260px;
-    padding: var(--space-xl);
-    background:
-        radial-gradient(circle at 30% 20%, rgba(226, 176, 74, 0.28), transparent 55%),
-        var(--ink);
-    color: var(--ochre);
-    text-align: center;
-}
-
-.apartment-visual .icon {
-    width: 4.5rem;
-    height: 4.5rem;
-    stroke-width: 1.2;
-}
-
-.apartment-visual span {
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 2.6vw, 2rem);
-    font-style: italic;
-    color: var(--on-dark);
 }
 
 .room-kicker {
@@ -1436,9 +1414,12 @@ strong {
         grid-template-columns: 1fr;
     }
 
-    .apartment-visual {
-        min-height: 200px;
+    .room-card--wide .room-image {
+        aspect-ratio: 4 / 3;
+        height: auto;
+        min-height: 0;
     }
+
 
     .apartment-features {
         grid-template-columns: repeat(2, minmax(0, 1fr));

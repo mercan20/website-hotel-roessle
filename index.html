@@ -328,7 +328,7 @@
             <div class="section-head">
                 <p class="eyebrow">Zimmer &amp; Preise</p>
                 <h2 id="rooms-title" class="section-title">Für jede Reise das passende Zimmer</h2>
-                <p class="section-lead">Ob allein auf Geschäftsreise, zu zweit oder mit der Familie: Alle Zimmer haben ein eigenes Bad mit Dusche und WC, TV und kostenloses WLAN. Für längere Aufenthalte gibt es unsere voll ausgestatteten Apartments.</p>
+                <p class="section-lead">Ob allein auf Geschäftsreise, zu zweit oder mit der Familie: Alle Zimmer haben ein eigenes Bad mit Dusche und WC, TV und kostenloses WLAN. Wer mehr Platz und Unabhängigkeit möchte, wählt eines unserer voll ausgestatteten Apartments.</p>
             </div>
 
             <div class="rooms-grid">
@@ -407,15 +407,18 @@
 
                 <!-- Apartment -->
                 <article class="room-card room-card--wide reveal">
-                    <!-- FOTO-TODO: Apartment mit Küche und Essbereich (mind. 1600×1067 px), dann .apartment-visual durch ein Foto ersetzen -->
-                    <div class="apartment-visual" aria-hidden="true">
-                        <svg class="icon"><use href="#i-home"/></svg>
-                        <span>Wohnen wie zu Hause</span>
-                    </div>
+                    <button type="button" class="room-image" onclick="openRoomGallery('apartment')" aria-label="Fotos vom Apartment ansehen">
+                        <picture>
+                            <source srcset="images/optimized/apartment/apartment-wohnraum-karte.avif" type="image/avif">
+                            <source srcset="images/optimized/apartment/apartment-wohnraum-karte.webp" type="image/webp">
+                            <img src="images/apartment/apartment-wohnraum-karte.jpg" alt="" width="1200" height="900" loading="lazy">
+                        </picture>
+                        <span class="view-gallery" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg> 5 Fotos</span>
+                    </button>
                     <div class="room-content">
-                        <p class="room-kicker">Für längere Aufenthalte</p>
+                        <p class="room-kicker">Wie zu Hause fühlen</p>
                         <h3>Apartment</h3>
-                        <p class="room-intro">Wohnen wie in der eigenen Ferienwohnung: Unsere Apartments sind für den Alltag bestens ausgestattet. Kochen Sie in Ihrer eigenen Küche, waschen und bügeln Sie Ihre Wäsche und nutzen Sie den Ess- und Arbeitsbereich für ein gemeinsames Essen, konzentriertes Arbeiten oder einen gemütlichen Abend. Ideal für längere Aufenthalte, Geschäftsreisen und alle, die unterwegs gern unabhängig sind.</p>
+                        <p class="room-intro">Mehr Raum, mehr Freiheit: Unsere Apartments sind für den Alltag bestens ausgestattet. Kochen Sie in Ihrer eigenen Küche, waschen und bügeln Sie Ihre Wäsche und nutzen Sie den Ess- und Arbeitsbereich für ein gemeinsames Essen, konzentriertes Arbeiten oder einen gemütlichen Abend. So fühlen Sie sich auch unterwegs wie zu Hause – ob auf Geschäftsreise oder privat.</p>
                         <p class="room-price">115 € <span>pro Nacht</span></p>
                         <ul class="apartment-features">
                             <li><span class="apartment-feature-icon" aria-hidden="true"><svg class="icon"><use href="#i-kitchen"/></svg></span> Eigene Küche</li>
@@ -831,10 +834,13 @@
                             </div>
                         </div>
 
-                        <!-- FOTO-TODO: Apartment (mind. 1600×1067 px) -->
                         <div class="booking-room-card" data-room="apartment" data-price="115">
-                            <div class="booking-room-image-container booking-room-image-container--icon" aria-hidden="true">
-                                <svg class="icon"><use href="#i-home"/></svg>
+                            <div class="booking-room-image-container">
+                                <picture>
+                                    <source srcset="images/optimized/apartment/apartment-wohnraum-klein.avif" type="image/avif">
+                                    <source srcset="images/optimized/apartment/apartment-wohnraum-klein.webp" type="image/webp">
+                                    <img src="images/apartment/apartment-wohnraum-klein.jpg" alt="" class="booking-room-image" width="800" height="450" loading="lazy">
+                                </picture>
                             </div>
                             <div class="booking-room-info">
                                 <h4>Apartment</h4>
