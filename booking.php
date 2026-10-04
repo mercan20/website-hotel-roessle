@@ -36,6 +36,8 @@ const BOOKING_ROOM_LIMITS = [
     'einzelzimmer' => 5,
     'doppelzimmer' => 10,
     'familienzimmer' => 3,
+    'zweibettzimmer' => 5,
+    'apartment' => 3,
 ];
 const BOOKING_NAME_PATTERN = "/^[A-Za-zÀ-ÖØ-öø-ÿ' \-]{2,}$/u";
 const BOOKING_PHONE_PATTERN = '/^[0-9+()\\s-]{6,}$/';
@@ -155,8 +157,11 @@ if ($checkin !== null && $checkout !== null && $errors === []) {
 $einzelzimmer = filter_var($_POST['einzelzimmer'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?? 0;
 $doppelzimmer = filter_var($_POST['doppelzimmer'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?? 0;
 $familienzimmer = filter_var($_POST['familienzimmer'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?? 0;
+$zweibettzimmer = filter_var($_POST['zweibettzimmer'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?? 0;
+$apartment = filter_var($_POST['apartment'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?? 0;
+$apartmentBalkon = $apartment > 0 && ($_POST['apartment_balkon'] ?? '') === 'ja';
 
-$totalRooms = $einzelzimmer + $doppelzimmer + $familienzimmer;
+$totalRooms = $einzelzimmer + $doppelzimmer + $familienzimmer + $zweibettzimmer + $apartment;
 if ($totalRooms === 0) {
     $errors[] = 'Bitte wählen Sie mindestens ein Zimmer aus.';
 }
@@ -175,6 +180,14 @@ if ($doppelzimmer > BOOKING_ROOM_LIMITS['doppelzimmer']) {
 
 if ($familienzimmer > BOOKING_ROOM_LIMITS['familienzimmer']) {
     $errors[] = 'Für Familienzimmer können maximal ' . BOOKING_ROOM_LIMITS['familienzimmer'] . ' Zimmer angefragt werden.';
+}
+
+if ($zweibettzimmer > BOOKING_ROOM_LIMITS['zweibettzimmer']) {
+    $errors[] = 'Für Zweibettzimmer können maximal ' . BOOKING_ROOM_LIMITS['zweibettzimmer'] . ' Zimmer angefragt werden.';
+}
+
+if ($apartment > BOOKING_ROOM_LIMITS['apartment']) {
+    $errors[] = 'Es können maximal ' . BOOKING_ROOM_LIMITS['apartment'] . ' Apartments angefragt werden.';
 }
 
 if ($errors !== []) {
@@ -238,6 +251,8 @@ $lines[] = 'Zimmerwunsch:';
 $lines[] = '  Einzelzimmer: ' . $einzelzimmer;
 $lines[] = '  Doppelzimmer: ' . $doppelzimmer;
 $lines[] = '  Familienzimmer: ' . $familienzimmer;
+$lines[] = '  Zweibettzimmer: ' . $zweibettzimmer;
+$lines[] = '  Apartment: ' . $apartment . ($apartmentBalkon ? ' (mit Balkon gewünscht)' : '');
 
 if ($notes !== '') {
     $lines[] = '';
@@ -329,6 +344,12 @@ if ($checkin !== null && $checkout !== null) {
     }
     if ($familienzimmer > 0) {
         $roomParts[] = $familienzimmer . ' Familienzimmer';
+    }
+    if ($zweibettzimmer > 0) {
+        $roomParts[] = $zweibettzimmer . ' Zweibettzimmer';
+    }
+    if ($apartment > 0) {
+        $roomParts[] = $apartment . ($apartment === 1 ? ' Apartment' : ' Apartments') . ($apartmentBalkon ? ' (mit Balkon)' : '');
     }
 
     $periodLine = 'Wir haben Ihre Anfrage für den Zeitraum ' . $checkinForMail . ' bis ' . $checkoutForMail;

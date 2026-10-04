@@ -9,6 +9,8 @@ const BOOKING_SECURITY_CONFIG = {
         einzelzimmer: 5,
         doppelzimmer: 10,
         familienzimmer: 3,
+        zweibettzimmer: 5,
+        apartment: 3,
     },
     maxRoomsTotal: 18,
     minNights: 1,
@@ -147,6 +149,11 @@ document.addEventListener('DOMContentLoaded', function() {
         bookingForm.addEventListener('submit', handleBookingSubmit);
     }
 
+    const apartmentBalconyCheckbox = document.getElementById('bookingApartmentBalkon');
+    if (apartmentBalconyCheckbox) {
+        apartmentBalconyCheckbox.addEventListener('change', updateBookingSummary);
+    }
+
     // Company Information Toggle
     const addCompanyBtn = document.getElementById('addCompanyBtn');
     const companyFieldsWrapper = document.getElementById('companyFieldsWrapper');
@@ -242,11 +249,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Room Counter State
-const bookingCounters = {
-    einzelzimmer: 0,
-    doppelzimmer: 0,
-    familienzimmer: 0
+// Alle buchbaren Zimmertypen: Schlüssel = Feldname für booking.php, ID-Suffix der Hidden-Inputs
+const BOOKING_ROOM_TYPES = {
+    einzelzimmer: { name: 'Einzelzimmer', plural: 'Einzelzimmer', inputId: 'bookingCountEinzelzimmer' },
+    doppelzimmer: { name: 'Doppelzimmer', plural: 'Doppelzimmer', inputId: 'bookingCountDoppelzimmer' },
+    zweibettzimmer: { name: 'Zweibettzimmer', plural: 'Zweibettzimmer', inputId: 'bookingCountZweibettzimmer' },
+    familienzimmer: { name: 'Familienzimmer', plural: 'Familienzimmer', inputId: 'bookingCountFamilienzimmer' },
+    apartment: { name: 'Apartment', plural: 'Apartments', inputId: 'bookingCountApartment' },
 };
+
+const bookingCounters = Object.fromEntries(Object.keys(BOOKING_ROOM_TYPES).map(room => [room, 0]));
 
 function syncBookingHiddenFields() {
     const checkinInput = document.getElementById('bookingCheckinInput');
@@ -259,32 +271,32 @@ function syncBookingHiddenFields() {
         checkoutInput.value = bookingSelectedCheckout ? serializeBookingDate(bookingSelectedCheckout) : '';
     }
 
-    const einzelzimmerInput = document.getElementById('bookingCountEinzelzimmer');
-    if (einzelzimmerInput) {
-        einzelzimmerInput.value = String(bookingCounters.einzelzimmer ?? 0);
+    for (const [room, type] of Object.entries(BOOKING_ROOM_TYPES)) {
+        const input = document.getElementById(type.inputId);
+        if (input) {
+            input.value = String(bookingCounters[room] ?? 0);
+        }
     }
 
-    const doppelzimmerInput = document.getElementById('bookingCountDoppelzimmer');
-    if (doppelzimmerInput) {
-        doppelzimmerInput.value = String(bookingCounters.doppelzimmer ?? 0);
-    }
-
-    const familienzimmerInput = document.getElementById('bookingCountFamilienzimmer');
-    if (familienzimmerInput) {
-        familienzimmerInput.value = String(bookingCounters.familienzimmer ?? 0);
+    // Balkon-Wunsch nur möglich, wenn mindestens ein Apartment gewählt ist
+    const balconyCheckbox = document.getElementById('bookingApartmentBalkon');
+    if (balconyCheckbox) {
+        const hasApartment = bookingCounters.apartment > 0;
+        balconyCheckbox.disabled = !hasApartment;
+        if (!hasApartment) {
+            balconyCheckbox.checked = false;
+        }
     }
 }
 
-const bookingRoomLimitWarned = {
-    einzelzimmer: false,
-    doppelzimmer: false,
-    familienzimmer: false,
-};
+const bookingRoomLimitWarned = Object.fromEntries(Object.keys(BOOKING_ROOM_TYPES).map(room => [room, false]));
 
 const bookingPrices = {
     einzelzimmer: 62,
     doppelzimmer: 86,
-    familienzimmer: 114
+    zweibettzimmer: 86,
+    familienzimmer: 114,
+    apartment: 115
 };
 
 // Calendar State
@@ -304,10 +316,8 @@ function updateRoomCounter(room, change) {
     nextValue = Math.max(0, Math.min(maxForRoom, nextValue));
 
     if (nextValue === currentValue && change > 0 && currentValue >= maxForRoom && !bookingRoomLimitWarned[room]) {
-        const roomName = room === 'einzelzimmer' ? 'Einzelzimmer'
-            : room === 'doppelzimmer' ? 'Doppelzimmer'
-            : 'Familienzimmer';
-        showBookingMessage(`Für ${roomName} stehen maximal ${maxForRoom} Zimmer gleichzeitig zur Verfügung.`, 'error');
+        const roomName = BOOKING_ROOM_TYPES[room].plural;
+        showBookingMessage(`Es stehen maximal ${maxForRoom} ${roomName} gleichzeitig zur Verfügung.`, 'error');
         bookingRoomLimitWarned[room] = true;
     }
 
@@ -348,8 +358,10 @@ function updateBookingSummary() {
             hasSelection = true;
             const roomTotal = count * bookingPrices[room];
             total += roomTotal;
-            const roomName = room === 'einzelzimmer' ? 'Einzelzimmer' :
-                           room === 'doppelzimmer' ? 'Doppelzimmer' : 'Familienzimmer';
+            let roomName = BOOKING_ROOM_TYPES[room].name;
+            if (room === 'apartment' && document.getElementById('bookingApartmentBalkon')?.checked) {
+                roomName += ' mit Balkon';
+            }
             html += `
                 <div class="booking-summary-item">
                     <span>${count}x ${roomName}</span>
@@ -915,9 +927,7 @@ async function handleBookingSubmit(e) {
         telefon: (formData.get('telefon') || '').toString().trim(),
         checkin: bookingSelectedCheckin ? serializeBookingDate(bookingSelectedCheckin) : null,
         checkout: bookingSelectedCheckout ? serializeBookingDate(bookingSelectedCheckout) : null,
-        einzelzimmer: bookingCounters.einzelzimmer || 0,
-        doppelzimmer: bookingCounters.doppelzimmer || 0,
-        familienzimmer: bookingCounters.familienzimmer || 0,
+        ...Object.fromEntries(Object.keys(BOOKING_ROOM_TYPES).map(room => [room, bookingCounters[room] || 0])),
         wuensche: (formData.get('wuensche') || '').toString().trim(),
         origin: window.location.origin,
         userAgent: navigator.userAgent,
@@ -947,9 +957,9 @@ async function handleBookingSubmit(e) {
     formData.set('wuensche', bookingData.wuensche);
     formData.set('checkin', bookingData.checkin ?? '');
     formData.set('checkout', bookingData.checkout ?? '');
-    formData.set('einzelzimmer', String(bookingData.einzelzimmer ?? 0));
-    formData.set('doppelzimmer', String(bookingData.doppelzimmer ?? 0));
-    formData.set('familienzimmer', String(bookingData.familienzimmer ?? 0));
+    for (const room of Object.keys(BOOKING_ROOM_TYPES)) {
+        formData.set(room, String(bookingData[room] ?? 0));
+    }
     formData.set('origin', bookingData.origin);
     formData.set('userAgent', bookingData.userAgent);
 
@@ -1037,7 +1047,7 @@ function validateBookingForm(data, checkinDate, checkoutDate) {
         return { valid: false, message: 'Bitte geben Sie eine gültige Telefonnummer an.' };
     }
 
-    const totalRooms = (data.einzelzimmer || 0) + (data.doppelzimmer || 0) + (data.familienzimmer || 0);
+    const totalRooms = Object.keys(BOOKING_ROOM_TYPES).reduce((sum, room) => sum + (data[room] || 0), 0);
     if (totalRooms === 0) {
         return { valid: false, message: 'Bitte wählen Sie mindestens ein Zimmer aus.' };
     }
@@ -1051,12 +1061,10 @@ function validateBookingForm(data, checkinDate, checkoutDate) {
 
     for (const [room, max] of Object.entries(BOOKING_SECURITY_CONFIG.maxRooms)) {
         if ((data[room] || 0) > max) {
-            const roomName = room === 'einzelzimmer' ? 'Einzelzimmer'
-                : room === 'doppelzimmer' ? 'Doppelzimmer'
-                : 'Familienzimmer';
+            const roomName = BOOKING_ROOM_TYPES[room].plural;
             return {
                 valid: false,
-                message: `Für ${roomName} können maximal ${max} Zimmer gleichzeitig angefragt werden.`,
+                message: `Es können maximal ${max} ${roomName} gleichzeitig angefragt werden.`,
             };
         }
     }
@@ -1160,18 +1168,14 @@ function showBookingMessage(message, type) {
  */
 function resetBookingForm() {
     // Counter zurücksetzen
-    bookingCounters.einzelzimmer = 0;
-    bookingCounters.doppelzimmer = 0;
-    bookingCounters.familienzimmer = 0;
-
-    Object.keys(bookingRoomLimitWarned).forEach(room => {
+    for (const room of Object.keys(BOOKING_ROOM_TYPES)) {
+        bookingCounters[room] = 0;
         bookingRoomLimitWarned[room] = false;
-    });
-
-    // UI aktualisieren
-    document.getElementById('booking-count-einzelzimmer').textContent = '0';
-    document.getElementById('booking-count-doppelzimmer').textContent = '0';
-    document.getElementById('booking-count-familienzimmer').textContent = '0';
+        const counter = document.getElementById(`booking-count-${room}`);
+        if (counter) {
+            counter.textContent = '0';
+        }
+    }
 
     // Selected-Klasse entfernen
     document.querySelectorAll('.booking-room-card').forEach(card => {
