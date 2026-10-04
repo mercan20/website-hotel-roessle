@@ -260,7 +260,8 @@ foreach ($metadata as $metaLine) {
     $lines[] = '  ' . $metaLine;
 }
 
-$messageBody = implode("\n", $lines) . "\n";
+$multipart = form_build_multipart(implode("\n", $lines) . "\n", form_lines_to_html($lines));
+$messageBody = $multipart['body'];
 
 $subjectParts = [
     $subjectPrefix,
@@ -286,7 +287,7 @@ $headers = [
         ? sprintf('%s <%s>', $replyToNameEncoded, $email)
         : $email),
     'MIME-Version: 1.0',
-    'Content-Type: text/plain; charset=UTF-8',
+    'Content-Type: ' . $multipart['contentType'],
     'X-Mailer: PHP/' . PHP_VERSION,
 ];
 

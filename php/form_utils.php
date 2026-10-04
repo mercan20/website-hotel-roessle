@@ -114,6 +114,80 @@ function form_load_email_signature(?string $filePath = null): string
     return $normalized === '' ? '' : $normalized;
 }
 
+/**
+ * Render the plain-text report lines ("Heading:" / "Key: value" / free text)
+ * as a simple HTML document so replies in Outlook start in HTML mode.
+ *
+ * @param array<int, string> $lines
+ */
+function form_lines_to_html(array $lines): string
+{
+    $esc = static fn (string $value): string => htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $html = '';
+    $inTable = false;
+    $closeTable = static function () use (&$html, &$inTable): void {
+        if ($inTable) {
+            $html .= '</table>';
+            $inTable = false;
+        }
+    };
+
+    foreach ($lines as $index => $line) {
+        $text = trim($line);
+        if ($text === '') {
+            continue;
+        }
+
+        $isIndented = $line !== ltrim($line);
+        if ($index === 0 || (!$isIndented && substr($text, -1) === ':')) {
+            $closeTable();
+            $html .= '<p style="margin:14px 0 4px;font-weight:bold;">' . $esc($text) . '</p>';
+            continue;
+        }
+
+        if (!$inTable) {
+            $html .= '<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;">';
+            $inTable = true;
+        }
+
+        $parts = explode(': ', $text, 2);
+        if (count($parts) === 2) {
+            $html .= '<tr><td style="padding:2px 16px 2px 0;color:#555;">' . $esc($parts[0]) . '</td>'
+                . '<td style="padding:2px 0;">' . $esc($parts[1]) . '</td></tr>';
+        } else {
+            $html .= '<tr><td colspan="2" style="padding:2px 0;">' . nl2br($esc($text)) . '</td></tr>';
+        }
+    }
+    $closeTable();
+
+    return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head>'
+        . '<body style="font-family:Calibri,Arial,sans-serif;font-size:11pt;">' . $html . '</body></html>';
+}
+
+/**
+ * Build a multipart/alternative body (plain text + HTML).
+ *
+ * @return array{contentType: string, body: string}
+ */
+function form_build_multipart(string $plain, string $html): array
+{
+    $boundary = '=_roessle_' . bin2hex(random_bytes(12));
+    $encode = static fn (string $part): string => chunk_split(base64_encode($part), 76, "\r\n");
+
+    $body = '--' . $boundary . "\r\n"
+        . "Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n"
+        . $encode($plain)
+        . '--' . $boundary . "\r\n"
+        . "Content-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n"
+        . $encode($html)
+        . '--' . $boundary . "--\r\n";
+
+    return [
+        'contentType' => 'multipart/alternative; boundary="' . $boundary . '"',
+        'body' => $body,
+    ];
+}
+
 function form_is_origin_allowed(array $allowedOrigins): bool
 {
     $origin = form_determine_origin();
