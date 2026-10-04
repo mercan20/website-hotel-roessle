@@ -6,13 +6,13 @@ const BOOKING_FORM_ENDPOINT = 'booking.php';
 
 const BOOKING_SECURITY_CONFIG = {
     maxRooms: {
-        einzelzimmer: 5,
-        doppelzimmer: 10,
+        einzelzimmer: 12,
+        doppelzimmer: 6,
         familienzimmer: 3,
-        zweibettzimmer: 5,
-        apartment: 3,
+        zweibettzimmer: 3,
+        apartment: 2,
     },
-    maxRoomsTotal: 18,
+    maxRoomsTotal: 12,
     minNights: 1,
     maxNights: 30,
     maxAdvanceDays: 365,
