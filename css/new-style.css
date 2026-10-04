@@ -239,6 +239,11 @@ strong {
     color: var(--on-dark);
 }
 
+/* Das hidden-Attribut gewinnt immer, auch gegen display-Regeln von Komponenten (z. B. Buttons) */
+[hidden] {
+    display: none !important;
+}
+
 .visually-hidden {
     position: absolute !important;
     width: 1px;
@@ -2704,9 +2709,132 @@ strong {
     }
 
     body:has(.nav-menu.active) .mobile-cta,
-    body:has(.gallery-modal.active) .mobile-cta {
+    body:has(.gallery-modal.active) .mobile-cta,
+    body:has(.consent-banner:not([hidden])) .mobile-cta {
         display: none;
     }
+}
+
+/* ---------- Cookie-Banner ---------- */
+/* Nicht modal: Die Seite bleibt bedienbar, „Alle ablehnen“ und „Alle akzeptieren“ sind gleich gestaltet */
+.consent-banner {
+    position: fixed;
+    left: var(--space-md);
+    right: var(--space-md);
+    bottom: var(--space-md);
+    z-index: 2500; /* über Navigation und Mobile-Leiste, unter der Galerie */
+    max-width: 760px;
+    max-height: calc(100dvh - 2rem);
+    margin-inline: auto;
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    overflow-y: auto;
+    background: var(--cream);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+}
+
+.consent-title {
+    font-size: 1.35rem;
+    margin-bottom: var(--space-xs);
+}
+
+.consent-text {
+    color: var(--ink-soft);
+}
+
+.consent-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-lg);
+    margin-top: var(--space-xs);
+    font-size: 0.9375rem;
+}
+
+.consent-links a {
+    color: var(--bronze);
+}
+
+.consent-options {
+    display: grid;
+    gap: var(--space-xs);
+    margin: var(--space-md) 0 0;
+    padding: 0;
+    border: 0;
+}
+
+.consent-option {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+}
+
+.consent-option input {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.1rem;
+    accent-color: var(--ink);
+}
+
+.consent-option input:disabled {
+    cursor: not-allowed;
+}
+
+.consent-option strong {
+    display: block;
+    color: var(--ink);
+}
+
+.consent-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-lg);
+}
+
+.consent-actions > button {
+    flex: 1 1 auto;
+}
+
+@media (max-width: 560px) {
+    .consent-banner {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-height: 85dvh;
+        padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+        border-width: 1px 0 0;
+        border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .consent-actions {
+        flex-direction: column;
+    }
+}
+
+/* Footer-Eintrag „Cookie-Einstellungen“ (Button im Stil der Footer-Links) */
+.footer-link-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--on-dark);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.footer-link-button:hover {
+    color: var(--ochre);
+    text-decoration: underline;
 }
 
 /* ---------- Galerie (Lightbox) ---------- */
@@ -2948,6 +3076,19 @@ strong {
 .legal-back {
     margin-top: var(--space-2xl);
     text-align: center;
+}
+
+/* Widerspruch gegen die Besucherstatistik (Matomo) */
+.stats-optout {
+    margin-top: var(--space-md);
+    padding: var(--space-md);
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+}
+
+.stats-optout .btn-secondary {
+    margin-top: var(--space-sm);
 }
 
 /* ---------- Einblendungen ---------- */

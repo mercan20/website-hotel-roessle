@@ -16,6 +16,17 @@ const BOOKING_SECURITY_CONFIG = {
     maxAdvanceDays: 365,
 };
 
+// Google Analytics 4 (nur nach Einwilligung im Cookie-Banner): Mess-ID aus GA → Verwaltung → Datenstreams,
+// z. B. 'G-ABC123XYZ'. Leer = GA und Cookie-Banner sind aus. In GA vorher einstellen, was in
+// datenschutz.html#google-analytics steht: Datenverarbeitungsbedingungen akzeptiert, Google Signals und
+// Werbefunktionen aus, Datenaufbewahrung 2 Monate.
+const GA_MEASUREMENT_ID = '';
+
+// Matomo (selbst gehostet bei STRATO, ohne Cookies, ohne Einwilligung): Adresse der Matomo-Installation
+// mit abschließendem Schrägstrich, z. B. 'https://statistik.hotelroessle.eu/'. Leer = Matomo ist aus.
+const MATOMO_URL = '';
+const MATOMO_SITE_ID = '1';
+
 // Frühere Versionen haben Buchungsanfragen samt E-Mail-Adresse im localStorage gezählt.
 // Die Begrenzung läuft nur noch serverseitig, daher alten Eintrag bei Besuchern entfernen.
 try {
@@ -86,20 +97,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Google Maps erst nach Klick laden (vorher werden keine Daten an Google übertragen)
+    // Google Maps erst nach Klick laden (vorher werden keine Daten an Google übertragen).
+    // Der Klick gilt nur für diesen Seitenaufruf; dauerhaft geht es über die Cookie-Einstellungen.
     const loadMapBtn = document.getElementById('loadMapBtn');
     if (loadMapBtn) {
-        loadMapBtn.addEventListener('click', function() {
-            const mapContainer = document.getElementById('hotelMap');
-            const mapFrame = document.createElement('iframe');
-            mapFrame.src = mapContainer.dataset.mapSrc;
-            mapFrame.title = 'Karte: Hotel Rössle, Honbergstrasse 8, 78532 Tuttlingen';
-            mapFrame.allowFullscreen = true;
-            mapContainer.replaceChildren(mapFrame);
-            mapContainer.classList.add('is-loaded');
-            mapFrame.focus();
-        });
+        loadMapBtn.addEventListener('click', () => loadHotelMap(true));
     }
+
+    initConsent();
+    initStatsOptout();
 
     // Navbar Scroll Effect
     const navbar = document.querySelector('.navbar');
@@ -975,6 +981,8 @@ async function handleBookingSubmit(e) {
             throw new Error(errorMessage);
         }
 
+        trackBookingRequest();
+
         showBookingMessage(
             '✅ Buchungsanfrage erfolgreich übermittelt!\n\n' +
             'Vielen Dank für Ihre Anfrage. Wir melden uns zeitnah per E-Mail, um die Details zu bestätigen.',
@@ -1228,3 +1236,398 @@ function calculateBookingNights(checkinDate, checkoutDate) {
     const end = Date.UTC(checkoutDate.getFullYear(), checkoutDate.getMonth(), checkoutDate.getDate());
     return Math.round((end - start) / (1000 * 60 * 60 * 24));
 }
+
+// ===================================
+// Einwilligung (Cookie-Banner), Statistik & Karte
+// ===================================
+
+// Auswahl im Cookie-Banner. Version erhöhen, wenn ein neuer Dienst dazukommt – dann werden alle neu gefragt.
+const CONSENT_STORAGE_KEY = 'hotel_roessle_consent';
+const CONSENT_VERSION = 2;
+const CONSENT_MAX_AGE_DAYS = 365;
+// Widerspruch gegen Matomo (Opt-out auf der Datenschutzseite)
+const STATS_OPTOUT_KEY = 'hotel_roessle_stats_optout';
+
+let currentConsent = { analytics: false, maps: false };
+let consentReturnFocus = null;
+let googleAnalyticsLoaded = false;
+
+// Speicherzugriffe können scheitern (privates Fenster, blockierte Website-Daten) – dann gilt die Auswahl
+// nur für den aktuellen Seitenaufruf.
+function readStorage(key) {
+    try {
+        return localStorage.getItem(key);
+    } catch (error) {
+        return null;
+    }
+}
+
+function writeStorage(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        // Speicher nicht verfügbar
+    }
+}
+
+function removeStorage(key) {
+    try {
+        localStorage.removeItem(key);
+    } catch (error) {
+        // Speicher nicht verfügbar
+    }
+}
+
+function getStoredConsent() {
+    const raw = readStorage(CONSENT_STORAGE_KEY);
+    if (!raw) {
+        return null;
+    }
+    try {
+        const stored = JSON.parse(raw);
+        const maxAge = CONSENT_MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
+        if (stored.version !== CONSENT_VERSION || typeof stored.timestamp !== 'number' || Date.now() - stored.timestamp > maxAge) {
+            return null;
+        }
+        return { analytics: stored.analytics === true, maps: stored.maps === true };
+    } catch (error) {
+        return null;
+    }
+}
+
+// Das Banner gibt es nur, wenn ein einwilligungspflichtiger Dienst konfiguriert ist (Google Analytics).
+// Ohne GA bleibt es bei der Karte per Klick.
+function initConsent() {
+    if (!GA_MEASUREMENT_ID) {
+        deleteAnalyticsCookies();
+        return;
+    }
+
+    document.querySelectorAll('[data-consent-only]').forEach(element => {
+        element.hidden = false;
+    });
+    document.querySelectorAll('[data-consent-open]').forEach(button => {
+        button.addEventListener('click', () => openConsentBanner(true, button));
+    });
+
+    const stored = getStoredConsent();
+    if (stored) {
+        applyConsent(stored);
+    } else {
+        deleteAnalyticsCookies();
+        openConsentBanner(false, null);
+    }
+}
+
+function applyConsent(choice) {
+    currentConsent = { analytics: choice.analytics, maps: choice.maps };
+
+    if (choice.analytics) {
+        loadGoogleAnalytics();
+        enableMatomoConsent();
+    } else {
+        deleteAnalyticsCookies();
+    }
+
+    if (choice.maps) {
+        loadHotelMap(false);
+    }
+}
+
+function saveConsent(choice) {
+    const revoked = (currentConsent.analytics && !choice.analytics) || (currentConsent.maps && !choice.maps);
+
+    writeStorage(CONSENT_STORAGE_KEY, JSON.stringify({
+        version: CONSENT_VERSION,
+        timestamp: Date.now(),
+        analytics: choice.analytics,
+        maps: choice.maps,
+    }));
+    closeConsentBanner();
+
+    if (revoked) {
+        // Bereits geladene Dienste lassen sich nicht sauber entladen: Cookies löschen und Seite neu laden
+        deleteAnalyticsCookies();
+        window.location.reload();
+        return;
+    }
+
+    applyConsent(choice);
+}
+
+function buildConsentBanner() {
+    const banner = document.createElement('section');
+    banner.className = 'consent-banner';
+    banner.id = 'consentBanner';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-labelledby', 'consentTitle');
+    banner.setAttribute('aria-describedby', 'consentText');
+    banner.hidden = true;
+    banner.innerHTML = `
+        <h2 class="consent-title" id="consentTitle" tabindex="-1">Cookies &amp; Datenschutz</h2>
+        <p class="consent-text" id="consentText">Mit Ihrer Zustimmung nutzen wir Google Analytics und eine erweiterte Statistik mit Matomo, um zu verstehen, wie unsere Website genutzt wird, und zeigen die Karte von Google Maps direkt an. Dabei werden Cookies gesetzt, und Google erhält Daten wie Ihre IP-Adresse, auch in den USA. Ihre Zustimmung ist freiwillig und lässt sich jederzeit unter „Cookie-Einstellungen“ im Seitenfuß ändern.</p>
+        <p class="consent-links"><a href="datenschutz.html#cookies">Datenschutzerklärung</a><a href="impressum.html">Impressum</a></p>
+        <fieldset class="consent-options" id="consentOptions" hidden>
+            <legend class="visually-hidden">Kategorien</legend>
+            <label class="consent-option">
+                <input type="checkbox" checked disabled>
+                <span><strong>Notwendig</strong>Speichert Ihre Auswahl in Ihrem Browser. Immer aktiv.</span>
+            </label>
+            <label class="consent-option">
+                <input type="checkbox" name="analytics">
+                <span><strong>Statistik</strong>Google Analytics und Matomo: Auswertung, wie Besucher unsere Website nutzen, auch über mehrere Besuche hinweg. Setzt Cookies; Google kann Daten in die USA übermitteln.</span>
+            </label>
+            <label class="consent-option">
+                <input type="checkbox" name="maps">
+                <span><strong>Externe Medien</strong>Google Maps: Karte im Kontaktbereich automatisch laden. Google erhält dabei Ihre IP-Adresse und kann Cookies setzen.</span>
+            </label>
+        </fieldset>
+        <div class="consent-actions">
+            <button type="button" class="btn-primary" data-consent-action="reject">Alle ablehnen</button>
+            <button type="button" class="btn-secondary" data-consent-action="settings" aria-controls="consentOptions" aria-expanded="false">Einstellungen</button>
+            <button type="button" class="btn-secondary" data-consent-action="save" hidden>Auswahl speichern</button>
+            <button type="button" class="btn-primary" data-consent-action="accept">Alle akzeptieren</button>
+        </div>
+    `;
+
+    banner.addEventListener('click', event => {
+        const button = event.target.closest('[data-consent-action]');
+        if (!button) {
+            return;
+        }
+        const action = button.dataset.consentAction;
+        if (action === 'accept') {
+            saveConsent({ analytics: true, maps: true });
+        } else if (action === 'reject') {
+            saveConsent({ analytics: false, maps: false });
+        } else if (action === 'settings') {
+            setConsentSettingsVisible(banner, true);
+            banner.querySelector('input[name="analytics"]').focus();
+        } else if (action === 'save') {
+            saveConsent({
+                analytics: banner.querySelector('input[name="analytics"]').checked,
+                maps: banner.querySelector('input[name="maps"]').checked,
+            });
+        }
+    });
+
+    // Escape schließt nur, wenn schon eine Auswahl gespeichert ist (sonst gäbe es keine Entscheidung)
+    banner.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && getStoredConsent()) {
+            closeConsentBanner();
+        }
+    });
+
+    // Früh in der Tab-Reihenfolge (direkt nach dem Skip-Link), optisch unten fixiert
+    const skipLink = document.querySelector('.skip-link');
+    if (skipLink) {
+        skipLink.after(banner);
+    } else {
+        document.body.prepend(banner);
+    }
+    return banner;
+}
+
+function setConsentSettingsVisible(banner, visible) {
+    banner.querySelector('#consentOptions').hidden = !visible;
+    banner.querySelector('[data-consent-action="save"]').hidden = !visible;
+    const settingsButton = banner.querySelector('[data-consent-action="settings"]');
+    settingsButton.hidden = visible;
+    settingsButton.setAttribute('aria-expanded', String(visible));
+}
+
+function openConsentBanner(showSettings, returnFocusTo) {
+    const banner = document.getElementById('consentBanner') || buildConsentBanner();
+    banner.querySelector('input[name="analytics"]').checked = currentConsent.analytics;
+    banner.querySelector('input[name="maps"]').checked = currentConsent.maps;
+    setConsentSettingsVisible(banner, showSettings);
+    banner.hidden = false;
+
+    // Beim ersten Besuch keinen Fokus stehlen; aus dem Footer geöffnet springt der Fokus ins Banner
+    consentReturnFocus = returnFocusTo;
+    if (returnFocusTo) {
+        banner.querySelector('#consentTitle').focus();
+    }
+}
+
+function closeConsentBanner() {
+    const banner = document.getElementById('consentBanner');
+    if (banner) {
+        banner.hidden = true;
+    }
+    if (consentReturnFocus && typeof consentReturnFocus.focus === 'function') {
+        consentReturnFocus.focus();
+    }
+    consentReturnFocus = null;
+}
+
+function loadGoogleAnalytics() {
+    if (googleAnalyticsLoaded || !GA_MEASUREMENT_ID) {
+        return;
+    }
+    googleAnalyticsLoaded = true;
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function() {
+        window.dataLayer.push(arguments);
+    };
+    // Consent Mode: nur Statistik erlaubt, alle Werbefunktionen bleiben aus
+    window.gtag('consent', 'default', {
+        analytics_storage: 'granted',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+    });
+    window.gtag('js', new Date());
+    window.gtag('config', GA_MEASUREMENT_ID, {
+        allow_google_signals: false,
+        allow_ad_personalization_signals: false,
+    });
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_MEASUREMENT_ID)}`;
+    document.head.appendChild(script);
+}
+
+// Löscht die Statistik-Cookies von GA (_ga, _ga_<ID>) und Matomo (_pk_*, mtm_*) auf dieser Domain
+// und allen übergeordneten Domains
+function deleteAnalyticsCookies() {
+    const cookieNames = document.cookie
+        .split(';')
+        .map(cookie => cookie.split('=')[0].trim())
+        .filter(name => name === '_ga' || name.startsWith('_ga_') || name === '_gid'
+            || name.startsWith('_pk_') || name.startsWith('mtm_'));
+    if (cookieNames.length === 0) {
+        return;
+    }
+
+    const hostParts = window.location.hostname.split('.');
+    const domainAttributes = [''];
+    for (let i = 0; i < hostParts.length - 1; i++) {
+        domainAttributes.push(`; domain=.${hostParts.slice(i).join('.')}`);
+    }
+
+    cookieNames.forEach(name => {
+        domainAttributes.forEach(domainAttribute => {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${domainAttribute}`;
+        });
+    });
+}
+
+function loadHotelMap(moveFocus) {
+    const mapContainer = document.getElementById('hotelMap');
+    if (!mapContainer || mapContainer.classList.contains('is-loaded')) {
+        return;
+    }
+    const mapFrame = document.createElement('iframe');
+    mapFrame.src = mapContainer.dataset.mapSrc;
+    mapFrame.title = 'Karte: Hotel Rössle, Honbergstrasse 8, 78532 Tuttlingen';
+    mapFrame.loading = 'lazy';
+    mapFrame.allowFullscreen = true;
+    mapContainer.replaceChildren(mapFrame);
+    mapContainer.classList.add('is-loaded');
+    if (moveFocus) {
+        mapFrame.focus();
+    }
+}
+
+// Do Not Track / Global Privacy Control: Matomo erfasst dann nichts
+function hasBrowserPrivacySignal() {
+    return navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.globalPrivacyControl === true;
+}
+
+function isStatsOptedOut() {
+    return readStorage(STATS_OPTOUT_KEY) === '1';
+}
+
+// Einwilligung „Statistik“ zählt nur, solange es das Banner gibt (GA konfiguriert)
+function hasStatsConsent() {
+    return Boolean(GA_MEASUREMENT_ID) && getStoredConsent()?.analytics === true;
+}
+
+// Matomo in zwei Stufen:
+// - ohne Einwilligung: keine Cookies und kein Auslesen von Browser-Merkmalen (z. B. Bildschirmauflösung),
+//   damit nichts auf dem Gerät gespeichert oder ausgelesen wird (§ 25 TDDDG) – diese Stufe nicht aufweichen
+// - mit Einwilligung „Statistik“: Cookies (wiederkehrende Besucher) und Browser-Merkmale
+function initMatomo() {
+    if (!MATOMO_URL || isStatsOptedOut() || hasBrowserPrivacySignal()) {
+        return;
+    }
+    const paq = window._paq = window._paq || [];
+    paq.push(['requireCookieConsent']);
+    if (hasStatsConsent()) {
+        paq.push(['setCookieConsentGiven']);
+    } else {
+        paq.push(['disableBrowserFeatureDetection']);
+    }
+    paq.push(['setTrackerUrl', `${MATOMO_URL}matomo.php`]);
+    paq.push(['setSiteId', MATOMO_SITE_ID]);
+    paq.push(['trackPageView']);
+    paq.push(['enableLinkTracking']);
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `${MATOMO_URL}matomo.js`;
+    document.head.appendChild(script);
+}
+
+// Nach Zustimmung im Banner: Matomo darf ab sofort Cookies setzen und Browser-Merkmale erfassen.
+// Die Zustimmung selbst speichern wir in hotel_roessle_consent, nicht in einem Matomo-Cookie.
+function enableMatomoConsent() {
+    if (window._paq) {
+        window._paq.push(['setCookieConsentGiven']);
+        window._paq.push(['enableBrowserFeatureDetection']);
+    }
+}
+
+// Abgeschickte Buchungsanfrage zählen – ohne Formularinhalte
+function trackBookingRequest() {
+    if (window._paq) {
+        window._paq.push(['trackEvent', 'Buchung', 'Anfrage gesendet']);
+    }
+    if (googleAnalyticsLoaded) {
+        window.gtag('event', 'generate_lead');
+    }
+}
+
+// Widerspruch gegen Matomo auf der Datenschutzseite
+function initStatsOptout() {
+    const box = document.getElementById('statsOptout');
+    if (!box || !MATOMO_URL) {
+        return;
+    }
+    const status = document.getElementById('statsOptoutStatus');
+    const button = document.getElementById('statsOptoutBtn');
+    box.hidden = false;
+
+    if (hasBrowserPrivacySignal()) {
+        status.textContent = 'Ihr Browser sendet ein „Do Not Track“- bzw. „Global Privacy Control“-Signal. Matomo erfasst Ihre Besuche deshalb nicht.';
+        button.hidden = true;
+        return;
+    }
+
+    const render = () => {
+        const optedOut = isStatsOptedOut();
+        status.textContent = optedOut
+            ? 'Sie haben widersprochen: Ihre Besuche werden in diesem Browser nicht erfasst.'
+            : 'Ihre Besuche werden derzeit in der Besucherstatistik erfasst.';
+        button.textContent = optedOut ? 'Statistik wieder zulassen' : 'Statistik in diesem Browser deaktivieren';
+    };
+    render();
+
+    button.addEventListener('click', () => {
+        if (isStatsOptedOut()) {
+            removeStorage(STATS_OPTOUT_KEY);
+        } else {
+            writeStorage(STATS_OPTOUT_KEY, '1');
+            // Bereits geladenen Tracker für den Rest dieses Seitenaufrufs anhalten
+            if (window._paq) {
+                window._paq.push(['requireConsent']);
+            }
+        }
+        render();
+    });
+}
+
+initMatomo();
