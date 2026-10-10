@@ -89,6 +89,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (roomToBook && bookingCounters[roomToBook] === 0) {
                 updateRoomCounter(roomToBook, 1);
             }
+            if (roomToBook) {
+                goToBookingStep(1); // Auswahl im ersten Schritt zeigen
+            }
 
             // „Raum anfragen“: Betreff im Kontaktformular vorbelegen
             const contactSubject = this.dataset.contactSubject;
@@ -143,9 +146,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    initAutoHideHeader();
+    const headerControl = initAutoHideHeader();
     initSectionNav();
-    initSectionSnap();
+    initSectionSnap(headerControl);
+    initRails();
+    initBookingWizard();
 
     // Form Submission Handling
     const bookingForm = document.getElementById('mainBookingForm');
@@ -256,13 +261,15 @@ document.addEventListener('DOMContentLoaded', function() {
  * Header beim Runterscrollen ausblenden, beim Hochscrollen wieder zeigen.
  * Die Richtung kommt aus der Eingabe (Mausrad, Wischen, Tasten, Link-Sprung), nicht aus dem
  * Scroll-Ereignis: Das Einrasten der Sections verschiebt die Seite selbst ein Stück und soll
- * den Header nicht hin- und herschalten.
+ * den Header nicht hin- und herschalten. Rastet eine Section ein, bleibt der Header weg,
+ * damit sie den ganzen Bildschirm nutzt; am Desktop holt ihn die Maus am oberen Rand zurück.
+ * Gibt eine Steuerung zurück, über die das Einrasten den Header ausblendet.
  */
 function initAutoHideHeader() {
     const header = document.querySelector('.site-header');
     const menu = document.querySelector('.nav-menu');
     if (!header) {
-        return;
+        return null;
     }
 
     let wantsHidden = false;
@@ -317,12 +324,11 @@ function initAutoHideHeader() {
         }
     });
 
-    // Sprung über einen Link nach unten: Header ausblenden, damit die Section oben bündig sitzt
+    // Sprung über einen Link: Header ausblenden, damit die Section oben bündig sitzt
+    // (am Seitenanfang bleibt er trotzdem sichtbar)
     document.querySelectorAll('a[href^="#"]').forEach(link => {
         link.addEventListener('click', () => {
-            const href = link.getAttribute('href');
-            const target = href.length > 1 ? document.getElementById(href.slice(1)) : null;
-            if (target && target.getBoundingClientRect().top > 0) {
+            if (link.getAttribute('href').length > 1) {
                 setHidden(true);
             }
         });
@@ -330,6 +336,17 @@ function initAutoHideHeader() {
 
     // Tastaturfokus im Header: wieder einblenden
     header.addEventListener('focusin', () => setHidden(false));
+
+    // Desktop: Maus an den oberen Fensterrand holt den Header zurück
+    if (window.matchMedia('(hover: hover)').matches) {
+        document.addEventListener('mousemove', event => {
+            if (event.clientY <= 8 && wantsHidden) {
+                setHidden(false);
+            }
+        }, { passive: true });
+    }
+
+    return { hide: () => setHidden(true) };
 }
 
 /**
@@ -378,11 +395,16 @@ function initSectionNav() {
  *   Anfang bzw. Ende wird kurz angehalten, der nächste Schritt führt dann weiter.
  * Andere Scrollbewegungen (Links, Tastaturfokus, Formular-Fehler) lösen nichts aus.
  */
-function initSectionSnap() {
+function initSectionSnap(headerControl) {
     const sections = [...document.querySelectorAll('main > section')];
     if (!document.querySelector('.section-nav') || !sections.length) {
         return;
     }
+
+    // Erst ab dieser Überhöhe gilt eine Section als „lang“ (frei scrollbar mit Halt am Ende);
+    // ein paar Pixel mehr als der Bildschirm sollen keinen Mini-Schritt erzeugen
+    const TALL_TOLERANCE = 24;
+    const isTall = (b, viewport) => b.bottom - b.top > viewport + TALL_TOLERANCE;
 
     const root = document.documentElement;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -424,7 +446,7 @@ function initSectionSnap() {
             return null; // im Footer
         }
         const current = list[index];
-        if (Math.abs(y - current.top) <= 1 || current.bottom - y >= viewport) {
+        if (Math.abs(y - current.top) <= 1 || (isTall(current, viewport) && current.bottom - y >= viewport)) {
             return null; // an einer Section-Kante oder ganz innerhalb einer langen Section
         }
         if (dir > 0) {
@@ -432,7 +454,7 @@ function initSectionSnap() {
             return Math.min(next ? next.top : max, max);
         }
         // Hoch: eine lange Section ab ihrem Ende zeigen, eine kurze ab ihrem Anfang
-        return current.bottom - current.top > viewport ? current.bottom - viewport : current.top;
+        return isTall(current, viewport) ? current.bottom - viewport : current.top;
     };
 
     // Ziel für einen Schritt (Mausrad, Taste) von der aktuellen Position aus – höchstens eine Section weit
@@ -443,7 +465,7 @@ function initSectionSnap() {
         const viewport = window.innerHeight;
         const list = bounds();
         // Haltepunkte: Anfang jeder Section, bei langen Sections zusätzlich ihr Ende
-        const stops = list.flatMap(b => (b.bottom - b.top > viewport ? [b.top, b.bottom - viewport] : [b.top]));
+        const stops = list.flatMap(b => (isTall(b, viewport) ? [b.top, b.bottom - viewport] : [b.top]));
         if (dir > 0) {
             const nearest = Math.min(...stops.filter(stop => stop > y + 1), maxScroll());
             if (next >= nearest) {
@@ -472,6 +494,9 @@ function initSectionSnap() {
 
     const animateTo = target => {
         stopAnimation();
+        if (headerControl && target > 0) {
+            headerControl.hide(); // eingerastete Section nutzt den ganzen Bildschirm
+        }
         const start = window.scrollY;
         const distance = target - start;
         if (Math.abs(distance) < 2) {
@@ -618,6 +643,135 @@ function initSectionSnap() {
     window.addEventListener('touchcancel', onTouchEnd, { passive: true });
 }
 
+/**
+ * Wischreihen (z. B. Umgebung): Pfeil-Buttons blättern um eine Karte, an den Enden sind sie deaktiviert.
+ */
+function initRails() {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    document.querySelectorAll('[data-rail-controls]').forEach(controls => {
+        const rail = document.getElementById(controls.dataset.railControls);
+        const prev = controls.querySelector('[data-rail-dir="-1"]');
+        const next = controls.querySelector('[data-rail-dir="1"]');
+        if (!rail || !prev || !next) {
+            return;
+        }
+        const update = () => {
+            prev.disabled = rail.scrollLeft <= 2;
+            next.disabled = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 2;
+        };
+        [prev, next].forEach(button => {
+            button.addEventListener('click', () => {
+                const card = rail.firstElementChild;
+                const gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
+                const step = card ? card.getBoundingClientRect().width + gap : rail.clientWidth * 0.8;
+                rail.scrollBy({ left: Number(button.dataset.railDir) * step, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+            });
+        });
+        rail.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+    });
+}
+
+// ===================================
+// Buchungs-Assistent: 1 Zimmer → 2 Reisedaten → 3 Kontaktdaten
+// ===================================
+
+let bookingStep = 1;
+
+function setBookingHint(message) {
+    const hint = document.getElementById('bookingHint');
+    if (hint) {
+        hint.textContent = message;
+        hint.hidden = !message;
+    }
+}
+
+// Fehlt für diesen Schritt noch etwas? Gibt den Schritt und einen Hinweis zurück, sonst null
+function bookingStepProblem(step) {
+    if (step >= 1 && !Object.values(bookingCounters).some(count => count > 0)) {
+        return { step: 1, message: 'Bitte wählen Sie mindestens ein Zimmer.' };
+    }
+    if (step >= 2 && !(bookingSelectedCheckin && bookingSelectedCheckout)) {
+        return { step: 2, message: 'Bitte wählen Sie Anreise und Abreise.' };
+    }
+    return null;
+}
+
+function goToBookingStep(step, moveFocus = false) {
+    const wizard = document.getElementById('mainBookingForm');
+    if (!wizard || !wizard.classList.contains('booking-wizard')) {
+        return;
+    }
+    bookingStep = step;
+    wizard.dataset.step = String(step);
+
+    wizard.querySelectorAll('[data-step-panel]').forEach(panel => {
+        panel.hidden = Number(panel.dataset.stepPanel) !== step;
+    });
+    wizard.querySelectorAll('[data-step-target]').forEach(button => {
+        const target = Number(button.dataset.stepTarget);
+        const item = button.closest('.wizard-step');
+        item.classList.toggle('is-current', target === step);
+        item.classList.toggle('is-done', target < step);
+        if (target === step) {
+            button.setAttribute('aria-current', 'step');
+        } else {
+            button.removeAttribute('aria-current');
+        }
+    });
+
+    wizard.querySelector('[data-wizard-prev]').hidden = step === 1;
+    wizard.querySelector('[data-wizard-next]').hidden = step === 3;
+    document.getElementById('bookingSubmitBtn').hidden = step !== 3;
+    setBookingHint('');
+
+    // Reisedaten: Kalender gleich öffnen, solange noch nichts gewählt ist
+    const calendar = document.getElementById('bookingCalendar');
+    if (step === 2 && !bookingSelectedCheckin && calendar && !calendar.classList.contains('active')) {
+        toggleBookingCalendar();
+    }
+
+    if (moveFocus) {
+        wizard.querySelector(`[data-step-panel="${step}"] .wizard-panel-title`)?.focus();
+    }
+}
+
+function initBookingWizard() {
+    const wizard = document.getElementById('mainBookingForm');
+    if (!wizard || !wizard.classList.contains('booking-wizard')) {
+        return;
+    }
+
+    wizard.querySelector('[data-wizard-next]').addEventListener('click', () => {
+        const problem = bookingStepProblem(bookingStep);
+        if (problem) {
+            setBookingHint(problem.message);
+            return;
+        }
+        goToBookingStep(bookingStep + 1, true);
+    });
+
+    wizard.querySelector('[data-wizard-prev]').addEventListener('click', () => goToBookingStep(bookingStep - 1, true));
+
+    // Schrittanzeige: zurück geht immer, vorwärts nur mit erledigten Schritten
+    wizard.querySelectorAll('[data-step-target]').forEach(button => {
+        button.addEventListener('click', () => {
+            const target = Number(button.dataset.stepTarget);
+            const problem = target > bookingStep ? bookingStepProblem(target - 1) : null;
+            if (problem) {
+                goToBookingStep(problem.step, true);
+                setBookingHint(problem.message);
+                return;
+            }
+            goToBookingStep(target, true);
+        });
+    });
+
+    updateBookingSummary();
+    goToBookingStep(1);
+}
+
 // Room Counter State
 // Alle buchbaren Zimmertypen: Schlüssel = Feldname für booking.php, ID-Suffix der Hidden-Inputs
 const BOOKING_ROOM_TYPES = {
@@ -714,45 +868,40 @@ function updateRoomCounter(room, change) {
     syncBookingHiddenFields();
 }
 
-// Update Summary
+// Kurzübersicht der Auswahl im Fuß des Buchungs-Assistenten (Zimmer, Preis, Nächte)
 function updateBookingSummary() {
     const summary = document.getElementById('bookingSummary');
-    const content = document.getElementById('bookingSummaryContent');
+    setBookingHint('');
+    if (!summary) {
+        return;
+    }
 
-    let hasSelection = false;
+    const parts = [];
     let total = 0;
-    let html = '';
-
     for (const [room, count] of Object.entries(bookingCounters)) {
         if (count > 0) {
-            hasSelection = true;
-            const roomTotal = count * bookingPrices[room];
-            total += roomTotal;
-            let roomName = BOOKING_ROOM_TYPES[room].name;
+            total += count * bookingPrices[room];
+            let roomName = count > 1 ? BOOKING_ROOM_TYPES[room].plural : BOOKING_ROOM_TYPES[room].name;
             if (room === 'apartment' && document.getElementById('bookingApartmentBalkon')?.checked) {
                 roomName += ' mit Balkon';
             }
-            html += `
-                <div class="booking-summary-item">
-                    <span>${count}x ${roomName}</span>
-                    <span>${roomTotal.toFixed(2)} €</span>
-                </div>
-            `;
+            parts.push(`${count} × ${roomName}`);
         }
     }
 
-    if (hasSelection) {
-        html += `
-            <div class="booking-summary-item">
-                <span><strong>Gesamt pro Nacht</strong></span>
-                <span><strong>${total.toFixed(2)} €</strong></span>
-            </div>
-        `;
-        content.innerHTML = html;
-        summary.style.display = 'block';
-    } else {
-        summary.style.display = 'none';
+    if (!parts.length) {
+        summary.textContent = 'Noch kein Zimmer gewählt';
+        return;
     }
+
+    const selection = document.createElement('strong');
+    selection.textContent = parts.join(', ');
+    let price = `${total} € pro Nacht`;
+    const nights = calculateBookingNights(bookingSelectedCheckin, bookingSelectedCheckout);
+    if (nights > 0) {
+        price += `, ${nights} ${nights === 1 ? 'Nacht' : 'Nächte'}: ${total * nights} € gesamt`;
+    }
+    summary.replaceChildren(selection, document.createTextNode(` für ${price}`));
 }
 
 // Update Submit Button
@@ -827,7 +976,8 @@ function renderBookingCalendar() {
     }
 
     // Next month days
-    const remainingDays = 42 - daysContainer.children.length;
+    // Nur die letzte Woche auffüllen – keine leere sechste Zeile, der Kalender bleibt kompakt
+    const remainingDays = (7 - (daysContainer.children.length % 7)) % 7;
     for (let i = 1; i <= remainingDays; i++) {
         const day = createBookingDayElement(i, true, year, month + 1);
         day.classList.add('other-month');
@@ -941,6 +1091,7 @@ function updateBookingDateDisplay() {
     }
 
     syncBookingHiddenFields();
+    updateBookingSummary();
 }
 
 // Format Date
@@ -1570,8 +1721,9 @@ function resetBookingForm() {
     document.getElementById('bookingCheckoutDisplay').classList.add('placeholder');
     document.getElementById('bookingNightsInfo').style.display = 'none';
 
-    // Summary verstecken
-    document.getElementById('bookingSummary').style.display = 'none';
+    // Übersicht leeren und zurück zum ersten Schritt
+    updateBookingSummary();
+    goToBookingStep(1);
 
     // Submit-Button deaktivieren
     document.getElementById('bookingSubmitBtn').disabled = true;

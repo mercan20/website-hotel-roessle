@@ -2,11 +2,11 @@
    Hotel Rössle – Design-System
    Farben aus dem Haus: ockergelbe Fassade, schwarzes Rössle, warme Cremetöne.
 
-   Mobile first: Die Basis-Styles gelten fürs Smartphone. Darauf bauen nur
-   drei Stufen auf:
+   Mobile first: Die Basis-Styles gelten fürs Smartphone. Darauf bauen auf:
      600px  – zwei Spalten
-     900px  – Text und Bild nebeneinander
-     1100px – Desktop-Navigation, vier Spalten
+     768px  – Tablet: jede Section füllt einen Bildschirm, Text und Bild nebeneinander
+     900px  – Desktop-Raster (drei Spalten, Kontakt zweispaltig)
+     1100px – Desktop-Navigation
 
    Gliederung: Schriften → Tokens → Basis → Layout → Buttons → Navigation
                → Sektionen → Buchung → Galerie → Rechtsseiten → Einblendungen
@@ -82,9 +82,9 @@
     --space-lg: 1.5rem;
     --space-xl: 2.5rem;
     --space-2xl: 4rem;
-    --section-y: clamp(4.5rem, 3rem + 5vw, 7rem);     /* oben und unten in jeder Section, immer höher als der Header */
-    --head-gap: clamp(2rem, 1.5rem + 2vw, 3rem);      /* Section-Kopf → Inhalt */
-    --block-gap: clamp(2rem, 1.5rem + 2vw, 3rem);     /* zwischen Blöcken einer Section */
+    --section-y: clamp(2.5rem, 1.75rem + 2.5vw, 3.5rem); /* oben und unten in jeder Section */
+    --head-gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);    /* Section-Kopf → Inhalt */
+    --block-gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);   /* zwischen Blöcken einer Section */
     --grid-gap: clamp(1rem, 0.75rem + 1.25vw, 2rem);  /* Kartenraster */
     --split-gap: clamp(2rem, 5vw, 5rem);              /* Text neben Bild */
     --panel-pad: clamp(1.25rem, 0.9rem + 1.8vw, 2.5rem);
@@ -107,7 +107,17 @@
     --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-@media (min-width: 900px) {
+/* Tablet und Desktop: Abstände richten sich nach der Bildschirmhöhe, damit jede Section auf einen Schirm passt */
+@media (min-width: 768px) and (min-height: 600px) {
+    :root {
+        --section-y: clamp(1.75rem, 5vh, 4rem);
+        --head-gap: clamp(1.25rem, 3.5vh, 2.5rem);
+        --block-gap: clamp(1.25rem, 3.5vh, 2.5rem);
+    }
+}
+
+/* Ab Tablet (Bildschirm-Sections) und ab 900px gibt es keine Aktionsleiste unten */
+@media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
     :root {
         --mobile-cta-h: 0px;
     }
@@ -305,10 +315,8 @@ strong {
 
 /* Kleine Beschriftungen: eine Schreibweise für alle, keine Versalien */
 .hero-card-label,
-.room-kicker,
 .reviews-score-source,
 .date-item-label,
-.booking-summary h3,
 .contact-item h4,
 .footer-heading,
 .glance-label {
@@ -382,6 +390,16 @@ strong {
     padding-block: var(--section-y);
 }
 
+/* Tablet und Desktop: jede Section füllt genau einen Bildschirm, der Inhalt sitzt mittig */
+@media (min-width: 768px) and (min-height: 600px) {
+    main > .section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100svh;
+    }
+}
+
 .section-sand {
     background: var(--sand);
 }
@@ -393,8 +411,90 @@ strong {
 
 /* Section-Kopf: immer linksbündig, an derselben Kante wie der Inhalt */
 .section-head {
-    max-width: 720px;
+    max-width: 52rem;
     margin-bottom: var(--head-gap);
+}
+
+/* Section-Kopf mit Bedienelementen rechts daneben (z. B. Pfeile einer Wischreihe) */
+.section-head-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-md) var(--space-xl);
+    margin-bottom: var(--head-gap);
+}
+
+.section-head-row .section-head {
+    flex: 1 1 24rem;
+    margin-bottom: 0;
+}
+
+/* Wischreihe: Karten nebeneinander, horizontal scrollbar, die nächste Karte schaut heraus.
+   Sie reicht bis an den Fensterrand, die erste Karte steht trotzdem an der Inhaltskante. */
+.rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(82%, 20rem);
+    gap: var(--space-md);
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 0 var(--gutter) var(--space-xs);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+    display: none;
+}
+
+.rail > * {
+    scroll-snap-align: start;
+}
+
+/* Pfeil-Buttons: erst ab 900px (darunter wird gewischt) */
+.rail-controls {
+    display: none;
+    gap: var(--space-xs);
+}
+
+.rail-btn {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ink);
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.rail-btn:focus-visible {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--on-dark);
+}
+
+@media (hover: hover) {
+    .rail-btn:hover:not(:disabled) {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--on-dark);
+    }
+}
+
+.rail-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+@media (min-width: 900px) {
+    .rail-controls {
+        display: flex;
+    }
 }
 
 .eyebrow {
@@ -423,7 +523,7 @@ strong {
 
 .section-title {
     font-size: var(--fs-h2);
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
 }
 
 .section-lead {
@@ -586,7 +686,7 @@ strong {
     display: flex;
     align-items: center;
     gap: var(--space-lg);
-    height: var(--header-h);
+    height: calc(var(--header-h) - 1px); /* + 1px Rahmen der Navbar = genau --header-h */
     max-width: calc(var(--container) + 2 * var(--gutter));
     margin-inline: auto;
     padding-inline: var(--gutter);
@@ -1078,11 +1178,11 @@ body:has(.nav-menu.active) {
     }
 }
 
-@media (min-width: 900px) {
+/* Tablet und Desktop: Foto im Hintergrund, Text darüber */
+@media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
     .hero {
         display: flex;
         align-items: center;
-        min-height: min(calc(100svh - var(--header-h)), 820px);
         padding-block: var(--block-gap);
     }
 
@@ -1093,11 +1193,9 @@ body:has(.nav-menu.active) {
         max-height: none;
     }
 
-    /* Dunkler Verlauf: links kräftig für die Lesbarkeit, rechts lässt er die Fassade durchscheinen */
+    /* Einspaltig (Tablet hochkant): gleichmäßig abdunkeln, der Text läuft über die ganze Breite */
     .hero-media::after {
-        background:
-            linear-gradient(90deg, rgba(31, 27, 22, 0.93) 0%, rgba(31, 27, 22, 0.8) 42%, rgba(31, 27, 22, 0.45) 100%),
-            linear-gradient(0deg, rgba(31, 27, 22, 0.35), transparent 40%);
+        background: linear-gradient(0deg, rgba(31, 27, 22, 0.93), rgba(31, 27, 22, 0.72));
     }
 
     /* Ocker-Linie als Abschluss des Fotos */
@@ -1114,6 +1212,22 @@ body:has(.nav-menu.active) {
     .hero > .container {
         margin-top: 0;
     }
+}
+
+/* Der Hero füllt mit dem Header genau den ersten Bildschirm */
+@media (min-width: 768px) and (min-height: 600px) {
+    .hero {
+        min-height: calc(100svh - var(--header-h));
+    }
+}
+
+@media (min-width: 900px) {
+    /* Dunkler Verlauf: links kräftig für die Lesbarkeit, rechts lässt er die Fassade durchscheinen */
+    .hero-media::after {
+        background:
+            linear-gradient(90deg, rgba(31, 27, 22, 0.93) 0%, rgba(31, 27, 22, 0.8) 42%, rgba(31, 27, 22, 0.45) 100%),
+            linear-gradient(0deg, rgba(31, 27, 22, 0.35), transparent 40%);
+    }
 
     .hero-grid {
         grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.8fr);
@@ -1122,7 +1236,7 @@ body:has(.nav-menu.active) {
     }
 }
 
-/* ---------- Auf einen Blick (alle Kurzinfos gebündelt unter dem Hero) ---------- */
+/* ---------- Auf einen Blick (alle Kurzinfos gebündelt unter dem Hero, darunter die Bewertungen) ---------- */
 .glance-group {
     display: grid;
     gap: var(--space-md);
@@ -1133,10 +1247,6 @@ body:has(.nav-menu.active) {
 .glance-group:first-of-type {
     padding-top: 0;
     border-top: 0;
-}
-
-.glance-group:last-child {
-    padding-bottom: 0;
 }
 
 .glance-label {
@@ -1151,6 +1261,7 @@ body:has(.nav-menu.active) {
     list-style: none;
 }
 
+/* Symbol über dem Text; erst auf breiten Bildschirmen daneben */
 .glance-item {
     display: flex;
     flex-direction: column;
@@ -1167,23 +1278,19 @@ body:has(.nav-menu.active) {
     color: var(--muted);
 }
 
-@media (min-width: 600px) {
-    .glance-item {
-        flex-direction: row;
-        align-items: flex-start;
-        gap: var(--space-sm);
-    }
+.glance .reviews-band {
+    margin-top: var(--block-gap);
 }
 
-@media (min-width: 900px) {
+@media (min-width: 768px) {
     .glance-list {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 900px) {
     .glance-group {
-        grid-template-columns: 11rem minmax(0, 1fr);
+        grid-template-columns: 10rem minmax(0, 1fr);
         gap: var(--space-lg);
         align-items: start;
     }
@@ -1191,10 +1298,16 @@ body:has(.nav-menu.active) {
     .glance-label {
         padding-top: 0.55rem;
     }
+
+    .glance-item {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
 }
 
-/* ---------- Text neben Bild (Über uns, Tagungen) ---------- */
-/* Smartphone: Bild oben im Format 4:3. Ab 900px füllt das Bild die volle Höhe der Textspalte. */
+/* ---------- Text neben Bild (Über uns, Apartment, Tagungen) ---------- */
+/* Smartphone: Bild oben im Format 4:3. Ab 768px füllt das Bild die volle Höhe der Textspalte. */
 .split {
     display: grid;
     gap: var(--block-gap);
@@ -1205,7 +1318,9 @@ body:has(.nav-menu.active) {
     order: -1;
 }
 
-.split-media picture {
+.split-media > picture,
+.split-media > .room-image {
+    display: block;
     aspect-ratio: 4 / 3;
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -1217,7 +1332,7 @@ body:has(.nav-menu.active) {
     object-fit: cover;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 768px) {
     .split {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: var(--split-gap);
@@ -1226,12 +1341,19 @@ body:has(.nav-menu.active) {
 
     .split-media {
         order: 0;
-        min-height: 22rem;
+        min-height: 20rem;
     }
 
-    .split-media picture {
+    /* Bild links, Text rechts */
+    .split--media-first .split-media {
+        order: -1;
+    }
+
+    .split-media > picture,
+    .split-media > .room-image {
         position: absolute;
         inset: 0;
+        height: auto;
         aspect-ratio: auto;
     }
 }
@@ -1311,8 +1433,8 @@ body:has(.nav-menu.active) {
     margin-top: 0;
 }
 
-/* Desktop: Bild endet bündig mit dem Text, das Zitat ragt in den Section-Abstand */
-@media (min-width: 900px) {
+/* Ab Tablet: Bild endet bündig mit dem Text, das Zitat ragt in den Section-Abstand */
+@media (min-width: 768px) {
     .about-media {
         margin-bottom: 0;
     }
@@ -1323,12 +1445,7 @@ body:has(.nav-menu.active) {
 }
 
 /* ---------- Zimmer ---------- */
-/* Smartphone: Karten untereinander. 600–1099px: Bild links, Text rechts. Ab 1100px drei Spalten. */
-.rooms-grid {
-    display: grid;
-    gap: var(--grid-gap);
-}
-
+/* Smartphone und Tablet hochkant: Karten als Wischreihe (.rail). Ab 900px drei Spalten nebeneinander. */
 .room-card {
     position: relative;
     display: flex;
@@ -1341,7 +1458,7 @@ body:has(.nav-menu.active) {
 
 .room-card.featured {
     border-color: var(--ochre);
-    box-shadow: 0 0 0 1px var(--ochre);
+    box-shadow: inset 0 0 0 1px var(--ochre);
 }
 
 .room-badge {
@@ -1421,7 +1538,7 @@ body:has(.nav-menu.active) {
     gap: 0.45rem;
     font-size: var(--fs-sm);
     color: var(--muted);
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
 }
 
 .room-price {
@@ -1429,7 +1546,7 @@ body:has(.nav-menu.active) {
     font-size: var(--fs-price);
     font-weight: 500;
     line-height: 1.1;
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-md);
 }
 
 .room-price span {
@@ -1441,10 +1558,10 @@ body:has(.nav-menu.active) {
 
 .room-features {
     display: grid;
-    gap: 0.55rem;
+    gap: 0.45rem;
     list-style: none;
-    margin-bottom: var(--space-xl);
-    padding-top: var(--space-md);
+    margin-bottom: var(--space-lg);
+    padding-top: var(--space-sm);
     border-top: 1px solid var(--line);
 }
 
@@ -1465,22 +1582,47 @@ body:has(.nav-menu.active) {
     margin-top: auto;
 }
 
-.room-kicker {
-    color: var(--bronze);
-    margin-bottom: 0.35rem;
+@media (min-width: 900px) {
+    .rooms-grid {
+        grid-auto-flow: row;
+        grid-auto-columns: auto;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--grid-gap);
+        margin-inline: 0;
+        padding: 0;
+        overflow: visible;
+    }
 }
 
-.room-intro {
+/* Bildschirm-Sections: Fotos und Abstände so, dass Kopf und Karten auf einen Schirm passen */
+@media (min-width: 900px) and (min-height: 600px) {
+    .rooms-grid .room-image {
+        aspect-ratio: auto;
+        height: clamp(8.5rem, 22vh, 16rem);
+    }
+
+    .rooms-grid .room-content {
+        padding: var(--space-md) var(--space-lg) var(--space-lg);
+    }
+
+    .rooms-grid .room-features {
+        gap: 0.3rem;
+        margin-bottom: var(--space-md);
+    }
+}
+
+/* ---------- Apartment ---------- */
+.apartment-intro {
+    max-width: 40rem;
+    margin-bottom: var(--space-md);
     color: var(--ink-soft);
-    margin-block: var(--space-sm) var(--space-md);
-    max-width: 44rem;
 }
 
 .apartment-features {
     display: grid;
     gap: var(--space-sm) var(--space-md);
     list-style: none;
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-lg);
     padding-top: var(--space-md);
     border-top: 1px solid var(--line);
 }
@@ -1490,61 +1632,16 @@ body:has(.nav-menu.active) {
     align-items: center;
     gap: 0.6rem;
     font-weight: 600;
+    line-height: 1.3;
 }
 
 @media (min-width: 600px) {
-    .room-card {
-        display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    }
-
-    .room-image {
-        aspect-ratio: auto;
-        height: 100%;
-        min-height: 16rem;
-    }
-
-    .room-card--wide .btn-primary {
-        align-self: flex-start;
-    }
-
     .apartment-features {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (min-width: 1100px) {
-    .rooms-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .room-card {
-        display: flex;
-    }
-
-    .room-image {
-        aspect-ratio: 3 / 2;
-        height: auto;
-        min-height: 0;
-    }
-
-    /* Apartment: breite Karte über die volle Rasterbreite */
-    .room-card--wide {
-        grid-column: 1 / -1;
-        display: grid;
-        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-    }
-
-    .room-card--wide .room-image {
-        aspect-ratio: auto;
-        height: 100%;
-        min-height: 300px;
-    }
-
-    .room-card--wide .room-content {
-        padding: var(--panel-pad);
-    }
-
     .apartment-features {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -1623,7 +1720,7 @@ body:has(.nav-menu.active) {
     margin-block: 0.5rem 0.35rem;
 }
 
-.reviews-text h2 {
+.reviews-text h3 {
     font-size: var(--fs-h3);
     margin-bottom: var(--space-xs);
 }
@@ -1632,7 +1729,7 @@ body:has(.nav-menu.active) {
     color: var(--muted);
 }
 
-@media (min-width: 900px) {
+@media (min-width: 768px) {
     .reviews-band {
         grid-template-columns: auto minmax(0, 1fr) auto;
         align-items: center;
@@ -1646,23 +1743,19 @@ body:has(.nav-menu.active) {
 }
 
 /* ---------- Freizeit & Umgebung ---------- */
-/* Smartphone und Tablet: wischbare Reihe, die nächste Karte schaut heraus. Ab 900px drei Spalten (9 Karten = 3 volle Reihen). */
-.leisure-grid {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: min(80%, 20rem);
-    gap: var(--space-md);
-    margin-inline: calc(-1 * var(--gutter));
-    padding: 0 var(--gutter) var(--space-sm);
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--gutter);
-    scrollbar-width: thin;
+/* Wischreihe auf allen Größen; ab 900px mit Pfeil-Buttons und gut drei Karten im Blick */
+@media (min-width: 900px) {
+    .leisure-grid {
+        grid-auto-columns: calc((100% - 3 * var(--grid-gap)) / 3.3);
+        gap: var(--grid-gap);
+    }
 }
 
-.leisure-grid > * {
-    scroll-snap-align: start;
+@media (min-width: 768px) and (min-height: 600px) {
+    .leisure-image {
+        aspect-ratio: auto;
+        height: clamp(8rem, 20vh, 13rem);
+    }
 }
 
 .leisure-card-link {
@@ -1752,69 +1845,7 @@ body:has(.nav-menu.active) {
     color: var(--ink-soft);
 }
 
-@media (min-width: 900px) {
-    .leisure-grid {
-        grid-auto-flow: row;
-        grid-auto-columns: auto;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: var(--grid-gap);
-        margin-inline: 0;
-        padding: 0;
-        overflow: visible;
-    }
-}
-
-/* ---------- Ablauf (Buchung in 3 Schritten) ---------- */
-.steps {
-    display: grid;
-    gap: var(--space-md);
-    list-style: none;
-    counter-reset: step;
-    margin-bottom: var(--block-gap);
-}
-
-.step {
-    position: relative;
-    padding: var(--space-lg);
-    padding-top: calc(var(--space-lg) + 0.25rem);
-    border-top: 2px solid var(--ochre);
-    background: var(--white);
-    border-radius: 0 0 var(--radius) var(--radius);
-}
-
-.step::before {
-    counter-increment: step;
-    content: '0' counter(step);
-    display: block;
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--bronze);
-    margin-bottom: 0.35rem;
-}
-
-.step h3 {
-    font-size: var(--fs-h4);
-    margin-bottom: 0.25rem;
-}
-
-.step p {
-    font-size: var(--fs-sm);
-    color: var(--muted);
-}
-
-@media (min-width: 900px) {
-    .steps {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-}
-
-/* ---------- Buchung ---------- */
-.booking-layout {
-    display: grid;
-    gap: var(--block-gap);
-}
-
+/* ---------- Buchung: Assistent in drei Schritten ---------- */
 .booking-panel {
     padding: var(--panel-pad);
     background: var(--white);
@@ -1823,12 +1854,62 @@ body:has(.nav-menu.active) {
     box-shadow: var(--shadow-sm);
 }
 
-.booking-subtitle {
+.booking-wizard {
+    padding: var(--card-pad);
+}
+
+/* Schrittanzeige: 1 Zimmer – 2 Reisedaten – 3 Kontaktdaten */
+.wizard-steps {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: var(--fs-h3);
-    margin-bottom: var(--space-lg);
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--line);
+    list-style: none;
+}
+
+.wizard-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    flex: 1;
+}
+
+/* Verbindungslinie zum nächsten Schritt */
+.wizard-step:not(:last-child)::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    min-width: 1rem;
+    border-radius: 2px;
+    background: var(--line);
+}
+
+.wizard-step.is-done:not(:last-child)::after {
+    background: var(--ochre);
+}
+
+.wizard-step:last-child {
+    flex: 0 0 auto;
+}
+
+.wizard-step-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 44px;
+    padding: 0.25rem 0.25rem 0.25rem 0;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.wizard-step.is-current .wizard-step-btn {
+    color: var(--ink);
 }
 
 .booking-step-no {
@@ -1838,11 +1919,147 @@ body:has(.nav-menu.active) {
     height: 2rem;
     flex-shrink: 0;
     border-radius: 50%;
-    background: var(--ink);
-    color: var(--ochre);
+    background: var(--sand);
+    color: var(--ink-soft);
     font-family: var(--font-body);
     font-size: 0.95rem;
     font-weight: 700;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.wizard-step.is-current .booking-step-no {
+    background: var(--ink);
+    color: var(--ochre);
+}
+
+.wizard-step.is-done .booking-step-no {
+    background: var(--ochre);
+    color: var(--ink);
+}
+
+@media (hover: hover) {
+    .wizard-step-btn:hover {
+        color: var(--ink);
+    }
+}
+
+/* Smartphone: nur die Nummern, der Name steht beim aktuellen Schritt (für Screenreader immer da) */
+.wizard-step:not(.is-current) .wizard-step-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+@media (min-width: 600px) {
+    .wizard-step:not(.is-current) .wizard-step-label {
+        position: static;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        clip: auto;
+    }
+}
+
+/* Fuß: Auswahl, Hinweis, Zurück/Weiter */
+.wizard-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm) var(--space-lg);
+    margin-top: var(--space-md);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--line);
+}
+
+.wizard-summary {
+    flex: 1 1 16rem;
+    font-size: var(--fs-sm);
+    line-height: 1.45;
+    color: var(--muted);
+}
+
+.wizard-summary strong {
+    color: var(--ink);
+}
+
+.wizard-hint {
+    flex-basis: 100%;
+    order: -1;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--error);
+}
+
+.wizard-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-left: auto;
+}
+
+/* Ohne JavaScript bleiben alle Schritte sichtbar; Weiter/Zurück gibt es nur mit JavaScript */
+.wizard-panel + .wizard-panel {
+    margin-top: var(--space-lg);
+}
+
+.js .wizard-panel + .wizard-panel {
+    margin-top: 0;
+}
+
+/* Kontaktdaten im Assistenten etwas dichter, damit Schritt 3 auf einen Bildschirm passt */
+.wizard-panel .form-group {
+    margin-bottom: var(--space-sm);
+}
+
+.wizard-panel .form-checkbox {
+    margin-block: var(--space-xs);
+}
+
+.wizard-panel .add-company-btn {
+    min-height: 36px;
+    padding-block: 0.25rem;
+}
+
+.wizard-panel #companyInfoSection {
+    margin-bottom: var(--space-xs);
+}
+
+.wizard-panel .form-required-note {
+    margin-top: var(--space-2xs);
+}
+
+.wizard-panel .form-group textarea {
+    min-height: 5rem;
+}
+
+@media (min-width: 900px) {
+    /* Kontaktdaten: Vorname, Nachname, E-Mail und Telefon in einer Reihe */
+    .wizard-panel > .form-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    /* Reisedaten: Auswahlfeld und Kalender nebeneinander statt untereinander */
+    .date-picker-container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 27.5rem);
+        gap: var(--space-lg);
+        align-items: start;
+    }
+
+    .date-picker-container .calendar-wrapper {
+        margin-top: 0;
+        padding: var(--space-md);
+    }
+
+    /* Tage mit fester Höhe statt quadratisch – der Kalender wird deutlich flacher */
+    .date-picker-container .calendar-day {
+        aspect-ratio: auto;
+        height: 2.5rem;
+        min-height: 0;
+    }
 }
 
 /* Zimmerauswahl: Smartphone als kompakte Zeilen (Bild links), ab 900px als Karten in drei Spalten */
@@ -1979,50 +2196,52 @@ body:has(.nav-menu.active) {
     cursor: not-allowed;
 }
 
-.booking-summary {
-    margin-top: var(--space-lg);
-    padding: var(--space-lg);
-    border-radius: var(--radius);
-    background: var(--sand);
-}
-
-.booking-summary h3 {
-    margin-bottom: var(--space-sm);
-}
-
-.booking-summary-item {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-md);
-    padding-block: 0.45rem;
-    border-bottom: 1px dashed rgba(31, 27, 22, 0.2);
-}
-
-.booking-summary-item:last-child {
-    border-bottom: 0;
-    padding-top: 0.75rem;
-    font-size: 1.125rem;
-}
-
-.booking-form .booking-subtitle {
-    margin-top: 0;
-}
-
-.booking-form-section + .booking-form-section {
-    margin-top: var(--space-xl);
-    padding-top: var(--space-xl);
-    border-top: 1px solid var(--line);
-}
-
+/* Tablet: jede Zimmerart als eine Zeile – Name und Preis links, Zähler rechts */
 @media (min-width: 600px) {
+    .booking-rooms-grid {
+        gap: var(--space-sm);
+    }
+
     .booking-room-card {
-        grid-template-columns: 120px minmax(0, 1fr);
+        grid-template-columns: 112px minmax(0, 1fr);
+    }
+
+    .booking-room-info {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            'title counter'
+            'price counter'
+            'option counter';
+        align-items: center;
+        column-gap: var(--space-md);
+        padding: var(--space-sm) var(--space-md);
+    }
+
+    .booking-room-info h4 {
+        grid-area: title;
+    }
+
+    .booking-room-price {
+        grid-area: price;
+        margin-bottom: 0;
+    }
+
+    .booking-counter {
+        grid-area: counter;
+        margin-top: 0;
+    }
+
+    .booking-option {
+        grid-area: option;
+        margin-top: var(--space-2xs);
     }
 }
 
+/* Ab 900px alle fünf Zimmerarten nebeneinander */
 @media (min-width: 900px) {
     .booking-rooms-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 
     .booking-room-card {
@@ -2032,12 +2251,22 @@ body:has(.nav-menu.active) {
 
     .booking-room-image-container {
         height: auto;
-        aspect-ratio: 16 / 9;
+        aspect-ratio: 2 / 1;
     }
 
     .booking-room-info {
-        padding: var(--space-md) var(--space-md) var(--space-lg);
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-sm) var(--space-sm) var(--space-md);
         text-align: center;
+    }
+
+    .booking-room-price {
+        margin-bottom: var(--space-sm);
+    }
+
+    .booking-counter {
+        margin-top: auto;
     }
 
     .booking-counter,
@@ -2305,6 +2534,11 @@ body:has(.nav-menu.active) {
     border-color: var(--error);
 }
 
+.label-hint {
+    font-weight: 400;
+    color: var(--muted);
+}
+
 .form-hint {
     margin-top: var(--space-xs);
     font-size: var(--fs-sm);
@@ -2535,14 +2769,20 @@ body:has(.nav-menu.active) {
 }
 
 /* ---------- Kontakt ---------- */
+/* Links: Kontaktdaten und Karte untereinander, rechts das Formular (ab 900px) */
 .contact-grid {
     display: grid;
     gap: var(--grid-gap);
-    align-items: start;
+}
+
+.contact-aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
 }
 
 .contact-card {
-    padding: var(--panel-pad);
+    padding: var(--card-pad);
     background: var(--ink);
     color: var(--on-dark);
     border-radius: var(--radius-lg);
@@ -2550,20 +2790,22 @@ body:has(.nav-menu.active) {
 
 .contact-card h3 {
     font-size: var(--fs-h3);
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-md);
 }
 
+/* Kontaktdaten zweispaltig, sobald Platz ist */
 .contact-list {
     display: grid;
-    gap: var(--space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: var(--space-md) var(--space-lg);
     list-style: none;
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-lg);
 }
 
 .contact-item {
     display: flex;
     align-items: flex-start;
-    gap: var(--space-md);
+    gap: var(--space-sm);
 }
 
 .contact-item h4 {
@@ -2572,6 +2814,8 @@ body:has(.nav-menu.active) {
 }
 
 .contact-item p {
+    font-size: var(--fs-sm);
+    line-height: 1.5;
     color: var(--on-dark);
 }
 
@@ -2587,12 +2831,8 @@ body:has(.nav-menu.active) {
     }
 }
 
-.contact-card .btn-accent {
-    width: 100%;
-}
-
 .contact-form-wrapper {
-    padding: var(--panel-pad);
+    padding: var(--card-pad);
     background: var(--white);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
@@ -2600,25 +2840,49 @@ body:has(.nav-menu.active) {
 
 .contact-form-wrapper h3 {
     font-size: var(--fs-h3);
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-2xs);
 }
 
-.contact-form-wrapper > p {
-    color: var(--muted);
-    margin-bottom: var(--space-lg);
+.contact-form-wrapper h3 + .contact-form {
+    margin-top: var(--space-md);
 }
 
-@media (min-width: 900px) {
+.contact-form .form-group {
+    margin-bottom: var(--space-sm);
+}
+
+/* Senden-Button und Hinweis in einer Zeile */
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm) var(--space-md);
+    margin-top: var(--space-sm);
+}
+
+.form-actions .form-required-note {
+    flex: 1 1 12rem;
+    margin-top: 0;
+}
+
+@media (min-width: 768px) {
     .contact-grid {
-        grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: stretch;
+    }
+}
+
+@media (min-width: 768px) and (min-height: 600px) {
+    .contact-aside .map-consent {
+        min-height: clamp(7rem, 18vh, 12rem);
     }
 }
 
 /* Google Maps per Klick: stilisierte Kartenfläche als Platzhalter, echte Karte erst nach Einwilligung */
 .map-consent {
     position: relative;
-    margin-top: var(--block-gap);
-    min-height: 440px;
+    flex: 1;
+    min-height: 15rem;
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -2638,51 +2902,58 @@ body:has(.nav-menu.active) {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--space-lg);
+    padding: var(--space-md);
 }
 
+/* Kompakter Hinweis: Symbol, Text und Button in einer Zeile, auf dem Smartphone untereinander */
 .map-panel {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
-    max-width: 440px;
-    padding: var(--panel-pad);
+    justify-content: center;
+    gap: var(--space-sm) var(--space-md);
+    max-width: 34rem;
+    padding: var(--space-sm) var(--space-md);
     background: rgba(250, 246, 238, 0.96);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    text-align: center;
 }
 
 .map-pin {
-    display: grid;
+    display: none;
     place-items: center;
-    width: 52px;
-    height: 52px;
-    margin-bottom: var(--space-sm);
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: var(--ochre);
     color: var(--ink);
 }
 
 .map-pin .icon {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.map-text {
+    flex: 1 1 14rem;
 }
 
 .map-panel h3 {
-    font-size: var(--fs-h3);
+    font-size: var(--fs-h4);
     margin-bottom: 0.15rem;
 }
 
-.map-address {
+.map-note {
+    font-size: var(--fs-xs);
+    line-height: 1.45;
     color: var(--muted);
-    margin-bottom: var(--space-lg);
 }
 
-.map-note {
-    margin-top: var(--space-md);
-    font-size: var(--fs-sm);
-    color: var(--muted);
+@media (min-width: 900px) {
+    .map-pin {
+        display: grid;
+    }
 }
 
 .map-consent iframe {
@@ -2691,13 +2962,6 @@ body:has(.nav-menu.active) {
     width: 100%;
     height: 100%;
     border: 0;
-}
-
-@media (min-width: 900px) {
-    .map-consent {
-        min-height: 380px;
-        aspect-ratio: 21 / 8;
-    }
 }
 
 /* ---------- Footer ---------- */
@@ -2954,7 +3218,8 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
     display: none;
 }
 
-@media (min-width: 900px) {
+/* Ab Tablet würde die Leiste den unteren Rand der Bildschirm-Sections verdecken */
+@media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
     .mobile-cta {
         display: none;
     }

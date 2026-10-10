@@ -27,7 +27,7 @@
 
     <link rel="preload" href="fonts/fraunces-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/source-sans-3-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="css/new-style.css?v=20261010-3">
+    <link rel="stylesheet" href="css/new-style.css?v=20261010-5">
 
     <script type="application/ld+json">
     {
@@ -344,6 +344,26 @@
                     </li>
                 </ul>
             </div>
+
+            <div class="reviews-band">
+                <div class="reviews-score">
+                    <span class="reviews-score-value">4,5</span>
+                    <span class="stars" style="--rating: 4.5;" role="img" aria-label="4,5 von 5 Sternen">
+                        <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                        <span class="stars-fill" aria-hidden="true"><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg></span>
+                    </span>
+                    <span class="reviews-score-source">Google-Bewertungen</span>
+                </div>
+                <div class="reviews-text">
+                    <h3>Unsere Gäste fühlen sich wohl</h3>
+                    <p>Gäste bewerten das Hotel Rössle bei Google mit durchschnittlich 4,5 von 5 Sternen. Lesen Sie selbst, was sie über ihren Aufenthalt schreiben.</p>
+                </div>
+                <a class="btn-secondary" href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20R%C3%B6ssle%20Tuttlingen" target="_blank" rel="noopener noreferrer">
+                    Bewertungen lesen
+                    <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg>
+                    <span class="visually-hidden">(öffnet Google Maps in neuem Fenster)</span>
+                </a>
+            </div>
         </div>
     </section>
 
@@ -381,10 +401,10 @@
             <div class="section-head">
                 <p class="eyebrow">Zimmer &amp; Preise</p>
                 <h2 id="rooms-title" class="section-title">Für jede Reise das passende Zimmer</h2>
-                <p class="section-lead">Ob allein auf Geschäftsreise, zu zweit oder mit der Familie: Alle Zimmer haben ein eigenes Bad mit Dusche und WC, TV und kostenloses WLAN. Wer mehr Platz und Unabhängigkeit möchte, wählt eines unserer voll ausgestatteten Apartments.</p>
+                <p class="section-lead">Jedes Zimmer mit eigenem Bad, TV und kostenlosem WLAN.</p>
             </div>
 
-            <div class="rooms-grid">
+            <div class="rooms-grid rail">
                 <!-- Einzelzimmer -->
                 <article class="room-card">
                     <!-- FOTO-TODO: Einzelzimmer, 2–3 Fotos (mind. 1600×1067 px) -->
@@ -457,33 +477,37 @@
                         <a href="#buchen" class="btn-secondary" data-book-room="familienzimmer">Familienzimmer anfragen</a>
                     </div>
                 </article>
+            </div>
+        </div>
+    </section>
 
-                <!-- Apartment -->
-                <article class="room-card room-card--wide">
-                    <button type="button" class="room-image" onclick="openRoomGallery('apartment')" aria-label="Fotos vom Apartment ansehen">
-                        <picture>
-                            <source srcset="images/optimized/apartment/apartment-wohnraum-karte.avif" type="image/avif">
-                            <source srcset="images/optimized/apartment/apartment-wohnraum-karte.webp" type="image/webp">
-                            <img src="images/apartment/apartment-wohnraum-karte.jpg" alt="" width="1200" height="900" loading="lazy">
-                        </picture>
-                        <span class="view-gallery" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg> 5 Fotos</span>
-                    </button>
-                    <div class="room-content">
-                        <p class="room-kicker">Wie zu Hause fühlen</p>
-                        <h3>Apartment</h3>
-                        <p class="room-intro">Mehr Raum, mehr Freiheit: Unsere Apartments sind für den Alltag bestens ausgestattet. Kochen Sie in Ihrer eigenen Küche, waschen und bügeln Sie Ihre Wäsche und nutzen Sie den Ess- und Arbeitsbereich für ein gemeinsames Essen, konzentriertes Arbeiten oder einen gemütlichen Abend. So fühlen Sie sich auch unterwegs wie zu Hause – ob auf Geschäftsreise oder privat.</p>
-                        <p class="room-price">115 € <span>pro Nacht</span></p>
-                        <ul class="apartment-features">
-                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-kitchen"/></svg></span> Eigene Küche</li>
-                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-washer"/></svg></span> Waschmaschine</li>
-                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-iron"/></svg></span> Bügeleisen</li>
-                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-desk"/></svg></span> Ess- und Arbeitsbereich</li>
-                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-wifi"/></svg></span> Kostenloses WLAN</li>
-                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-balcony"/></svg></span> Balkon auf Wunsch</li>
-                        </ul>
-                        <a href="#buchen" class="btn-primary" data-book-room="apartment">Apartment anfragen</a>
-                    </div>
-                </article>
+    <!-- Apartment -->
+    <section id="apartment" class="section section-sand" aria-labelledby="apartment-title">
+        <div class="container split split--media-first">
+            <div class="apartment-text">
+                <p class="eyebrow">Apartment</p>
+                <h2 id="apartment-title" class="section-title">Wie zu Hause fühlen – auch unterwegs</h2>
+                <p class="apartment-intro">Mehr Raum, mehr Freiheit: Unsere Apartments sind für den Alltag bestens ausgestattet. Kochen Sie in Ihrer eigenen Küche, waschen und bügeln Sie Ihre Wäsche und nutzen Sie den Ess- und Arbeitsbereich für ein gemeinsames Essen, konzentriertes Arbeiten oder einen gemütlichen Abend – ob auf Geschäftsreise oder privat.</p>
+                <p class="room-price">115 € <span>pro Nacht</span></p>
+                <ul class="apartment-features">
+                    <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-kitchen"/></svg></span> Eigene Küche</li>
+                    <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-washer"/></svg></span> Waschmaschine</li>
+                    <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-iron"/></svg></span> Bügeleisen</li>
+                    <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-desk"/></svg></span> Ess- und Arbeitsbereich</li>
+                    <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-wifi"/></svg></span> Kostenloses WLAN</li>
+                    <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-balcony"/></svg></span> Balkon auf Wunsch</li>
+                </ul>
+                <a href="#buchen" class="btn-primary" data-book-room="apartment">Apartment anfragen</a>
+            </div>
+            <div class="split-media apartment-media">
+                <button type="button" class="room-image" onclick="openRoomGallery('apartment')" aria-label="Fotos vom Apartment ansehen">
+                    <picture>
+                        <source srcset="images/optimized/apartment/apartment-wohnraum-karte.avif" type="image/avif">
+                        <source srcset="images/optimized/apartment/apartment-wohnraum-karte.webp" type="image/webp">
+                        <img src="images/apartment/apartment-wohnraum-karte.jpg" alt="" width="1200" height="900" loading="lazy">
+                    </picture>
+                    <span class="view-gallery" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg> 5 Fotos</span>
+                </button>
             </div>
         </div>
     </section>
@@ -526,41 +550,22 @@
         </div>
     </section>
 
-    <!-- Bewertungen -->
-    <section id="bewertungen" class="section" aria-labelledby="reviews-title">
-        <div class="container">
-            <div class="reviews-band">
-                <div class="reviews-score">
-                    <span class="reviews-score-value">4,5</span>
-                    <span class="stars" style="--rating: 4.5;" role="img" aria-label="4,5 von 5 Sternen">
-                        <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
-                        <span class="stars-fill" aria-hidden="true"><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg></span>
-                    </span>
-                    <span class="reviews-score-source">Google-Bewertungen</span>
-                </div>
-                <div class="reviews-text">
-                    <h2 id="reviews-title">Unsere Gäste fühlen sich wohl</h2>
-                    <p>Gäste bewerten das Hotel Rössle bei Google mit durchschnittlich 4,5 von 5 Sternen. Lesen Sie selbst, was sie über ihren Aufenthalt schreiben – und erzählen Sie uns nach Ihrem Besuch gern, wie es Ihnen gefallen hat.</p>
-                </div>
-                <a class="btn-secondary" href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20R%C3%B6ssle%20Tuttlingen" target="_blank" rel="noopener noreferrer">
-                    Bewertungen lesen
-                    <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg>
-                    <span class="visually-hidden">(öffnet Google Maps in neuem Fenster)</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
     <!-- Freizeit & Umgebung -->
     <section id="freizeit" class="section section-sand" aria-labelledby="leisure-title">
         <div class="container">
-            <div class="section-head">
-                <p class="eyebrow">Umgebung</p>
-                <h2 id="leisure-title" class="section-title">Tuttlingen und das Obere Donautal entdecken</h2>
-                <p class="section-lead">Tuttlingen ist das Tor zum Naturpark Obere Donau. Burgruine, Freizeitbad und Stadthalle liegen ganz in der Nähe, die Donauversinkung und das Freilichtmuseum sind schnell erreicht.</p>
+            <div class="section-head-row">
+                <div class="section-head">
+                    <p class="eyebrow">Umgebung</p>
+                    <h2 id="leisure-title" class="section-title">Tuttlingen und das Obere Donautal entdecken</h2>
+                    <p class="section-lead">Tuttlingen ist das Tor zum Naturpark Obere Donau. Burgruine, Freizeitbad und Stadthalle liegen ganz in der Nähe, die Donauversinkung und das Freilichtmuseum sind schnell erreicht.</p>
+                </div>
+                <div class="rail-controls" data-rail-controls="leisureRail">
+                    <button type="button" class="rail-btn" data-rail-dir="-1" aria-label="Vorherige Ausflugsziele"><svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg></button>
+                    <button type="button" class="rail-btn" data-rail-dir="1" aria-label="Weitere Ausflugsziele"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+                </div>
             </div>
 
-            <div class="leisure-grid">
+            <div class="leisure-grid rail" id="leisureRail">
                 <a href="https://www.immendingen.de/startseite/erleben/donauversinkung.html" target="_blank" rel="noopener noreferrer" class="leisure-card-link">
                     <article class="leisure-card">
                         <div class="leisure-image">
@@ -732,25 +737,24 @@
                 <p class="section-lead">Direkt beim Hotel, ohne Buchungsportal – wir melden uns persönlich bei Ihnen.</p>
             </div>
 
-            <ol class="steps">
-                <li class="step">
-                    <h3>Anfrage senden</h3>
-                    <p>Zimmer und Reisedaten wählen, Kontaktdaten eintragen und absenden.</p>
-                </li>
-                <li class="step">
-                    <h3>Bestätigung erhalten</h3>
-                    <p>Sie bekommen sofort eine Eingangsbestätigung. Verbindlich wird die Buchung mit unserer Bestätigung per E-Mail.</p>
-                </li>
-                <li class="step">
-                    <h3>Ankommen &amp; wohlfühlen</h3>
-                    <p>Check-in täglich von 14 bis 21 Uhr. Teilen Sie uns gern Ihre voraussichtliche Anreisezeit mit.</p>
-                </li>
-            </ol>
+            <!-- Buchungs-Assistent: ein Schritt nach dem anderen. Zähler, Kalender und Versand steuert new-script.js -->
+            <form class="booking-panel booking-wizard" id="mainBookingForm" action="booking.php" method="post" data-step="1">
+                <input type="hidden" name="checkin" id="bookingCheckinInput">
+                <input type="hidden" name="checkout" id="bookingCheckoutInput">
+                <input type="hidden" name="einzelzimmer" id="bookingCountEinzelzimmer" value="0">
+                <input type="hidden" name="doppelzimmer" id="bookingCountDoppelzimmer" value="0">
+                <input type="hidden" name="familienzimmer" id="bookingCountFamilienzimmer" value="0">
+                <input type="hidden" name="zweibettzimmer" id="bookingCountZweibettzimmer" value="0">
+                <input type="hidden" name="apartment" id="bookingCountApartment" value="0">
 
-            <div class="booking-layout">
-                <!-- Schritt 1: Zimmer -->
-                <div class="booking-panel rooms-selection">
-                    <h3 class="booking-subtitle"><span class="booking-step-no" aria-hidden="true">1</span> Zimmer wählen</h3>
+                <ol class="wizard-steps" aria-label="Schritte der Anfrage">
+                    <li class="wizard-step is-current"><button type="button" class="wizard-step-btn" data-step-target="1" aria-current="step"><span class="booking-step-no" aria-hidden="true">1</span> <span class="wizard-step-label">Zimmer</span></button></li>
+                    <li class="wizard-step"><button type="button" class="wizard-step-btn" data-step-target="2"><span class="booking-step-no" aria-hidden="true">2</span> <span class="wizard-step-label">Reisedaten</span></button></li>
+                    <li class="wizard-step"><button type="button" class="wizard-step-btn" data-step-target="3"><span class="booking-step-no" aria-hidden="true">3</span> <span class="wizard-step-label">Kontaktdaten</span></button></li>
+                </ol>
+
+                <div class="wizard-panel" data-step-panel="1">
+                    <h3 class="wizard-panel-title visually-hidden" tabindex="-1">Schritt 1 von 3: Zimmer wählen</h3>
                     <div class="booking-rooms-grid">
                         <div class="booking-room-card" data-room="einzelzimmer" data-price="62">
                             <div class="booking-room-image-container">
@@ -848,145 +852,138 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="booking-summary" id="bookingSummary" style="display: none;" aria-live="polite">
-                        <h3>Ihre Auswahl</h3>
-                        <div id="bookingSummaryContent"></div>
+                <div class="wizard-panel" data-step-panel="2">
+                    <h3 class="wizard-panel-title visually-hidden" tabindex="-1">Schritt 2 von 3: Reisedaten wählen</h3>
+                    <div class="date-picker-container">
+                        <button type="button" class="date-input-box" onclick="toggleBookingCalendar()" aria-expanded="false" aria-controls="bookingCalendar">
+                            <span class="date-input-header">
+                                <svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>
+                                Anreise und Abreise auswählen
+                            </span>
+                            <span class="date-range-display">
+                                <span class="date-item">
+                                    <span class="date-item-label">Anreise</span>
+                                    <span class="date-value placeholder" id="bookingCheckinDisplay">Datum wählen</span>
+                                </span>
+                                <span class="date-separator" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
+                                <span class="date-item">
+                                    <span class="date-item-label">Abreise</span>
+                                    <span class="date-value placeholder" id="bookingCheckoutDisplay">Datum wählen</span>
+                                </span>
+                            </span>
+                            <span class="nights-info" id="bookingNightsInfo" style="display: none;">
+                                <span id="bookingNightsCount"></span>
+                            </span>
+                        </button>
+
+                        <div class="calendar-wrapper" id="bookingCalendar" role="group" aria-label="Kalender für Anreise und Abreise">
+                            <div class="calendar-header">
+                                <h4 id="bookingCalendarMonth" aria-live="polite"></h4>
+                                <div class="calendar-nav">
+                                    <button type="button" onclick="changeBookingMonth(-1)" aria-label="Vorheriger Monat"><svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg></button>
+                                    <button type="button" onclick="changeBookingMonth(1)" aria-label="Nächster Monat"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+                                </div>
+                            </div>
+                            <div class="calendar-weekdays" aria-hidden="true">
+                                <div class="weekday">So</div>
+                                <div class="weekday">Mo</div>
+                                <div class="weekday">Di</div>
+                                <div class="weekday">Mi</div>
+                                <div class="weekday">Do</div>
+                                <div class="weekday">Fr</div>
+                                <div class="weekday">Sa</div>
+                            </div>
+                            <div class="calendar-days" id="bookingCalendarDays"></div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Schritt 2 + 3: Reisedaten und Kontaktdaten -->
-                <form class="booking-panel booking-form" id="mainBookingForm" action="booking.php" method="post">
-                    <input type="hidden" name="checkin" id="bookingCheckinInput">
-                    <input type="hidden" name="checkout" id="bookingCheckoutInput">
-                    <input type="hidden" name="einzelzimmer" id="bookingCountEinzelzimmer" value="0">
-                    <input type="hidden" name="doppelzimmer" id="bookingCountDoppelzimmer" value="0">
-                    <input type="hidden" name="familienzimmer" id="bookingCountFamilienzimmer" value="0">
-                    <input type="hidden" name="zweibettzimmer" id="bookingCountZweibettzimmer" value="0">
-                    <input type="hidden" name="apartment" id="bookingCountApartment" value="0">
-
-                    <div class="booking-form-section">
-                        <h3 class="booking-subtitle"><span class="booking-step-no" aria-hidden="true">2</span> Reisedaten wählen</h3>
-                        <div class="date-picker-container">
-                            <button type="button" class="date-input-box" onclick="toggleBookingCalendar()" aria-expanded="false" aria-controls="bookingCalendar">
-                                <span class="date-input-header">
-                                    <svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>
-                                    Anreise und Abreise auswählen
-                                </span>
-                                <span class="date-range-display">
-                                    <span class="date-item">
-                                        <span class="date-item-label">Anreise</span>
-                                        <span class="date-value placeholder" id="bookingCheckinDisplay">Datum wählen</span>
-                                    </span>
-                                    <span class="date-separator" aria-hidden="true"><svg class="icon"><use href="#i-arrow"/></svg></span>
-                                    <span class="date-item">
-                                        <span class="date-item-label">Abreise</span>
-                                        <span class="date-value placeholder" id="bookingCheckoutDisplay">Datum wählen</span>
-                                    </span>
-                                </span>
-                                <span class="nights-info" id="bookingNightsInfo" style="display: none;">
-                                    <span id="bookingNightsCount"></span>
-                                </span>
-                            </button>
-
-                            <div class="calendar-wrapper" id="bookingCalendar" role="group" aria-label="Kalender für Anreise und Abreise">
-                                <div class="calendar-header">
-                                    <h4 id="bookingCalendarMonth" aria-live="polite"></h4>
-                                    <div class="calendar-nav">
-                                        <button type="button" onclick="changeBookingMonth(-1)" aria-label="Vorheriger Monat"><svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg></button>
-                                        <button type="button" onclick="changeBookingMonth(1)" aria-label="Nächster Monat"><svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
-                                    </div>
-                                </div>
-                                <div class="calendar-weekdays" aria-hidden="true">
-                                    <div class="weekday">So</div>
-                                    <div class="weekday">Mo</div>
-                                    <div class="weekday">Di</div>
-                                    <div class="weekday">Mi</div>
-                                    <div class="weekday">Do</div>
-                                    <div class="weekday">Fr</div>
-                                    <div class="weekday">Sa</div>
-                                </div>
-                                <div class="calendar-days" id="bookingCalendarDays"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="booking-form-section">
-                        <h3 class="booking-subtitle"><span class="booking-step-no" aria-hidden="true">3</span> Ihre Kontaktdaten</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="bookingFirstName">Vorname *</label>
-                                <input type="text" id="bookingFirstName" name="vorname" minlength="2" maxlength="120" autocomplete="given-name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="bookingLastName">Nachname *</label>
-                                <input type="text" id="bookingLastName" name="nachname" minlength="2" maxlength="120" autocomplete="family-name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="bookingEmail">E-Mail *</label>
-                                <input type="email" id="bookingEmail" name="email" maxlength="160" autocomplete="email" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="bookingPhone">Telefon *</label>
-                                <input type="tel" id="bookingPhone" name="telefon" minlength="6" maxlength="40" pattern="[0-9+()\s-]{6,}" autocomplete="tel" required>
-                            </div>
-                        </div>
-
-                        <!-- Firmeninformationen (optional, z. B. für Geschäftsreisen) -->
-                        <div id="companyInfoSection">
-                            <button type="button" id="addCompanyBtn" class="add-company-btn">+ Firmendaten hinzufügen (für Geschäftsreisen)</button>
-
-                            <div id="companyFieldsWrapper" style="display: none;">
-                                <div id="companyNameSection" class="company-section">
-                                    <div class="form-group">
-                                        <label for="bookingCompanyName">Firmenname</label>
-                                        <input type="text" id="bookingCompanyName" name="firmenname" maxlength="120" autocomplete="organization">
-                                    </div>
-                                    <button type="button" id="addCompanyAddressBtn" class="add-company-btn">+ Firmenadresse hinzufügen</button>
-                                </div>
-
-                                <div id="companyAddressSection" class="company-section" style="display: none;">
-                                    <div class="form-group">
-                                        <label for="bookingCompanyStreet">Straße und Hausnummer</label>
-                                        <input type="text" id="bookingCompanyStreet" name="firma_strasse" maxlength="120" autocomplete="off">
-                                    </div>
-                                    <div class="form-grid">
-                                        <div class="form-group">
-                                            <label for="bookingCompanyZip">PLZ</label>
-                                            <input type="text" id="bookingCompanyZip" name="firma_plz" maxlength="10" autocomplete="off">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="bookingCompanyCity">Ort</label>
-                                            <input type="text" id="bookingCompanyCity" name="firma_ort" maxlength="120" autocomplete="off">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button type="button" class="delete-company-all-btn" id="deleteAllCompanyBtn" aria-label="Alle Firmendaten entfernen" title="Alle Firmendaten entfernen">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
+                <div class="wizard-panel" data-step-panel="3">
+                    <h3 class="wizard-panel-title visually-hidden" tabindex="-1">Schritt 3 von 3: Ihre Kontaktdaten</h3>
+                    <div class="form-grid">
                         <div class="form-group">
-                            <label for="bookingNotes">Besondere Wünsche</label>
-                            <textarea id="bookingNotes" rows="4" name="wuensche" maxlength="1000" placeholder="z. B. voraussichtliche Anreisezeit"></textarea>
+                            <label for="bookingFirstName">Vorname *</label>
+                            <input type="text" id="bookingFirstName" name="vorname" minlength="2" maxlength="120" autocomplete="given-name" required>
                         </div>
-                        <div class="form-group honeypot" aria-hidden="true">
-                            <label for="bookingCompany">Firma</label>
-                            <input type="text" id="bookingCompany" name="company" tabindex="-1" autocomplete="off">
+                        <div class="form-group">
+                            <label for="bookingLastName">Nachname *</label>
+                            <input type="text" id="bookingLastName" name="nachname" minlength="2" maxlength="120" autocomplete="family-name" required>
                         </div>
-                        <div class="form-checkbox">
-                            <input type="checkbox" id="bookingPrivacy" required>
-                            <label for="bookingPrivacy">Ich habe die <a href="datenschutz.html#buchungsanfragen">Hinweise zum Datenschutz</a> zur Kenntnis genommen. *</label>
+                        <div class="form-group">
+                            <label for="bookingEmail">E-Mail *</label>
+                            <input type="email" id="bookingEmail" name="email" maxlength="160" autocomplete="email" required>
                         </div>
-                        <button type="submit" class="btn-primary btn-large btn-block" id="bookingSubmitBtn" disabled>Buchungsanfrage senden</button>
-                        <p class="form-required-note">* Pflichtfelder. Der Button wird aktiv, sobald Zimmer und Reisedaten gewählt sind. Ihre Anfrage ist unverbindlich – verbindlich wird die Buchung erst mit unserer Bestätigung. Bezahlung bar oder per PayPal (derzeit keine Kartenzahlung).</p>
+                        <div class="form-group">
+                            <label for="bookingPhone">Telefon *</label>
+                            <input type="tel" id="bookingPhone" name="telefon" minlength="6" maxlength="40" pattern="[0-9+()\s-]{6,}" autocomplete="tel" required>
+                        </div>
                     </div>
-                </form>
-            </div>
+
+                    <!-- Firmeninformationen (optional, z. B. für Geschäftsreisen) -->
+                    <div id="companyInfoSection">
+                        <button type="button" id="addCompanyBtn" class="add-company-btn">+ Firmendaten hinzufügen (für Geschäftsreisen)</button>
+
+                        <div id="companyFieldsWrapper" style="display: none;">
+                            <div id="companyNameSection" class="company-section">
+                                <div class="form-group">
+                                    <label for="bookingCompanyName">Firmenname</label>
+                                    <input type="text" id="bookingCompanyName" name="firmenname" maxlength="120" autocomplete="organization">
+                                </div>
+                                <button type="button" id="addCompanyAddressBtn" class="add-company-btn">+ Firmenadresse hinzufügen</button>
+                            </div>
+
+                            <div id="companyAddressSection" class="company-section" style="display: none;">
+                                <div class="form-group">
+                                    <label for="bookingCompanyStreet">Straße und Hausnummer</label>
+                                    <input type="text" id="bookingCompanyStreet" name="firma_strasse" maxlength="120" autocomplete="off">
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="bookingCompanyZip">PLZ</label>
+                                        <input type="text" id="bookingCompanyZip" name="firma_plz" maxlength="10" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="bookingCompanyCity">Ort</label>
+                                        <input type="text" id="bookingCompanyCity" name="firma_ort" maxlength="120" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="delete-company-all-btn" id="deleteAllCompanyBtn" aria-label="Alle Firmendaten entfernen" title="Alle Firmendaten entfernen">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookingNotes">Besondere Wünsche</label>
+                        <textarea id="bookingNotes" rows="2" name="wuensche" maxlength="1000" placeholder="z. B. voraussichtliche Anreisezeit"></textarea>
+                    </div>
+                    <div class="form-group honeypot" aria-hidden="true">
+                        <label for="bookingCompany">Firma</label>
+                        <input type="text" id="bookingCompany" name="company" tabindex="-1" autocomplete="off">
+                    </div>
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="bookingPrivacy" required>
+                        <label for="bookingPrivacy">Ich habe die <a href="datenschutz.html#buchungsanfragen">Hinweise zum Datenschutz</a> zur Kenntnis genommen. *</label>
+                    </div>
+                    <p class="form-required-note">* Pflichtfelder. Unverbindlich – verbindlich erst mit unserer Bestätigung. Bezahlung bar oder per PayPal.</p>
+                </div>
+
+                <div class="wizard-footer">
+                    <p class="wizard-summary" id="bookingSummary" aria-live="polite">Noch kein Zimmer gewählt</p>
+                    <p class="wizard-hint" id="bookingHint" role="alert" hidden></p>
+                    <div class="wizard-actions">
+                        <button type="button" class="btn-secondary" data-wizard-prev hidden>Zurück</button>
+                        <button type="button" class="btn-primary" data-wizard-next hidden>Weiter</button>
+                        <button type="submit" class="btn-primary" id="bookingSubmitBtn" disabled>Buchungsanfrage senden</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </section>
 
@@ -1065,59 +1062,68 @@
             <div class="section-head">
                 <p class="eyebrow">Kontakt</p>
                 <h2 id="contact-title" class="section-title">Wir sind für Sie da</h2>
-                <p class="section-lead">Fragen zu Zimmern, Räumen oder Ihrer Anreise? Rufen Sie uns an oder schreiben Sie uns – wir antworten persönlich.</p>
+                <p class="section-lead">Rufen Sie an oder schreiben Sie uns – wir antworten persönlich.</p>
             </div>
 
             <div class="contact-grid">
-                <div class="contact-card">
-                    <h3>Hotel Rössle</h3>
-                    <ul class="contact-list">
-                        <li class="contact-item">
-                            <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
-                            <div>
-                                <h4>Adresse</h4>
-                                <p>Honbergstrasse 8<br>78532 Tuttlingen</p>
+                <div class="contact-aside">
+                    <div class="contact-card">
+                        <h3>Hotel Rössle</h3>
+                        <ul class="contact-list">
+                            <li class="contact-item">
+                                <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
+                                <div>
+                                    <h4>Adresse</h4>
+                                    <p>Honbergstrasse 8<br>78532 Tuttlingen</p>
+                                </div>
+                            </li>
+                            <li class="contact-item">
+                                <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-phone"/></svg></span>
+                                <div>
+                                    <h4>Telefon</h4>
+                                    <p><a href="tel:+4974612913">+49 (0) 7461 2913</a><br>Fax: +49 (0) 7461 9697524</p>
+                                </div>
+                            </li>
+                            <li class="contact-item">
+                                <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-mail"/></svg></span>
+                                <div>
+                                    <h4>E-Mail</h4>
+                                    <p><a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a></p>
+                                </div>
+                            </li>
+                            <li class="contact-item">
+                                <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-clock"/></svg></span>
+                                <div>
+                                    <h4>Zeiten</h4>
+                                    <p>Rezeption täglich 9–21 Uhr<br>Check-in 14–21 Uhr<br>Check-out bis 11 Uhr</p>
+                                </div>
+                            </li>
+                        </ul>
+                        <a class="btn-accent" href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel%20R%C3%B6ssle%2C%20Honbergstrasse%208%2C%2078532%20Tuttlingen" target="_blank" rel="noopener noreferrer">
+                            <svg class="icon" aria-hidden="true"><use href="#i-route"/></svg>
+                            Route planen
+                            <span class="visually-hidden">(öffnet Google Maps in neuem Fenster)</span>
+                        </a>
+                    </div>
+
+                    <!-- Google Maps per Klick: Vor dem Klick werden keine Daten an Google übertragen (siehe datenschutz.html#google-maps).
+                         Die Karten-Adresse steht in data-map-src und kann durch den offiziellen Einbettungscode aus Google Maps („Teilen“ → „Karte einbetten“) ersetzt werden. -->
+                    <div class="map-consent" id="hotelMap" data-map-src="https://www.google.com/maps?q=Hotel%20R%C3%B6ssle%2C%20Honbergstrasse%208%2C%2078532%20Tuttlingen&amp;hl=de&amp;z=16&amp;output=embed">
+                        <div class="map-placeholder">
+                            <div class="map-panel">
+                                <span class="map-pin" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
+                                <div class="map-text">
+                                    <h3>Hier finden Sie uns</h3>
+                                    <p class="map-note">Beim Laden der Karte werden Daten wie Ihre IP-Adresse an Google übertragen. Mehr dazu in der <a href="datenschutz.html#google-maps">Datenschutzerklärung</a>.</p>
+                                </div>
+                                <button type="button" class="btn-primary" id="loadMapBtn">Google Maps laden</button>
                             </div>
-                        </li>
-                        <li class="contact-item">
-                            <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-phone"/></svg></span>
-                            <div>
-                                <h4>Telefon</h4>
-                                <p><a href="tel:+4974612913">+49 (0) 7461 2913</a><br>Fax: +49 (0) 7461 9697524</p>
-                            </div>
-                        </li>
-                        <li class="contact-item">
-                            <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-mail"/></svg></span>
-                            <div>
-                                <h4>E-Mail</h4>
-                                <p><a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a></p>
-                            </div>
-                        </li>
-                        <li class="contact-item">
-                            <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-clock"/></svg></span>
-                            <div>
-                                <h4>Zeiten</h4>
-                                <p>Rezeption täglich 9–21 Uhr<br>Check-in 14–21 Uhr<br>Check-out bis 11 Uhr</p>
-                            </div>
-                        </li>
-                        <li class="contact-item">
-                            <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-user"/></svg></span>
-                            <div>
-                                <h4>Inhaber</h4>
-                                <p>Osman Kücük</p>
-                            </div>
-                        </li>
-                    </ul>
-                    <a class="btn-accent" href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel%20R%C3%B6ssle%2C%20Honbergstrasse%208%2C%2078532%20Tuttlingen" target="_blank" rel="noopener noreferrer">
-                        <svg class="icon" aria-hidden="true"><use href="#i-route"/></svg>
-                        Route planen
-                        <span class="visually-hidden">(öffnet Google Maps in neuem Fenster)</span>
-                    </a>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="contact-form-wrapper">
                     <h3>Nachricht schreiben</h3>
-                    <p>Für Zimmeranfragen nutzen Sie am besten das <a href="#buchen">Buchungsformular</a>. Für alles andere schreiben Sie uns hier.</p>
                     <form class="contact-form" action="contact.php" method="post">
                         <div class="form-grid">
                             <div class="form-group">
@@ -1146,34 +1152,18 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="contact-message">Nachricht *</label>
-                            <textarea id="contact-message" name="message" rows="5" required minlength="20" maxlength="4000" aria-describedby="contact-message-hint"></textarea>
-                            <p class="form-hint" id="contact-message-hint">Mindestens 20 Zeichen.</p>
+                            <label for="contact-message">Nachricht * <span class="label-hint">(mindestens 20 Zeichen)</span></label>
+                            <textarea id="contact-message" name="message" rows="3" required minlength="20" maxlength="4000"></textarea>
                         </div>
                         <div class="form-group honeypot" aria-hidden="true">
                             <label for="contact-company">Firma (bitte frei lassen)</label>
                             <input id="contact-company" name="company" type="text" tabindex="-1" autocomplete="off">
                         </div>
-                        <button type="submit" class="btn-primary btn-large">
-                            Nachricht senden
-                            <svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>
-                        </button>
-                        <p class="form-required-note">* Pflichtfelder. Hinweise zur Verarbeitung Ihrer Daten finden Sie in der <a href="datenschutz.html#kontaktformular">Datenschutzerklärung</a>.</p>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Nachricht senden</button>
+                            <p class="form-required-note">* Pflichtfelder. Zimmer bitte über den <a href="#buchen">Buchungs-Assistenten</a> anfragen. <a href="datenschutz.html#kontaktformular">Hinweise zum Datenschutz</a></p>
+                        </div>
                     </form>
-                </div>
-            </div>
-
-            <!-- Google Maps per Klick: Vor dem Klick werden keine Daten an Google übertragen (siehe datenschutz.html#google-maps).
-                 Die Karten-Adresse steht in data-map-src und kann durch den offiziellen Einbettungscode aus Google Maps („Teilen“ → „Karte einbetten“) ersetzt werden. -->
-            <div class="map-consent" id="hotelMap" data-map-src="https://www.google.com/maps?q=Hotel%20R%C3%B6ssle%2C%20Honbergstrasse%208%2C%2078532%20Tuttlingen&amp;hl=de&amp;z=16&amp;output=embed">
-                <div class="map-placeholder">
-                    <div class="map-panel">
-                        <span class="map-pin" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
-                        <h3>Hier finden Sie uns</h3>
-                        <p class="map-address">Honbergstrasse&nbsp;8, 78532&nbsp;Tuttlingen</p>
-                        <button type="button" class="btn-primary" id="loadMapBtn">Google Maps laden</button>
-                        <p class="map-note">Mit dem Laden der Karte werden Daten, z. B. Ihre IP-Adresse, an Google übertragen. Mehr dazu in der <a href="datenschutz.html#google-maps">Datenschutzerklärung</a>.</p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1242,11 +1232,11 @@
     <nav class="section-nav" aria-label="Abschnitte der Seite">
         <ol>
             <li><a href="#home" class="section-nav-link" aria-current="true"><span class="section-nav-label">Start</span></a></li>
-            <li><a href="#auf-einen-blick" class="section-nav-link"><span class="section-nav-label">Auf einen Blick</span></a></li>
+            <li><a href="#auf-einen-blick" class="section-nav-link"><span class="section-nav-label">Auf einen Blick &amp; Bewertungen</span></a></li>
             <li><a href="#ueber-uns" class="section-nav-link"><span class="section-nav-label">Über uns</span></a></li>
             <li><a href="#zimmer" class="section-nav-link"><span class="section-nav-label">Zimmer &amp; Preise</span></a></li>
+            <li><a href="#apartment" class="section-nav-link"><span class="section-nav-label">Apartment</span></a></li>
             <li><a href="#events" class="section-nav-link"><span class="section-nav-label">Tagungen &amp; Feiern</span></a></li>
-            <li><a href="#bewertungen" class="section-nav-link"><span class="section-nav-label">Bewertungen</span></a></li>
             <li><a href="#freizeit" class="section-nav-link"><span class="section-nav-label">Umgebung</span></a></li>
             <li><a href="#buchen" class="section-nav-link"><span class="section-nav-label">Zimmer anfragen</span></a></li>
             <li><a href="#faq" class="section-nav-link"><span class="section-nav-label">Häufige Fragen</span></a></li>
@@ -1283,6 +1273,6 @@
         </div>
     </div>
 
-    <script src="js/new-script.js?v=20261010-3"></script>
+    <script src="js/new-script.js?v=20261010-5"></script>
 </body>
 </html>
