@@ -27,7 +27,7 @@
 
     <link rel="preload" href="fonts/fraunces-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/source-sans-3-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="css/new-style.css?v=20261004">
+    <link rel="stylesheet" href="css/new-style.css?v=20261010-3">
 
     <script type="application/ld+json">
     {
@@ -201,14 +201,11 @@
         <div class="container">
             <div class="hero-grid">
                 <div class="hero-text">
-                    <p class="eyebrow hero-eyebrow">Tuttlingen · Obere Donau</p>
+                    <p class="eyebrow hero-eyebrow">Tuttlingen an der Oberen Donau</p>
                     <h1 class="hero-title">Ihr komfortables Hotel im Herzen von Tuttlingen</h1>
-                    <p class="hero-lead">Familiengeführt, zentral und trotzdem ruhig: Bei uns erwarten Sie gepflegte Zimmer, kostenloses WLAN und persönlicher Service. Als zertifiziertes Bett+Bike-Hotel sind wir der ideale Ausgangspunkt für den Donauradweg, Wanderungen im Donaubergland und Ihre Geschäftsreise.</p>
+                    <p class="hero-lead">Familiengeführt, zentral und trotzdem ruhig: gepflegte Zimmer, kostenloses WLAN und persönlicher Service. Ihr Ausgangspunkt für den Donauradweg, Wanderungen im Donaubergland und Geschäftsreisen.</p>
                     <div class="hero-actions">
-                        <a href="#buchen" class="btn-accent btn-large">
-                            Zimmer anfragen
-                            <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
-                        </a>
+                        <a href="#buchen" class="btn-accent btn-large">Zimmer anfragen</a>
                         <a href="tel:+4974612913" class="btn-ghost-light btn-large">
                             <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
                             07461 2913 anrufen
@@ -234,63 +231,126 @@
                 <aside class="hero-card" aria-labelledby="hero-card-title">
                     <p class="hero-card-label" id="hero-card-title">Direkt beim Hotel anfragen</p>
                     <p class="hero-card-price">ab 62 € <span>pro Zimmer und Nacht</span></p>
-                    <ul class="check-list">
-                        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Persönliche Bestätigung per E-Mail</li>
-                        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenloses WLAN in allen Zimmern</li>
-                        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenlose Parkplätze in der Nähe</li>
-                        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Rezeption täglich 9–21 Uhr</li>
-                    </ul>
-                    <div class="hero-card-actions">
-                        <a href="#buchen" class="btn-primary">Verfügbarkeit anfragen</a>
-                        <a href="#zimmer" class="btn-secondary">Zimmer ansehen</a>
-                    </div>
-                    <p class="hero-card-note">Ohne Buchungsportal – Ihre Anfrage geht direkt an uns.</p>
+                    <a href="#zimmer" class="btn-secondary">Zimmer &amp; Preise ansehen</a>
+                    <p class="hero-card-note">Ohne Buchungsportal: Ihre Anfrage geht direkt an uns, Sie erhalten eine persönliche Bestätigung per E-Mail.</p>
                 </aside>
             </div>
         </div>
     </section>
 
-    <!-- Vorteile -->
-    <section class="usp-section" aria-labelledby="usp-title">
+    <!-- Auf einen Blick: alle Kurzinfos gebündelt -->
+    <section id="auf-einen-blick" class="section glance" aria-labelledby="glance-title">
         <div class="container">
-            <h2 id="usp-title" class="visually-hidden">Ihre Vorteile</h2>
-            <ul class="usp-bar" role="list">
-                <li class="usp">
-                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
-                    <div>
-                        <h3>Zentral &amp; ruhig</h3>
-                        <p>Mitten in Tuttlingen, zu Fuß zu allen Sehenswürdigkeiten</p>
-                    </div>
-                </li>
-                <li class="usp">
-                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-parking"/></svg></span>
-                    <div>
-                        <h3>Kostenlose Parkplätze</h3>
-                        <p>Begrenzte Anzahl in der Nähe verfügbar</p>
-                    </div>
-                </li>
-                <li class="usp">
-                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-wifi"/></svg></span>
-                    <div>
-                        <h3>Kostenloses WLAN</h3>
-                        <p>In allen Zimmern inklusive</p>
-                    </div>
-                </li>
-                <li class="usp">
-                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-bike"/></svg></span>
-                    <div>
-                        <h3>Bett+Bike-Hotel</h3>
-                        <p>Fahrradfreundlich, direkt am Donauradweg</p>
-                    </div>
-                </li>
-            </ul>
+            <h2 id="glance-title" class="visually-hidden">Auf einen Blick</h2>
+
+            <div class="glance-group">
+                <h3 class="glance-label">Lage &amp; Ausstattung</h3>
+                <ul class="glance-list" role="list">
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
+                        <div>
+                            <h4>Zentral &amp; ruhig</h4>
+                            <p>Sehenswürdigkeiten zu Fuß erreichbar</p>
+                        </div>
+                    </li>
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-parking"/></svg></span>
+                        <div>
+                            <h4>Kostenlose Parkplätze</h4>
+                            <p>In der Nähe, begrenzte Anzahl</p>
+                        </div>
+                    </li>
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-wifi"/></svg></span>
+                        <div>
+                            <h4>Kostenloses WLAN</h4>
+                            <p>In allen Zimmern inklusive</p>
+                        </div>
+                    </li>
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-bike"/></svg></span>
+                        <div>
+                            <h4>Bett+Bike-Hotel</h4>
+                            <p>Fahrradfreundlich, direkt am Donauradweg</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="glance-group">
+                <h3 class="glance-label">Ihr Aufenthalt</h3>
+                <ul class="glance-list" role="list">
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-key"/></svg></span>
+                        <div>
+                            <h4>Check-in</h4>
+                            <p>Täglich 14–21 Uhr</p>
+                        </div>
+                    </li>
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-door"/></svg></span>
+                        <div>
+                            <h4>Check-out</h4>
+                            <p>Bis 11 Uhr</p>
+                        </div>
+                    </li>
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-clock"/></svg></span>
+                        <div>
+                            <h4>Rezeption</h4>
+                            <p>Täglich 9–21 Uhr</p>
+                        </div>
+                    </li>
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-wallet"/></svg></span>
+                        <div>
+                            <h4>Zahlung</h4>
+                            <p>Bar oder PayPal</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="glance-group">
+                <h3 class="glance-label">In der Umgebung</h3>
+                <ul class="glance-list" role="list">
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-bike"/></svg></span>
+                        <div>
+                            <h4>Radfahren</h4>
+                            <p>Der Donauradweg führt durch Tuttlingen</p>
+                        </div>
+                    </li>
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-mountain"/></svg></span>
+                        <div>
+                            <h4>Wandern</h4>
+                            <p>Zahlreiche Wege im Donaubergland</p>
+                        </div>
+                    </li>
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-ticket"/></svg></span>
+                        <div>
+                            <h4>Kultur</h4>
+                            <p>Konzerte und Events das ganze Jahr</p>
+                        </div>
+                    </li>
+                    <li class="glance-item">
+                        <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-utensils"/></svg></span>
+                        <div>
+                            <h4>Gastronomie</h4>
+                            <p>Schwäbische Küche in der Region</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </section>
 
     <!-- Über uns -->
     <section id="ueber-uns" class="section section-sand" aria-labelledby="about-title">
-        <div class="container about-grid">
-            <div class="about-text reveal">
+        <div class="container split">
+            <div class="about-text">
                 <p class="eyebrow">Willkommen</p>
                 <h2 id="about-title" class="section-title">Schwäbische Gastfreundschaft im Herzen von Tuttlingen</h2>
                 <p>Das Hotel Rössle liegt mitten in Tuttlingen, dem Tor zum Naturpark Obere Donau. Unser familiengeführtes Haus bietet Ihnen komfortable Zimmer und persönlichen Service – zentral und trotzdem ruhig gelegen.</p>
@@ -303,7 +363,7 @@
                     </div>
                 </div>
             </div>
-            <div class="about-media reveal">
+            <div class="split-media about-media reveal">
                 <!-- FOTO-TODO: Empfang/Rezeption oder Porträt der Gastgeber (mind. 1600×1200 px) -->
                 <picture>
                     <source srcset="images/optimized/events/event_roessle4.avif" type="image/avif">
@@ -326,7 +386,7 @@
 
             <div class="rooms-grid">
                 <!-- Einzelzimmer -->
-                <article class="room-card reveal">
+                <article class="room-card">
                     <!-- FOTO-TODO: Einzelzimmer, 2–3 Fotos (mind. 1600×1067 px) -->
                     <button type="button" class="room-image" onclick="openRoomGallery('einzelzimmer')" aria-label="Fotos vom Einzelzimmer ansehen">
                         <picture>
@@ -350,7 +410,7 @@
                 </article>
 
                 <!-- Doppelzimmer -->
-                <article class="room-card featured reveal">
+                <article class="room-card featured">
                     <span class="room-badge">Beliebt</span>
                     <!-- FOTO-TODO: Doppelzimmer, 2–3 Fotos (mind. 1600×1067 px) -->
                     <button type="button" class="room-image" onclick="openRoomGallery('doppelzimmer')" aria-label="Fotos vom Doppelzimmer ansehen">
@@ -375,7 +435,7 @@
                 </article>
 
                 <!-- Familienzimmer -->
-                <article class="room-card reveal">
+                <article class="room-card">
                     <!-- FOTO-TODO: Familienzimmer, 2–3 Fotos (mind. 1600×1067 px) -->
                     <button type="button" class="room-image" onclick="openRoomGallery('familienzimmer')" aria-label="Fotos vom Familienzimmer ansehen">
                         <picture>
@@ -399,7 +459,7 @@
                 </article>
 
                 <!-- Apartment -->
-                <article class="room-card room-card--wide reveal">
+                <article class="room-card room-card--wide">
                     <button type="button" class="room-image" onclick="openRoomGallery('apartment')" aria-label="Fotos vom Apartment ansehen">
                         <picture>
                             <source srcset="images/optimized/apartment/apartment-wohnraum-karte.avif" type="image/avif">
@@ -414,42 +474,23 @@
                         <p class="room-intro">Mehr Raum, mehr Freiheit: Unsere Apartments sind für den Alltag bestens ausgestattet. Kochen Sie in Ihrer eigenen Küche, waschen und bügeln Sie Ihre Wäsche und nutzen Sie den Ess- und Arbeitsbereich für ein gemeinsames Essen, konzentriertes Arbeiten oder einen gemütlichen Abend. So fühlen Sie sich auch unterwegs wie zu Hause – ob auf Geschäftsreise oder privat.</p>
                         <p class="room-price">115 € <span>pro Nacht</span></p>
                         <ul class="apartment-features">
-                            <li><span class="apartment-feature-icon" aria-hidden="true"><svg class="icon"><use href="#i-kitchen"/></svg></span> Eigene Küche</li>
-                            <li><span class="apartment-feature-icon" aria-hidden="true"><svg class="icon"><use href="#i-washer"/></svg></span> Waschmaschine</li>
-                            <li><span class="apartment-feature-icon" aria-hidden="true"><svg class="icon"><use href="#i-iron"/></svg></span> Bügeleisen</li>
-                            <li><span class="apartment-feature-icon" aria-hidden="true"><svg class="icon"><use href="#i-desk"/></svg></span> Ess- und Arbeitsbereich</li>
-                            <li><span class="apartment-feature-icon" aria-hidden="true"><svg class="icon"><use href="#i-wifi"/></svg></span> Kostenloses WLAN</li>
-                            <li><span class="apartment-feature-icon" aria-hidden="true"><svg class="icon"><use href="#i-balcony"/></svg></span> Balkon auf Wunsch</li>
+                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-kitchen"/></svg></span> Eigene Küche</li>
+                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-washer"/></svg></span> Waschmaschine</li>
+                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-iron"/></svg></span> Bügeleisen</li>
+                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-desk"/></svg></span> Ess- und Arbeitsbereich</li>
+                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-wifi"/></svg></span> Kostenloses WLAN</li>
+                            <li><span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-balcony"/></svg></span> Balkon auf Wunsch</li>
                         </ul>
                         <a href="#buchen" class="btn-primary" data-book-room="apartment">Apartment anfragen</a>
                     </div>
                 </article>
-            </div>
-
-            <div class="info-banner">
-                <div class="info-item">
-                    <svg class="icon" aria-hidden="true"><use href="#i-key"/></svg>
-                    <div><span>Check-in</span><strong>Täglich 14–21 Uhr</strong></div>
-                </div>
-                <div class="info-item">
-                    <svg class="icon" aria-hidden="true"><use href="#i-door"/></svg>
-                    <div><span>Check-out</span><strong>Bis 11 Uhr</strong></div>
-                </div>
-                <div class="info-item">
-                    <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
-                    <div><span>Rezeption</span><strong>Täglich 9–21 Uhr</strong></div>
-                </div>
-                <div class="info-item">
-                    <svg class="icon" aria-hidden="true"><use href="#i-wallet"/></svg>
-                    <div><span>Zahlung</span><strong>Bar oder PayPal</strong></div>
-                </div>
             </div>
         </div>
     </section>
 
     <!-- Tagungen & Feiern -->
     <section id="events" class="section section-dark" aria-labelledby="events-title">
-        <div class="container events-grid">
+        <div class="container split">
             <div class="events-text">
                 <p class="eyebrow">Tagungen &amp; Feiern</p>
                 <h2 id="events-title" class="section-title">Der passende Raum für Ihr Meeting&nbsp;– und für Ihr Fest</h2>
@@ -466,27 +507,15 @@
                     <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Übernachtung im Haus möglich</li>
                 </ul>
 
-                <ul class="event-types" aria-label="Anlässe">
-                    <li class="event-type">Tagungen</li>
-                    <li class="event-type">Schulungen</li>
-                    <li class="event-type">Firmenfeiern</li>
-                    <li class="event-type">Taufen</li>
-                    <li class="event-type">Konfirmationen</li>
-                    <li class="event-type">Geburtstage</li>
-                </ul>
-
                 <div class="event-actions">
-                    <a href="#kontakt" class="btn-accent" data-contact-subject="Event-Anfrage">
-                        Raum anfragen
-                        <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
-                    </a>
+                    <a href="#kontakt" class="btn-accent" data-contact-subject="Event-Anfrage">Raum anfragen</a>
                     <a href="tel:+4974612913" class="btn-ghost-light">
                         <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
                         07461 2913
                     </a>
                 </div>
             </div>
-            <div class="events-media reveal">
+            <div class="split-media events-media reveal">
                 <!-- FOTO-TODO: Tagungsraum bestuhlt bzw. eingedeckt (mind. 1600×1200 px) -->
                 <picture>
                     <source srcset="images/optimized/events/event_roessle1.avif" type="image/avif">
@@ -498,9 +527,9 @@
     </section>
 
     <!-- Bewertungen -->
-    <section class="section" aria-labelledby="reviews-title">
+    <section id="bewertungen" class="section" aria-labelledby="reviews-title">
         <div class="container">
-            <div class="reviews-band reveal">
+            <div class="reviews-band">
                 <div class="reviews-score">
                     <span class="reviews-score-value">4,5</span>
                     <span class="stars" style="--rating: 4.5;" role="img" aria-label="4,5 von 5 Sternen">
@@ -532,7 +561,7 @@
             </div>
 
             <div class="leisure-grid">
-                <a href="https://www.immendingen.de/startseite/erleben/donauversinkung.html" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                <a href="https://www.immendingen.de/startseite/erleben/donauversinkung.html" target="_blank" rel="noopener noreferrer" class="leisure-card-link">
                     <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
@@ -550,7 +579,7 @@
                     </article>
                 </a>
 
-                <a href="https://www.tuttlingen.de/de/Kultur-Tourismus/Tourismus/Sehenswertes/Honberg" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                <a href="https://www.tuttlingen.de/de/Kultur-Tourismus/Tourismus/Sehenswertes/Honberg" target="_blank" rel="noopener noreferrer" class="leisure-card-link">
                     <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
@@ -568,7 +597,7 @@
                     </article>
                 </a>
 
-                <a href="https://www.tuwass.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                <a href="https://www.tuwass.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link">
                     <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
@@ -586,7 +615,7 @@
                     </article>
                 </a>
 
-                <a href="https://naturpark-obere-donau.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                <a href="https://naturpark-obere-donau.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link">
                     <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
@@ -604,7 +633,7 @@
                     </article>
                 </a>
 
-                <article class="leisure-card reveal">
+                <article class="leisure-card">
                     <div class="leisure-image">
                         <picture>
                             <source srcset="images/optimized/freizeit/ausflugsziel_Bootsgelände_small.avif" type="image/avif">
@@ -619,7 +648,7 @@
                     </div>
                 </article>
 
-                <a href="https://freilichtmuseum-neuhausen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                <a href="https://freilichtmuseum-neuhausen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link">
                     <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
@@ -637,7 +666,7 @@
                     </article>
                 </a>
 
-                <a href="https://www.donaubergland.de/" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                <a href="https://www.donaubergland.de/" target="_blank" rel="noopener noreferrer" class="leisure-card-link">
                     <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
@@ -655,7 +684,7 @@
                     </article>
                 </a>
 
-                <a href="https://www.tuttlinger-hallen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                <a href="https://www.tuttlinger-hallen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link">
                     <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
@@ -673,7 +702,7 @@
                     </article>
                 </a>
 
-                <a href="https://www.donau-wellen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link reveal">
+                <a href="https://www.donau-wellen.de" target="_blank" rel="noopener noreferrer" class="leisure-card-link">
                     <article class="leisure-card">
                         <div class="leisure-image">
                             <picture>
@@ -691,44 +720,13 @@
                     </article>
                 </a>
             </div>
-
-            <ul class="activities" role="list">
-                <li class="activity">
-                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-bike"/></svg></span>
-                    <div>
-                        <h3>Radfahren</h3>
-                        <p>Perfekter Ausgangspunkt am Donauradweg</p>
-                    </div>
-                </li>
-                <li class="activity">
-                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-mountain"/></svg></span>
-                    <div>
-                        <h3>Wandern</h3>
-                        <p>Zahlreiche Wanderwege im Donaubergland</p>
-                    </div>
-                </li>
-                <li class="activity">
-                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-ticket"/></svg></span>
-                    <div>
-                        <h3>Kultur</h3>
-                        <p>Konzerte und Events das ganze Jahr</p>
-                    </div>
-                </li>
-                <li class="activity">
-                    <span class="usp-icon" aria-hidden="true"><svg class="icon"><use href="#i-utensils"/></svg></span>
-                    <div>
-                        <h3>Gastronomie</h3>
-                        <p>Schwäbische Küche in der Region</p>
-                    </div>
-                </li>
-            </ul>
         </div>
     </section>
 
     <!-- Buchung -->
     <section id="buchen" class="section section-booking" aria-labelledby="booking-title">
         <div class="container">
-            <div class="section-head section-head--center">
+            <div class="section-head">
                 <p class="eyebrow">Zimmer anfragen</p>
                 <h2 id="booking-title" class="section-title">In drei Schritten zu Ihrem Zimmer</h2>
                 <p class="section-lead">Direkt beim Hotel, ohne Buchungsportal – wir melden uns persönlich bei Ihnen.</p>
@@ -764,7 +762,7 @@
                             </div>
                             <div class="booking-room-info">
                                 <h4>Einzelzimmer</h4>
-                                <p class="booking-room-price"><strong>62 €</strong> pro Nacht · 1 Person</p>
+                                <p class="booking-room-price"><strong>62 €</strong> pro Nacht<br>1 Person</p>
                                 <div class="booking-counter" role="group" aria-label="Anzahl Einzelzimmer">
                                     <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('einzelzimmer', -1)" aria-label="Ein Einzelzimmer weniger">−</button>
                                     <span class="booking-counter-value" id="booking-count-einzelzimmer" aria-live="polite">0</span>
@@ -783,7 +781,7 @@
                             </div>
                             <div class="booking-room-info">
                                 <h4>Doppelzimmer</h4>
-                                <p class="booking-room-price"><strong>86 €</strong> pro Nacht · 2 Personen</p>
+                                <p class="booking-room-price"><strong>86 €</strong> pro Nacht<br>2 Personen</p>
                                 <div class="booking-counter" role="group" aria-label="Anzahl Doppelzimmer">
                                     <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('doppelzimmer', -1)" aria-label="Ein Doppelzimmer weniger">−</button>
                                     <span class="booking-counter-value" id="booking-count-doppelzimmer" aria-live="polite">0</span>
@@ -799,7 +797,7 @@
                             </div>
                             <div class="booking-room-info">
                                 <h4>Zweibettzimmer</h4>
-                                <p class="booking-room-price"><strong>86 €</strong> pro Nacht · 2 Personen, getrennte Betten</p>
+                                <p class="booking-room-price"><strong>86 €</strong> pro Nacht<br>2 Personen, getrennte Betten</p>
                                 <div class="booking-counter" role="group" aria-label="Anzahl Zweibettzimmer">
                                     <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('zweibettzimmer', -1)" aria-label="Ein Zweibettzimmer weniger">−</button>
                                     <span class="booking-counter-value" id="booking-count-zweibettzimmer" aria-live="polite">0</span>
@@ -818,7 +816,7 @@
                             </div>
                             <div class="booking-room-info">
                                 <h4>Familienzimmer</h4>
-                                <p class="booking-room-price"><strong>114 €</strong> pro Nacht · bis 4 Personen</p>
+                                <p class="booking-room-price"><strong>114 €</strong> pro Nacht<br>Bis 4 Personen</p>
                                 <div class="booking-counter" role="group" aria-label="Anzahl Familienzimmer">
                                     <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('familienzimmer', -1)" aria-label="Ein Familienzimmer weniger">−</button>
                                     <span class="booking-counter-value" id="booking-count-familienzimmer" aria-live="polite">0</span>
@@ -837,7 +835,7 @@
                             </div>
                             <div class="booking-room-info">
                                 <h4>Apartment</h4>
-                                <p class="booking-room-price"><strong>115 €</strong> pro Nacht · mit Küche</p>
+                                <p class="booking-room-price"><strong>115 €</strong> pro Nacht<br>Mit eigener Küche</p>
                                 <div class="booking-counter" role="group" aria-label="Anzahl Apartments">
                                     <button type="button" class="booking-counter-btn" onclick="updateRoomCounter('apartment', -1)" aria-label="Ein Apartment weniger">−</button>
                                     <span class="booking-counter-value" id="booking-count-apartment" aria-live="polite">0</span>
@@ -994,10 +992,11 @@
 
     <!-- Häufige Fragen -->
     <section id="faq" class="section section-sand" aria-labelledby="faq-title">
-        <div class="container container--narrow">
-            <div class="section-head section-head--center">
+        <div class="container faq-layout">
+            <div class="section-head faq-head">
                 <p class="eyebrow">Gut zu wissen</p>
                 <h2 id="faq-title" class="section-title">Häufige Fragen</h2>
+                <p class="section-lead">Ihre Frage ist nicht dabei? Rufen Sie uns an unter <a href="tel:+4974612913">07461&nbsp;2913</a>.</p>
             </div>
 
             <div class="faq-list">
@@ -1074,35 +1073,35 @@
                     <h3>Hotel Rössle</h3>
                     <ul class="contact-list">
                         <li class="contact-item">
-                            <span class="contact-icon" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
+                            <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-pin"/></svg></span>
                             <div>
                                 <h4>Adresse</h4>
                                 <p>Honbergstrasse 8<br>78532 Tuttlingen</p>
                             </div>
                         </li>
                         <li class="contact-item">
-                            <span class="contact-icon" aria-hidden="true"><svg class="icon"><use href="#i-phone"/></svg></span>
+                            <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-phone"/></svg></span>
                             <div>
                                 <h4>Telefon</h4>
                                 <p><a href="tel:+4974612913">+49 (0) 7461 2913</a><br>Fax: +49 (0) 7461 9697524</p>
                             </div>
                         </li>
                         <li class="contact-item">
-                            <span class="contact-icon" aria-hidden="true"><svg class="icon"><use href="#i-mail"/></svg></span>
+                            <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-mail"/></svg></span>
                             <div>
                                 <h4>E-Mail</h4>
                                 <p><a href="mailto:info@hotelroessle.eu">info@hotelroessle.eu</a></p>
                             </div>
                         </li>
                         <li class="contact-item">
-                            <span class="contact-icon" aria-hidden="true"><svg class="icon"><use href="#i-clock"/></svg></span>
+                            <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-clock"/></svg></span>
                             <div>
                                 <h4>Zeiten</h4>
-                                <p>Rezeption täglich 9–21 Uhr<br>Check-in 14–21 Uhr · Check-out bis 11 Uhr</p>
+                                <p>Rezeption täglich 9–21 Uhr<br>Check-in 14–21 Uhr<br>Check-out bis 11 Uhr</p>
                             </div>
                         </li>
                         <li class="contact-item">
-                            <span class="contact-icon" aria-hidden="true"><svg class="icon"><use href="#i-user"/></svg></span>
+                            <span class="icon-badge" aria-hidden="true"><svg class="icon"><use href="#i-user"/></svg></span>
                             <div>
                                 <h4>Inhaber</h4>
                                 <p>Osman Kücük</p>
@@ -1239,6 +1238,22 @@
         </div>
     </footer>
 
+    <!-- Abschnitts-Navigation: ein Punkt pro Section, der aktive Punkt zeigt, wo man gerade ist -->
+    <nav class="section-nav" aria-label="Abschnitte der Seite">
+        <ol>
+            <li><a href="#home" class="section-nav-link" aria-current="true"><span class="section-nav-label">Start</span></a></li>
+            <li><a href="#auf-einen-blick" class="section-nav-link"><span class="section-nav-label">Auf einen Blick</span></a></li>
+            <li><a href="#ueber-uns" class="section-nav-link"><span class="section-nav-label">Über uns</span></a></li>
+            <li><a href="#zimmer" class="section-nav-link"><span class="section-nav-label">Zimmer &amp; Preise</span></a></li>
+            <li><a href="#events" class="section-nav-link"><span class="section-nav-label">Tagungen &amp; Feiern</span></a></li>
+            <li><a href="#bewertungen" class="section-nav-link"><span class="section-nav-label">Bewertungen</span></a></li>
+            <li><a href="#freizeit" class="section-nav-link"><span class="section-nav-label">Umgebung</span></a></li>
+            <li><a href="#buchen" class="section-nav-link"><span class="section-nav-label">Zimmer anfragen</span></a></li>
+            <li><a href="#faq" class="section-nav-link"><span class="section-nav-label">Häufige Fragen</span></a></li>
+            <li><a href="#kontakt" class="section-nav-link"><span class="section-nav-label">Kontakt</span></a></li>
+        </ol>
+    </nav>
+
     <!-- Schnellzugriff auf dem Smartphone -->
     <nav class="mobile-cta" aria-label="Schnellkontakt">
         <a href="tel:+4974612913" class="btn-secondary">
@@ -1268,6 +1283,6 @@
         </div>
     </div>
 
-    <script src="js/new-script.js?v=20261004"></script>
+    <script src="js/new-script.js?v=20261010-3"></script>
 </body>
 </html>
