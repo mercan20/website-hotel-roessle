@@ -1876,9 +1876,10 @@ body:has(.nav-menu.active) {
     overflow-wrap: anywhere;
 }
 
-/* Name und Monat immer unten in der Karte, „Weiterlesen“ rechts daneben */
+/* Name und Monat immer unten in der Karte, „Weiterlesen“ rechts daneben (wird es zu eng, darunter) */
 .review-meta {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--space-sm);
     margin-top: auto;
@@ -1959,7 +1960,7 @@ body:has(.nav-menu.active) {
 @media (min-width: 900px) {
     .section-reviews {
         --review-lines: 5;
-        --review-card-w: clamp(18rem, 24vw, 25rem);
+        --review-card-w: clamp(20rem, 24vw, 25rem);
     }
 
     .reviews-list {
