@@ -27,7 +27,7 @@
 
     <link rel="preload" href="fonts/fraunces-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/source-sans-3-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="css/new-style.css?v=20261011-9">
+    <link rel="stylesheet" href="css/new-style.css?v=20261011-10">
 
     <script type="application/ld+json">
     {
@@ -207,13 +207,14 @@
                         </a>
                     </div>
                     <div class="hero-trust">
-                        <!-- Bewertung laut Google-Profil (Stand: Oktober 2026, 61 Bewertungen); wird per JS aus reviews.php aktualisiert, sobald der API-Schlüssel eingerichtet ist -->
-                        <a class="rating-link" data-reviews-link href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20R%C3%B6ssle%20Tuttlingen" target="_blank" rel="noopener noreferrer">
+                        <!-- Bewertung laut Google-Profil (Stand: Oktober 2026, 61 Bewertungen); wird per JS aus reviews.php aktualisiert.
+                             Der Link führt zur Bewertungs-Section, von dort geht es zu Google. -->
+                        <a class="rating-link" href="#bewertungen">
                             <span class="stars" style="--rating: 4.5;" aria-hidden="true" data-review-stars>
                                 <svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg>
                                 <span class="stars-fill"><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg></span>
                             </span>
-                            <span><strong data-review-rating>4,5</strong> von 5 bei Google<span class="visually-hidden"> – Bewertungen ansehen (öffnet in neuem Fenster)</span></span>
+                            <span><strong data-review-rating>4,5</strong> von 5 bei Google<span class="visually-hidden"> – zu den Bewertungen</span></span>
                         </a>
                         <div class="trust-badges">
                             <a href="https://www.bettundbike.de" target="_blank" rel="noopener noreferrer" class="badge-logo" title="Bett+Bike – fahrradfreundlicher Gastbetrieb">
@@ -308,7 +309,7 @@
             <div class="section-head">
                 <p class="eyebrow">Zimmer &amp; Preise</p>
                 <h2 id="rooms-title" class="section-title">Für jede Reise das passende Zimmer</h2>
-                <p class="section-lead">Jedes Zimmer mit eigenem Bad, TV und kostenlosem WLAN.</p>
+                <p class="section-lead">Jedes Zimmer mit eigenem Bad (Dusche, WC und Föhn), Kabel-TV und kostenlosem WLAN.</p>
             </div>
 
             <div class="rooms-grid rail">
@@ -326,11 +327,6 @@
                         <h3>Einzelzimmer</h3>
                         <p class="room-capacity"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg> 1 Person</p>
                         <p class="room-price">62 € <span>pro Nacht</span></p>
-                        <ul class="room-features">
-                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Eigenes Bad mit Dusche, WC &amp; Föhn</li>
-                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> TV mit Kabelanschluss</li>
-                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenloses WLAN</li>
-                        </ul>
                         <a href="#buchen" class="btn-secondary" data-book-room="einzelzimmer">Einzelzimmer anfragen</a>
                     </div>
                 </article>
@@ -351,11 +347,6 @@
                         <h3>Doppelzimmer</h3>
                         <p class="room-capacity"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg> 2 Personen</p>
                         <p class="room-price">86 € <span>pro Nacht</span></p>
-                        <ul class="room-features">
-                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Eigenes Bad mit Dusche, WC &amp; Föhn</li>
-                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> TV mit Kabelanschluss</li>
-                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenloses WLAN</li>
-                        </ul>
                         <a href="#buchen" class="btn-primary" data-book-room="doppelzimmer">Doppelzimmer anfragen</a>
                     </div>
                 </article>
@@ -374,11 +365,6 @@
                         <h3>Familienzimmer</h3>
                         <p class="room-capacity"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg> Bis zu 4 Personen</p>
                         <p class="room-price">114 € <span>pro Nacht</span></p>
-                        <ul class="room-features">
-                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Eigenes Bad mit Dusche, WC &amp; Föhn</li>
-                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> TV mit Kabelanschluss</li>
-                            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Kostenloses WLAN</li>
-                        </ul>
                         <a href="#buchen" class="btn-secondary" data-book-room="familienzimmer">Familienzimmer anfragen</a>
                     </div>
                 </article>
@@ -1179,6 +1165,6 @@
         </div>
     </div>
 
-    <script src="js/new-script.js?v=20261011-9"></script>
+    <script src="js/new-script.js?v=20261011-10"></script>
 </body>
 </html>

@@ -1500,27 +1500,6 @@ body:has(.nav-menu.active) {
     color: var(--muted);
 }
 
-.room-features {
-    display: grid;
-    gap: 0.45rem;
-    list-style: none;
-    margin-bottom: var(--space-lg);
-    padding-top: var(--space-sm);
-    border-top: 1px solid var(--line);
-}
-
-.room-features li {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-}
-
-.room-features .icon {
-    margin-top: 0.15em;
-    color: var(--bronze);
-    stroke-width: 2;
-}
-
 .room-content .btn-secondary,
 .room-content .btn-primary {
     margin-top: auto;
@@ -1547,11 +1526,6 @@ body:has(.nav-menu.active) {
 
     .rooms-grid .room-content {
         padding: var(--space-md) var(--space-lg) var(--space-lg);
-    }
-
-    .rooms-grid .room-features {
-        gap: 0.3rem;
-        margin-bottom: var(--space-md);
     }
 }
 
