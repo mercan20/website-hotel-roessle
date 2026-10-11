@@ -309,7 +309,7 @@ function initSectionSnap() {
     const GESTURE_GAP = 180;
 
     const root = document.documentElement;
-    const screenLayout = window.matchMedia('(min-width: 768px) and (min-height: 520px)');
+    const screenLayout = window.matchMedia('(min-width: 1024px) and (min-height: 520px), (min-width: 900px) and (min-height: 560px), (min-width: 768px) and (min-height: 940px)');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     let motion = null;          // laufende Fahrt: { kind: 'snap' | 'free', dir, target, frame }
@@ -490,7 +490,9 @@ function initSectionSnap() {
         }
         event.preventDefault();
 
-        const now = performance.now();
+        // Zeitpunkt der Eingabe, nicht der Verarbeitung: Ist die Seite kurz ausgelastet, kommen
+        // Impulse gebündelt an und dürfen die Geste trotzdem nicht in zwei Schritte teilen
+        const now = event.timeStamp || performance.now();
         const abs = Math.abs(delta);
         const continues = gesture !== null && gesture.dir === dir && now - gesture.last < GESTURE_GAP;
 
@@ -646,24 +648,24 @@ function initRails() {
 
 /**
  * Google-Bewertungen: reviews.php liefert die höchstens einmal am Tag bei Google abgeholten
- * Bewertungen. Mit Daten erscheint die Section „Bewertungen“ (samt Punkt in der Navigation), und
- * der Button im Band von „Auf einen Blick“ führt dorthin statt zu Google. Ohne Daten (noch kein
- * API-Schlüssel, Fehler) bleibt alles wie im HTML: Band mit Link auf Google.
+ * Bewertungen. Mit Daten zeigt das Band in „Auf einen Blick“ eine Bewertung nach der anderen
+ * (aus- und einblenden) statt des allgemeinen Texts. Ohne Daten (noch kein API-Schlüssel,
+ * Fehler) bleibt alles wie im HTML: Text und Link auf Google.
  */
 function initReviews() {
-    const section = document.querySelector('[data-reviews]');
-    const list = document.getElementById('reviewsList');
-    if (!section || !list || !window.fetch) {
+    const band = document.querySelector('[data-reviews]');
+    const rotator = band ? band.querySelector('.review-rotator') : null;
+    if (!rotator || !window.fetch) {
         return;
     }
     fetch('reviews.php', { headers: { Accept: 'application/json' } })
         .then(response => (response.ok ? response.json() : null))
         .then(data => {
             if (data && Array.isArray(data.reviews) && data.reviews.length) {
-                renderReviews(section, list, data);
+                renderReviews(band, rotator, data);
             }
         })
-        .catch(() => {}); // Hinweis mit Link bleibt stehen
+        .catch(() => {}); // Text mit Link bleibt stehen
 }
 
 const STAR_ICONS = '<svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>'.repeat(5);
@@ -693,23 +695,14 @@ const externalLink = (href, text, hint) => {
     return link;
 };
 
-function createReviewCard(review, dateFormat) {
-    const item = document.createElement('li');
-    item.className = 'review-card';
-    const figure = document.createElement('figure');
+// Eine Bewertung: Text im Original (auf wenige Zeilen gekürzt), darunter Sterne, Name und Monat
+function createReviewSlide(review, position, total, dateFormat) {
+    const slide = document.createElement('figure');
+    slide.className = 'review-slide';
+    slide.setAttribute('role', 'group');
+    slide.setAttribute('aria-roledescription', 'Bewertung');
+    slide.setAttribute('aria-label', `${position} von ${total}`);
 
-    const meta = document.createElement('div');
-    meta.className = 'review-meta';
-    meta.append(createStars(review.rating));
-    const published = new Date(review.published);
-    if (!Number.isNaN(published.getTime())) {
-        const time = document.createElement('time');
-        time.dateTime = review.published.slice(0, 10);
-        time.textContent = dateFormat.format(published);
-        meta.append(time);
-    }
-
-    // Text im Original, auf einige Zeilen gekürzt; der ganze Text steht bei Google
     const quote = document.createElement('blockquote');
     quote.className = 'review-text';
     if (review.lang) {
@@ -718,30 +711,35 @@ function createReviewCard(review, dateFormat) {
     quote.textContent = review.text;
 
     const caption = document.createElement('figcaption');
-    caption.className = 'review-author';
+    caption.className = 'review-meta';
     const author = review.author || 'Gast bei Google';
-    const avatar = document.createElement('span');
-    avatar.className = 'review-avatar';
-    avatar.setAttribute('aria-hidden', 'true');
-    avatar.textContent = author.trim().charAt(0).toUpperCase();
-    caption.append(avatar, review.authorUri
+    const name = document.createElement('span');
+    name.className = 'review-author';
+    name.append(review.authorUri
         ? externalLink(review.authorUri, author, 'Profil bei Google Maps, öffnet in neuem Fenster')
         : author);
+    caption.append(createStars(review.rating), name);
 
-    figure.append(meta, quote);
+    const published = new Date(review.published);
+    if (!Number.isNaN(published.getTime())) {
+        const time = document.createElement('time');
+        time.dateTime = review.published.slice(0, 10);
+        time.textContent = dateFormat.format(published);
+        caption.append(time);
+    }
     if (review.uri) {
         const more = externalLink(review.uri, 'Ganze Bewertung lesen', 'bei Google Maps, öffnet in neuem Fenster');
         more.className = 'review-more';
-        more.hidden = true;
-        figure.append(more);
+        more.hidden = true; // nur bei gekürztem Text
+        caption.append(more);
     }
-    figure.append(caption);
-    item.append(figure);
-    return item;
+
+    slide.append(quote, caption);
+    return slide;
 }
 
-function renderReviews(section, list, data) {
-    // Gesamtbewertung überall auf der Seite aktualisieren (Hero und Bewertungen)
+function renderReviews(band, rotator, data) {
+    // Gesamtbewertung überall auf der Seite aktualisieren (Hero und Band)
     if (typeof data.rating === 'number') {
         const rating = formatRating(data.rating);
         document.querySelectorAll('[data-review-rating]').forEach(element => {
@@ -755,11 +753,8 @@ function renderReviews(section, list, data) {
         });
     }
     if (typeof data.count === 'number') {
-        const count = data.count.toLocaleString('de-DE');
         document.querySelectorAll('[data-review-count]').forEach(element => {
-            element.textContent = element.dataset.reviewCount === 'short'
-                ? `${count} Google-Bewertungen`
-                : `aus ${count} Bewertungen auf Google Maps`;
+            element.textContent = `${data.count.toLocaleString('de-DE')} Google-Bewertungen`;
         });
     }
     if (data.mapsUri) {
@@ -768,44 +763,124 @@ function renderReviews(section, list, data) {
         });
     }
 
+    const slidesBox = rotator.querySelector('.review-slides');
+    const dotsBox = rotator.querySelector('.review-dots');
+    const toggle = rotator.querySelector('.review-toggle');
+    const total = data.reviews.length;
     const dateFormat = new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' });
-    list.replaceChildren(...data.reviews.map(review => createReviewCard(review, dateFormat)));
+    const slides = data.reviews.map((review, index) => createReviewSlide(review, index + 1, total, dateFormat));
+    slidesBox.replaceChildren(...slides);
 
-    // Pflichtangabe zur Herkunft und Auswahl der Bewertungen (§ 5b Abs. 3 UWG)
-    const note = document.getElementById('reviewsNote');
+    const dots = slides.map((slide, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'review-dot';
+        dot.setAttribute('aria-label', `Bewertung ${index + 1} von ${total} zeigen`);
+        return dot;
+    });
+    dotsBox.replaceChildren(...dots);
+
+    // Pflichtangabe zu Herkunft und Auswahl der Bewertungen (§ 5b Abs. 3 UWG)
+    const note = rotator.querySelector('.reviews-note');
     if (note) {
-        const selection = data.minRating > 1 ? ` Angezeigt werden Bewertungen mit mindestens ${data.minRating} Sternen.` : '';
-        note.textContent = `Die Bewertungen stammen von Google Maps und werden täglich übernommen.${selection} Wir prüfen nicht, ob sie von Gästen stammen, die bei uns übernachtet haben.`;
+        const selection = data.minRating > 1 ? `, nur ${data.minRating} und 5 Sterne` : '';
+        note.textContent = `Von Google Maps übernommen${selection}. Wir prüfen nicht, ob sie von Gästen stammen, die bei uns übernachtet haben.`;
     }
 
-    section.hidden = false;
-    document.querySelectorAll('[data-reviews-nav]').forEach(item => {
-        item.hidden = false;
-    });
-    document.querySelectorAll('[data-reviews-fallback]').forEach(element => {
-        element.hidden = true;
-    });
-    document.querySelectorAll('[data-reviews-teaser]').forEach(element => {
-        element.hidden = false;
+    band.classList.add('has-reviews');
+    const heading = band.querySelector('.reviews-text h3');
+    if (heading) {
+        heading.classList.add('visually-hidden'); // bleibt für Screenreader die Überschrift
+    }
+    rotator.hidden = false;
+    if (total < 2) {
+        rotator.querySelector('.review-controls').hidden = true;
+    }
+
+    // Wechsel alle paar Sekunden. Er pausiert, solange Maus oder Tastaturfokus im Band sind, das Band
+    // nicht zu sehen ist oder der Tab im Hintergrund liegt. Bei „Bewegung reduzieren“ startet er nicht
+    // von selbst; die Pause-Taste und die Punkte funktionieren immer.
+    const INTERVAL = 8000;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let current = 0;
+    let timer = null;
+    let stopped = reduceMotion.matches;
+    let held = false;
+    let inView = false;
+
+    const show = (index, announce) => {
+        current = (index + total) % total;
+        slides.forEach((slide, i) => slide.classList.toggle('is-active', i === current));
+        dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === current)));
+        slidesBox.setAttribute('aria-live', announce ? 'polite' : 'off');
+    };
+
+    const schedule = () => {
+        clearTimeout(timer);
+        if (!stopped && !held && inView && !document.hidden && total > 1) {
+            timer = setTimeout(() => {
+                show(current + 1, false);
+                schedule();
+            }, INTERVAL);
+        }
+    };
+
+    const setStopped = value => {
+        stopped = value;
+        toggle.setAttribute('aria-label', stopped ? 'Wechsel fortsetzen' : 'Wechsel anhalten');
+        toggle.querySelector('use').setAttribute('href', stopped ? '#i-play' : '#i-pause');
+        schedule();
+    };
+
+    toggle.addEventListener('click', () => setStopped(!stopped));
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            show(index, true);
+            setStopped(true); // gewählte Bewertung bleibt stehen
+        });
     });
 
-    // „Ganze Bewertung lesen“ nur bei gekürzten Texten, Pfeile nur, wenn es etwas zu blättern gibt
-    const controls = section.querySelector('[data-rail-controls]');
-    const refresh = () => {
-        list.querySelectorAll('.review-card').forEach(card => {
-            const quote = card.querySelector('.review-text');
-            const more = card.querySelector('.review-more');
-            if (quote && more) {
+    band.addEventListener('mouseenter', () => {
+        held = true;
+        schedule();
+    });
+    band.addEventListener('mouseleave', () => {
+        held = band.contains(document.activeElement);
+        schedule();
+    });
+    band.addEventListener('focusin', () => {
+        held = true;
+        schedule();
+    });
+    band.addEventListener('focusout', event => {
+        held = band.contains(event.relatedTarget) || band.matches(':hover');
+        schedule();
+    });
+    document.addEventListener('visibilitychange', schedule);
+    if ('IntersectionObserver' in window) {
+        new IntersectionObserver(entries => {
+            inView = entries[entries.length - 1].isIntersecting;
+            schedule();
+        }, { threshold: 0.5 }).observe(band);
+    } else {
+        inView = true;
+    }
+
+    // „Ganze Bewertung lesen“ nur bei gekürzten Texten
+    const markShortened = () => {
+        slides.forEach(slide => {
+            const quote = slide.querySelector('.review-text');
+            const more = slide.querySelector('.review-more');
+            if (more) {
                 more.hidden = quote.scrollHeight <= quote.clientHeight + 1;
             }
         });
-        if (controls) {
-            controls.hidden = list.scrollWidth <= list.clientWidth + 2;
-        }
-        list.dispatchEvent(new Event('scroll')); // Zustand der Pfeil-Buttons aktualisieren
     };
-    refresh();
-    window.addEventListener('resize', refresh);
+
+    show(0, false);
+    setStopped(stopped);
+    markShortened();
+    window.addEventListener('resize', markShortened);
 }
 
 // ===================================

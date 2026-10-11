@@ -108,7 +108,7 @@
 }
 
 /* Tablet und Desktop: Abstände richten sich nach der Bildschirmhöhe, damit jede Section auf einen Schirm passt */
-@media (min-width: 768px) and (min-height: 520px) {
+@media (min-width: 1024px) and (min-height: 520px), (min-width: 900px) and (min-height: 560px), (min-width: 768px) and (min-height: 940px) {
     :root {
         --section-y: clamp(1.75rem, 5vh, 4rem);
         --head-gap: clamp(1.25rem, 3.5vh, 2.5rem);
@@ -118,7 +118,7 @@
 
 /* Niedrige Fenster (z. B. Laptop mit Browserleisten): Startseite mit knapperen Abständen,
    damit jede Section weiterhin auf einen Bildschirm passt und glatt einrastet */
-@media (min-width: 768px) and (min-height: 520px) and (max-height: 760px) {
+@media (min-width: 1024px) and (min-height: 520px) and (max-height: 760px), (min-width: 900px) and (min-height: 560px) and (max-height: 760px) {
     :root:has(.section-nav) {
         --section-y: clamp(1.25rem, 4vh, 2rem);
         --head-gap: clamp(1rem, 2.5vh, 1.5rem);
@@ -129,7 +129,7 @@
 
 /* Sehr niedrige Fenster (z. B. Laptop mit 150 % Windows-Skalierung): noch knapper, damit das Einrasten
    auch hier mit ganzen Sections arbeitet. Ergänzt die Stufe darüber (siehe auch Ende der Datei). */
-@media (min-width: 768px) and (min-height: 520px) and (max-height: 639px) {
+@media (min-width: 1024px) and (min-height: 520px) and (max-height: 639px), (min-width: 900px) and (min-height: 560px) and (max-height: 639px) {
     :root:has(.section-nav) {
         --section-y: clamp(1rem, 3.5vh, 1.5rem);
         --head-gap: 0.85rem;
@@ -140,7 +140,7 @@
 }
 
 /* Ab Tablet (Bildschirm-Sections) und ab 900px gibt es keine Aktionsleiste unten */
-@media (min-width: 768px) and (min-height: 520px), (min-width: 900px) {
+@media (min-width: 768px) and (min-height: 940px), (min-width: 900px) {
     :root {
         --mobile-cta-h: 0px;
     }
@@ -416,7 +416,7 @@ strong {
 }
 
 /* Tablet und Desktop: jede Section füllt genau einen Bildschirm, der Inhalt sitzt mittig */
-@media (min-width: 768px) and (min-height: 520px) {
+@media (min-width: 1024px) and (min-height: 520px), (min-width: 900px) and (min-height: 560px), (min-width: 768px) and (min-height: 940px) {
     main > .section {
         display: flex;
         flex-direction: column;
@@ -1193,7 +1193,7 @@ body:has(.nav-menu.active) {
 }
 
 /* Tablet und Desktop: Foto im Hintergrund, Text darüber */
-@media (min-width: 768px) and (min-height: 520px), (min-width: 900px) {
+@media (min-width: 768px) and (min-height: 940px), (min-width: 900px) {
     .hero {
         display: flex;
         align-items: center;
@@ -1229,7 +1229,7 @@ body:has(.nav-menu.active) {
 }
 
 /* Der Hero füllt mit dem Header genau den ersten Bildschirm */
-@media (min-width: 768px) and (min-height: 520px) {
+@media (min-width: 1024px) and (min-height: 520px), (min-width: 900px) and (min-height: 560px), (min-width: 768px) and (min-height: 940px) {
     .hero {
         min-height: calc(100svh - var(--header-h));
     }
@@ -1609,7 +1609,7 @@ body:has(.nav-menu.active) {
 }
 
 /* Bildschirm-Sections: Fotos und Abstände so, dass Kopf und Karten auf einen Schirm passen */
-@media (min-width: 900px) and (min-height: 520px) {
+@media (min-width: 1024px) and (min-height: 520px), (min-width: 900px) and (min-height: 560px) {
     .rooms-grid .room-image {
         aspect-ratio: auto;
         height: clamp(8.5rem, 22vh, 16rem);
@@ -1756,94 +1756,74 @@ body:has(.nav-menu.active) {
     }
 }
 
-/* Section „Bewertungen“ mit den Texten von Google (per JS sichtbar, sobald Daten da sind).
-   Das Band oben in „Auf einen Blick“ fasst die Note zusammen und führt hierher. */
-.section-reviews {
-    background: var(--white);
+/* Bewertungen von Google im Band (per JS, sobald Daten da sind): eine nach der anderen an der
+   Stelle des allgemeinen Texts. Die Überschrift bleibt für Screenreader erhalten. */
+.reviews-band.has-reviews .reviews-intro {
+    display: none;
 }
 
-.reviews-summary {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.25rem 0.75rem;
-    margin-top: var(--space-sm);
+.review-rotator {
+    --review-lines: 4;
 }
 
-.reviews-summary-value {
-    font-family: var(--font-display);
-    font-size: var(--fs-h3);
-    font-weight: 500;
-    line-height: 1;
+/* Alle Bewertungen liegen übereinander: Das Band ist so hoch wie die längste und springt beim Wechsel nicht */
+.review-slides {
+    display: grid;
 }
 
-.reviews-summary .stars {
-    font-size: 1.2rem;
-}
-
-.reviews-summary-count {
-    font-size: var(--fs-sm);
-    color: var(--muted);
-}
-
-.reviews-list {
-    --review-lines: 8;
-    list-style: none;
-}
-
-/* Hält die unsichtbaren Linkhinweise innerhalb der Wischreihe */
-.review-card {
-    position: relative;
-}
-
-.review-card figure {
+.review-slide {
+    grid-area: 1 / 1;
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
-    height: 100%;
-    padding: var(--card-pad);
-    background: var(--cream);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 6px;
+    transition: opacity 0.35s var(--ease), translate 0.35s var(--ease), visibility 0s linear 0.35s;
 }
 
-.review-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-xs) var(--space-sm);
-    font-size: var(--fs-sm);
-    color: var(--muted);
+/* Erst blendet die alte Bewertung aus, dann die neue ein */
+.review-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+    transition: opacity 0.5s var(--ease) 0.35s, translate 0.5s var(--ease) 0.35s, visibility 0s linear 0.35s;
 }
 
-/* Text im Original, auf einige Zeilen gekürzt; „Ganze Bewertung lesen“ führt zu Google */
+/* Text im Original, auf wenige Zeilen gekürzt; „Ganze Bewertung lesen“ führt zu Google */
 .review-text {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: var(--review-lines);
     line-clamp: var(--review-lines);
     overflow: hidden;
-    line-height: 1.55;
+    max-width: 40em; /* angenehme Zeilenlänge */
+    font-family: var(--font-display);
+    font-size: var(--fs-lead);
+    line-height: 1.5;
     overflow-wrap: anywhere;
 }
 
-.review-more {
+.review-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-md);
     font-size: var(--fs-sm);
-    font-weight: 600;
+    color: var(--muted);
 }
 
 .review-author {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-top: auto;
-    font-size: var(--fs-sm);
     font-weight: 600;
+    color: var(--ink);
 }
 
 .review-author a {
     color: inherit;
+}
+
+.review-more {
+    font-weight: 600;
 }
 
 @media (hover: hover) {
@@ -1852,49 +1832,112 @@ body:has(.nav-menu.active) {
     }
 }
 
-.review-avatar {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    background: var(--sand);
-    color: var(--bronze);
-    font-weight: 700;
+.review-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-top: var(--space-md);
 }
 
-.reviews-foot {
+.review-toggle {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ink);
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.review-toggle .icon {
+    width: 12px;
+    height: 12px;
+}
+
+.review-toggle:focus-visible {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--on-dark);
+}
+
+.review-dots {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-md) var(--space-xl);
-    margin-top: var(--block-gap);
+}
+
+/* Trefferfläche 24px, sichtbar ein kleiner Punkt; der aktuelle wird zum Strich */
+.review-dot {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border: 0;
+    background: transparent;
+}
+
+.review-dot::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--line-strong);
+    transition: width 0.3s var(--ease), background-color 0.2s var(--ease);
+}
+
+.review-dot[aria-current='true']::before {
+    width: 18px;
+    background: var(--ochre);
+}
+
+@media (hover: hover) {
+    .review-toggle:hover {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--on-dark);
+    }
+
+    .review-dot:hover::before {
+        background: var(--ink);
+    }
 }
 
 .reviews-note {
-    flex: 1 1 22rem;
-    max-width: 44rem;
+    margin-top: var(--space-xs);
     font-size: var(--fs-xs);
     line-height: 1.45;
     color: var(--muted);
 }
 
+/* Mit Bewertungen: Note und Button links untereinander, die Bewertung bekommt die übrige Breite */
 @media (min-width: 768px) {
-    .reviews-list.rail {
-        grid-auto-columns: calc((100% - var(--grid-gap)) / 2);
-        gap: var(--grid-gap);
+    .reviews-band.has-reviews {
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-areas:
+            "score text"
+            "action text";
+        row-gap: var(--space-md);
+    }
+
+    .reviews-band.has-reviews .reviews-score {
+        grid-area: score;
+        align-self: end;
+    }
+
+    .reviews-band.has-reviews .reviews-text {
+        grid-area: text;
+    }
+
+    .reviews-band.has-reviews > .btn-secondary {
+        grid-area: action;
+        align-self: start;
+        justify-self: center;
     }
 }
 
 @media (min-width: 900px) {
-    .reviews-list {
-        --review-lines: 7;
-    }
-
-    .reviews-list.rail {
-        grid-auto-columns: calc((100% - 2 * var(--grid-gap)) / 3);
+    .review-rotator {
+        --review-lines: 3;
     }
 }
 
@@ -1907,7 +1950,7 @@ body:has(.nav-menu.active) {
     }
 }
 
-@media (min-width: 768px) and (min-height: 520px) {
+@media (min-width: 1024px) and (min-height: 520px), (min-width: 900px) and (min-height: 560px), (min-width: 768px) and (min-height: 940px) {
     .leisure-image {
         aspect-ratio: auto;
         height: clamp(8rem, 20vh, 13rem);
@@ -3028,7 +3071,7 @@ body:has(.nav-menu.active) {
     }
 }
 
-@media (min-width: 768px) and (min-height: 520px) {
+@media (min-width: 1024px) and (min-height: 520px), (min-width: 900px) and (min-height: 560px), (min-width: 768px) and (min-height: 940px) {
     .contact-aside .map-consent {
         min-height: clamp(7rem, 18vh, 12rem);
     }
@@ -3375,7 +3418,7 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
 }
 
 /* Ab Tablet würde die Leiste den unteren Rand der Bildschirm-Sections verdecken */
-@media (min-width: 768px) and (min-height: 520px), (min-width: 900px) {
+@media (min-width: 768px) and (min-height: 940px), (min-width: 900px) {
     .mobile-cta {
         display: none;
     }
@@ -3779,7 +3822,7 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
 
 /* ---------- Niedrige Fenster: Feinschliff für die Bildschirm-Sections ---------- */
 /* Ergänzt die kompakteren Abstände oben (gleiche Bedingung): Fotos, Karte und Textfeld etwas flacher */
-@media (min-width: 768px) and (min-height: 520px) and (max-height: 760px) {
+@media (min-width: 1024px) and (min-height: 520px) and (max-height: 760px), (min-width: 900px) and (min-height: 560px) and (max-height: 760px) {
     .rooms-grid .room-image {
         height: clamp(6.5rem, 17vh, 16rem);
     }
@@ -3801,14 +3844,22 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
         padding-block: 0.85rem;
     }
 
-    .reviews-list {
-        --review-lines: 5;
+    .review-rotator {
+        --review-lines: 3;
+    }
+
+    .reviews-band {
+        padding-block: clamp(1rem, 3vh, 2.25rem);
+    }
+
+    .reviews-score-value {
+        font-size: clamp(2.75rem, 7vh, 4.75rem);
     }
 }
 
 /* Sehr niedrige Fenster: Bildschirm-Sections ohne Überzeile, Buchungskarten ohne Foto, flachere Felder.
    Die Karte im Kontakt entfällt hier (Route planen bleibt). */
-@media (min-width: 768px) and (min-height: 520px) and (max-height: 639px) {
+@media (min-width: 1024px) and (min-height: 520px) and (max-height: 639px), (min-width: 900px) and (min-height: 560px) and (max-height: 639px) {
     main > .section .eyebrow {
         display: none;
     }
@@ -3819,6 +3870,10 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
 
     .booking-room-image-container {
         display: none;
+    }
+
+    .booking-room-card {
+        grid-template-columns: minmax(0, 1fr); /* ohne die Fotospalte (unter 900px) */
     }
 
     .contact-aside .map-consent {
@@ -3840,5 +3895,13 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
 
     .faq-item summary {
         padding-block: 0.55rem;
+    }
+
+    .review-rotator {
+        --review-lines: 2;
+    }
+
+    .glance-group {
+        padding-block: var(--space-sm);
     }
 }
