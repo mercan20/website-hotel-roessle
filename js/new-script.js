@@ -715,7 +715,8 @@ const externalLink = (href, text, hint) => {
     return link;
 };
 
-// Eine Bewertung: Text im Original (auf wenige Zeilen gekürzt), darunter Sterne, Name und Monat
+// Eine Bewertung: Zitat im Original (auf wenige Zeilen gekürzt), darunter Anfangsbuchstabe,
+// Name sowie Sterne und Monat
 function createReviewSlide(review, position, total, dateFormat) {
     const slide = document.createElement('figure');
     slide.className = 'review-slide';
@@ -733,20 +734,34 @@ function createReviewSlide(review, position, total, dateFormat) {
     const caption = document.createElement('figcaption');
     caption.className = 'review-meta';
     const author = review.author || 'Gast bei Google';
+
+    // Statt des Profilbilds (das nicht von Google übernommen wird) der erste Buchstabe des Namens
+    const avatar = document.createElement('span');
+    avatar.className = 'review-avatar';
+    avatar.setAttribute('aria-hidden', 'true');
+    avatar.textContent = Array.from(author.trim() || 'G')[0].toLocaleUpperCase('de-DE');
+
     const name = document.createElement('span');
     name.className = 'review-author';
     name.append(review.authorUri
         ? externalLink(review.authorUri, author, 'Profil bei Google Maps, öffnet in neuem Fenster')
         : author);
-    caption.append(createStars(review.rating), name);
 
+    const details = document.createElement('span');
+    details.className = 'review-details';
+    details.append(createStars(review.rating));
     const published = new Date(review.published);
     if (!Number.isNaN(published.getTime())) {
         const time = document.createElement('time');
         time.dateTime = review.published.slice(0, 10);
         time.textContent = dateFormat.format(published);
-        caption.append(time);
+        details.append(time);
     }
+
+    const byline = document.createElement('span');
+    byline.className = 'review-byline';
+    byline.append(name, details);
+    caption.append(avatar, byline);
     if (review.uri) {
         const more = externalLink(review.uri, 'Ganze Bewertung lesen', 'bei Google Maps, öffnet in neuem Fenster');
         more.className = 'review-more';
@@ -786,6 +801,7 @@ function renderReviews(band, rotator, data) {
     const slidesBox = rotator.querySelector('.review-slides');
     const dotsBox = rotator.querySelector('.review-dots');
     const toggle = rotator.querySelector('.review-toggle');
+    const arrows = rotator.querySelectorAll('[data-review-dir]');
     const total = data.reviews.length;
     const dateFormat = new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' });
     const slides = data.reviews.map((review, index) => createReviewSlide(review, index + 1, total, dateFormat));
@@ -800,11 +816,29 @@ function renderReviews(band, rotator, data) {
     });
     dotsBox.replaceChildren(...dots);
 
-    // Pflichtangabe zu Herkunft und Auswahl der Bewertungen (§ 5b Abs. 3 UWG)
-    const note = rotator.querySelector('.reviews-note');
-    if (note) {
+    // Pflichtangabe zu Herkunft und Auswahl der Bewertungen (§ 5b Abs. 3 UWG): hinter dem ⓘ neben
+    // der Anzahl. Klick öffnet und schließt, Escape oder ein Klick daneben schließt.
+    const note = band.querySelector('.reviews-note');
+    const info = band.querySelector('.reviews-info');
+    if (note && info) {
         const selection = data.minRating > 1 ? `, nur ${data.minRating} und 5 Sterne` : '';
         note.textContent = `Von Google Maps übernommen${selection}. Wir prüfen nicht, ob sie von Gästen stammen, die bei uns übernachtet haben.`;
+        const setOpen = open => {
+            note.hidden = !open;
+            info.setAttribute('aria-expanded', String(open));
+        };
+        info.hidden = false;
+        info.addEventListener('click', () => setOpen(note.hidden));
+        document.addEventListener('click', event => {
+            if (!note.hidden && !info.contains(event.target) && !note.contains(event.target)) {
+                setOpen(false);
+            }
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && !note.hidden) {
+                setOpen(false);
+            }
+        });
     }
 
     band.classList.add('has-reviews');
@@ -815,6 +849,9 @@ function renderReviews(band, rotator, data) {
     rotator.hidden = false;
     if (total < 2) {
         rotator.querySelector('.review-controls').hidden = true;
+        arrows.forEach(arrow => {
+            arrow.hidden = true;
+        });
     }
 
     // Wechsel alle paar Sekunden. Er pausiert, solange Maus oder Tastaturfokus im Band sind, das Band
@@ -852,13 +889,35 @@ function renderReviews(band, rotator, data) {
         schedule();
     };
 
+    // Pfeile, Punkte und Wischen wählen eine Bewertung; die bleibt dann stehen
+    const choose = index => {
+        show(index, true);
+        setStopped(true);
+    };
+
     toggle.addEventListener('click', () => setStopped(!stopped));
     dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            show(index, true);
-            setStopped(true); // gewählte Bewertung bleibt stehen
-        });
+        dot.addEventListener('click', () => choose(index));
     });
+    arrows.forEach(arrow => {
+        arrow.addEventListener('click', () => choose(current + Number(arrow.dataset.reviewDir)));
+    });
+
+    let touchStart = null;
+    slidesBox.addEventListener('touchstart', event => {
+        touchStart = event.touches.length === 1 ? event.touches[0] : null;
+    }, { passive: true });
+    slidesBox.addEventListener('touchend', event => {
+        const touch = event.changedTouches[0];
+        if (touchStart && total > 1) {
+            const dx = touch.clientX - touchStart.clientX;
+            const dy = touch.clientY - touchStart.clientY;
+            if (Math.abs(dx) > 40 && Math.abs(dx) > 1.5 * Math.abs(dy)) {
+                choose(current + (dx < 0 ? 1 : -1));
+            }
+        }
+        touchStart = null;
+    }, { passive: true });
 
     band.addEventListener('mouseenter', () => {
         held = true;
