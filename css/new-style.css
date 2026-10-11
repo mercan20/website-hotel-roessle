@@ -2999,8 +2999,10 @@ body:has(.nav-menu.active) {
 /* Kontaktdaten zweispaltig, sobald Platz ist */
 .contact-list {
     display: grid;
-    /* 13rem: Auch bei 90 % Grundgröße höchstens zwei Spalten in der Karte, sonst brechen Telefon und Zeiten um */
-    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    /* Höchstens zwei Spalten (sonst brechen Telefon und Zeiten um), eine Spalte, wenn die Karte für
+       zweimal 11rem zu schmal ist (Smartphone). Eine feste Mindestbreite wie 13rem macht die Karte
+       bei 900–1000px Fensterbreite einspaltig und damit zu hoch für einen Bildschirm. */
+    grid-template-columns: repeat(auto-fit, minmax(max(11rem, (100% - var(--space-lg)) / 2), 1fr));
     gap: var(--space-md) var(--space-lg);
     list-style: none;
     margin-bottom: var(--space-lg);
