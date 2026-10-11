@@ -137,8 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    initSectionNav();
-    initSectionSnap();
+    initHeaderScrolled();
+    initMobileCta();
     initRails();
     initReviews();
     initBookingWizard();
@@ -249,369 +249,35 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * Punkte-Navigation rechts: markiert die Section, die gerade die Bildschirmmitte kreuzt.
+ * Header: Ab Tablet bleibt er oben stehen (CSS). Sobald die Seite gescrollt ist, trennt ihn eine Linie vom Inhalt.
  */
-function initSectionNav() {
-    const nav = document.querySelector('.section-nav');
-    if (!nav || !('IntersectionObserver' in window)) {
+function initHeaderScrolled() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) {
         return;
     }
-
-    const links = [...nav.querySelectorAll('.section-nav-link')];
-
-    const setActive = id => {
-        links.forEach(link => {
-            if (link.getAttribute('href') === `#${id}`) {
-                link.setAttribute('aria-current', 'true');
-            } else {
-                link.removeAttribute('aria-current');
-            }
-        });
-    };
-
-    // Schmales Band in der Bildschirmmitte: Die Section, die es berührt, ist die aktuelle
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                setActive(entry.target.id);
-            }
-        });
-    }, { rootMargin: '-50% 0px -49% 0px' });
-
-    links.forEach(link => {
-        const section = document.getElementById(link.getAttribute('href').slice(1));
-        if (section) {
-            observer.observe(section);
-        }
-    });
+    const update = () => navbar.classList.toggle('is-scrolled', window.scrollY > 4);
+    window.addEventListener('scroll', update, { passive: true });
+    update();
 }
 
 /**
- * Sections rasten in Scroll-Richtung ein. Nur im Bildschirm-Layout (Tablet und Desktop, dieselbe
- * Bedingung wie im CSS), nicht auf dem Smartphone und nicht bei „Bewegung reduzieren“.
- * Der Header spielt dabei keine Rolle: Er gehört zum ersten Bildschirm und scrollt mit dem Hero weg.
- * - Mausrad und Trackpad: Eine Geste (Impulse ohne Pause, samt Nachlauf) führt genau einen Schritt weiter.
- * - Tasten: Jeder Druck führt einen Schritt weiter.
- * - Touch: Der Browser scrollt selbst; nach dem Ausrollen gleitet die Seite in Wischrichtung weiter.
- * - Ist eine Section höher als das Fenster (z. B. bei geöffneten Fragen), scrollt man darin frei.
- *   An ihrem Anfang und Ende hält die Seite an, die nächste Geste führt dann weiter.
- * Andere Scrollbewegungen (Links, Tastaturfokus, Formular-Fehler) lösen nichts aus.
+ * Aktionsleiste auf dem Smartphone: Sie erscheint erst, wenn die Buttons im Hero aus dem Bild sind,
+ * damit oben nicht dieselben Aktionen doppelt zu sehen sind. Seiten ohne Hero zeigen sie sofort.
  */
-function initSectionSnap() {
-    const sections = [...document.querySelectorAll('main > section')];
-    if (!document.querySelector('.section-nav') || !sections.length) {
+function initMobileCta() {
+    const bar = document.querySelector('.mobile-cta');
+    if (!bar) {
         return;
     }
-
-    // So viel darf eine Section höher als das Fenster sein, ohne als „lang“ zu gelten
-    const TALL_TOLERANCE = 24;
-    // So lange ohne Mausrad-Impuls, dann ist eine Geste zu Ende
-    const GESTURE_GAP = 180;
-
-    const root = document.documentElement;
-    const screenLayout = window.matchMedia('(min-width: 768px) and (min-height: 600px)');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-    let motion = null;          // laufende Fahrt: { kind: 'snap' | 'free', dir, target, frame }
-    let gesture = null;         // aktuelle Mausrad-Geste: { dir, last, mode, limit, minAbs }
-    let settledY = window.scrollY;
-    let userScrolled = false;   // nur echtes Wischen löst nach dem Ausrollen das Einrasten aus
-    let touchActive = false;
-    let touchStartY = 0;
-    let settleTimer = null;
-
-    const isActive = () => screenLayout.matches
-        && !reduceMotion.matches
-        && document.body.style.overflow !== 'hidden'                       // Galerie offen
-        && document.querySelector('.nav-menu.active') === null             // Mobilmenü offen
-        && !(window.visualViewport && window.visualViewport.scale > 1.01); // hineingezoomt
-
-    const maxScroll = () => root.scrollHeight - window.innerHeight;
-
-    // Haltepunkte (Anfang jeder Section, Ende langer Sections, Seitenende) und die Strecken,
-    // auf denen man innerhalb einer langen Section frei scrollt
-    const layout = () => {
-        const viewport = window.innerHeight;
-        const max = maxScroll();
-        const stops = [0, max];
-        const free = [];
-        sections.forEach((section, index) => {
-            if (section.hidden) {
-                return; // z. B. „Bewertungen“, solange keine Daten da sind
-            }
-            const rect = section.getBoundingClientRect();
-            const top = index === 0 ? 0 : Math.round(rect.top + window.scrollY); // Hero samt Header
-            const bottom = Math.round(rect.bottom + window.scrollY);
-            stops.push(Math.min(top, max));
-            if (bottom - top > viewport + TALL_TOLERANCE) {
-                const end = Math.min(bottom - viewport, max);
-                stops.push(end);
-                free.push({ start: top, end });
-            }
-        });
-        return { stops: [...new Set(stops)].sort((a, b) => a - b), free };
-    };
-
-    // Nächster Schritt von y aus: innerhalb einer langen Section frei bis zu ihrer Kante scrollen,
-    // sonst zum nächsten Haltepunkt fahren (null: in diese Richtung geht es nicht weiter)
-    const nextStep = (y, dir) => {
-        const { stops, free } = layout();
-        const region = free.find(r => (dir > 0
-            ? y >= r.start - 1 && y < r.end - 1
-            : y > r.start + 1 && y <= r.end + 1));
-        if (region) {
-            return { mode: 'free', limit: dir > 0 ? region.end : region.start };
-        }
-        const to = dir > 0
-            ? stops.find(stop => stop > y + 1)
-            : [...stops].reverse().find(stop => stop < y - 1);
-        return to === undefined ? null : { mode: 'snap', to };
-    };
-
-    const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
-    const easeInOutCubic = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-
-    const finishMotion = () => {
-        motion = null;
-        root.style.scrollBehavior = '';
-        settledY = window.scrollY;
-        userScrolled = false;
-    };
-
-    const stopMotion = () => {
-        if (motion !== null) {
-            cancelAnimationFrame(motion.frame);
-            finishMotion();
-        }
-    };
-
-    // Fahrt zu einem Haltepunkt. CSS-„smooth“ würde jeden Einzelschritt erneut animieren.
-    const snapTo = (to, ease = easeOutQuart) => {
-        stopMotion();
-        const from = window.scrollY;
-        const distance = to - from;
-        if (Math.abs(distance) < 1) {
-            settledY = from;
-            return;
-        }
-        const duration = Math.min(850, Math.max(380, 360 + Math.abs(distance) * 0.35));
-        const start = performance.now();
-        const current = { kind: 'snap', dir: Math.sign(distance), target: to, frame: 0 };
-        root.style.scrollBehavior = 'auto';
-        const step = now => {
-            const progress = Math.min(1, (now - start) / duration);
-            window.scrollTo(0, from + distance * ease(progress));
-            if (progress < 1) {
-                current.frame = requestAnimationFrame(step);
-            } else {
-                finishMotion();
-            }
-        };
-        motion = current;
-        current.frame = requestAnimationFrame(step);
-    };
-
-    // Freies Scrollen in einer langen Section: weich hinter dem Ziel herlaufen
-    const glideTo = target => {
-        if (motion !== null && motion.kind === 'free') {
-            motion.target = target;
-            return;
-        }
-        stopMotion();
-        const current = { kind: 'free', dir: 0, target, frame: 0, pos: window.scrollY, time: performance.now() };
-        root.style.scrollBehavior = 'auto';
-        const step = now => {
-            const elapsed = Math.min(64, now - current.time);
-            current.time = now;
-            current.pos += (current.target - current.pos) * (1 - Math.pow(0.8, elapsed / 16.7));
-            if (Math.abs(current.target - current.pos) < 0.5) {
-                window.scrollTo(0, current.target);
-                finishMotion();
-                return;
-            }
-            window.scrollTo(0, current.pos);
-            current.frame = requestAnimationFrame(step);
-        };
-        motion = current;
-        current.frame = requestAnimationFrame(step);
-    };
-
-    // Ausgangspunkt für den nächsten Schritt: beim freien Scrollen das Ziel, sonst die Position
-    const currentY = () => (motion !== null && motion.kind === 'free' ? motion.target : window.scrollY);
-
-    const freeStep = (delta, limit) => {
-        const target = currentY() + delta;
-        glideTo(delta > 0 ? Math.min(target, limit) : Math.max(target, limit));
-    };
-
-    const startGesture = (dir, delta, now) => {
-        const step = nextStep(currentY(), dir);
-        gesture = { dir, last: now, mode: step ? step.mode : 'snap', limit: step ? step.limit : 0, minAbs: Infinity };
-        if (step && step.mode === 'free') {
-            freeStep(delta, step.limit);
-        } else if (step) {
-            snapTo(step.to);
-        }
-    };
-
-    // Inneres Element (z. B. Textfeld, Cookie-Banner), das in diese Richtung selbst noch scrollen kann
-    const scrollsInside = (element, dir) => {
-        for (let node = element; node && node !== document.body; node = node.parentElement) {
-            const overflowY = getComputedStyle(node).overflowY;
-            if ((overflowY === 'auto' || overflowY === 'scroll') && node.scrollHeight > node.clientHeight + 1) {
-                const canScroll = dir > 0
-                    ? node.scrollTop + node.clientHeight < node.scrollHeight - 1
-                    : node.scrollTop > 0;
-                if (canScroll) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    };
-
-    window.addEventListener('wheel', event => {
-        if (event.ctrlKey || !isActive() || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-            return;
-        }
-        let delta = event.deltaY;
-        if (event.deltaMode === 1) {
-            delta *= 40;
-        } else if (event.deltaMode === 2) {
-            delta *= window.innerHeight;
-        }
-        const dir = Math.sign(delta);
-        if (dir === 0 || scrollsInside(event.target, dir)) {
-            return;
-        }
-        if (!event.cancelable) {
-            userScrolled = true; // der Browser scrollt selbst, danach wird eingerastet
-            return;
-        }
-        event.preventDefault();
-
-        const now = performance.now();
-        const abs = Math.abs(delta);
-        const continues = gesture !== null && gesture.dir === dir && now - gesture.last < GESTURE_GAP;
-
-        // Während einer Fahrt in dieselbe Richtung zählt jeder Impuls zur laufenden Geste
-        if (motion !== null && motion.kind === 'snap' && motion.dir === dir) {
-            if (!continues) {
-                gesture = { dir, mode: 'snap', limit: 0, minAbs: Infinity };
-            }
-            gesture.last = now;
-            return;
-        }
-
-        if (continues) {
-            gesture.last = now;
-            if (gesture.mode === 'free') {
-                freeStep(delta, gesture.limit);
-                return;
-            }
-            // Nach der Fahrt: Nachlauf schlucken. Erst ein deutlich stärkerer Impuls ist ein neuer Wisch.
-            if (abs <= Math.max(gesture.minAbs * 2, 12)) {
-                gesture.minAbs = Math.min(gesture.minAbs, abs);
-                return;
-            }
-        }
-        startGesture(dir, delta, now);
-    }, { passive: false });
-
-    document.addEventListener('keydown', event => {
-        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || !isActive()) {
-            return;
-        }
-        if (event.target.closest('input, textarea, select, [contenteditable="true"]')) {
-            return;
-        }
-        const page = window.innerHeight * 0.85;
-        let delta = { ArrowDown: 40, ArrowUp: -40, PageDown: page, PageUp: -page }[event.key];
-        if (event.key === ' ') {
-            if (event.target.closest('a, button, summary')) {
-                return;
-            }
-            delta = event.shiftKey ? -page : page;
-        }
-        if (delta === undefined) {
-            return;
-        }
-        event.preventDefault();
-        const dir = Math.sign(delta);
-        if (motion !== null && motion.kind === 'snap' && motion.dir === dir) {
-            return; // Fahrt läuft schon, auch bei gehaltener Taste
-        }
-        const step = nextStep(currentY(), dir);
-        if (step && step.mode === 'free') {
-            freeStep(delta, step.limit);
-        } else if (step) {
-            snapTo(step.to);
-        }
-    });
-
-    // Ein Link-Sprung übernimmt das Scrollen selbst
-    document.addEventListener('click', event => {
-        if (event.target.closest('a[href^="#"]')) {
-            stopMotion();
-        }
-    });
-
-    // Touch: Nach dem Ausrollen in Wischrichtung zum nächsten Haltepunkt, außer die Seite steht
-    // schon an einer Kante oder innerhalb einer langen Section
-    const onSettle = () => {
-        settleTimer = null;
-        if (touchActive || motion !== null) {
-            return;
-        }
-        const y = window.scrollY;
-        const dir = Math.sign(y - settledY);
-        const intended = userScrolled;
-        userScrolled = false;
-        settledY = y;
-        if (!intended || dir === 0 || !isActive()) {
-            return;
-        }
-        const { stops, free } = layout();
-        if (stops.some(stop => Math.abs(stop - y) <= 1) || free.some(r => y > r.start && y < r.end)) {
-            return;
-        }
-        const to = dir > 0
-            ? stops.find(stop => stop > y)
-            : [...stops].reverse().find(stop => stop < y);
-        if (to !== undefined) {
-            snapTo(to, easeInOutCubic);
-        }
-    };
-
-    const scheduleSettle = () => {
-        clearTimeout(settleTimer);
-        settleTimer = setTimeout(onSettle, 90);
-    };
-
-    window.addEventListener('scroll', () => {
-        if (motion === null) {
-            scheduleSettle();
-        }
-    }, { passive: true });
-
-    window.addEventListener('touchstart', event => {
-        touchActive = true;
-        touchStartY = event.touches[0].clientY;
-        stopMotion(); // Finger greift: laufende Fahrt sofort anhalten
-    }, { passive: true });
-
-    window.addEventListener('touchmove', event => {
-        if (Math.abs(event.touches[0].clientY - touchStartY) > 10) {
-            userScrolled = true;
-        }
-    }, { passive: true });
-
-    const onTouchEnd = () => {
-        touchActive = false;
-        scheduleSettle();
-    };
-    window.addEventListener('touchend', onTouchEnd, { passive: true });
-    window.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    const heroActions = document.querySelector('.hero-actions');
+    if (!heroActions || !('IntersectionObserver' in window)) {
+        bar.classList.add('is-visible');
+        return;
+    }
+    new IntersectionObserver(entries => {
+        entries.forEach(entry => bar.classList.toggle('is-visible', !entry.isIntersecting));
+    }).observe(heroActions);
 }
 
 /**
@@ -646,8 +312,8 @@ function initRails() {
 
 /**
  * Google-Bewertungen: reviews.php liefert die höchstens einmal am Tag bei Google abgeholten
- * Bewertungen. Mit Daten erscheint die Section „Bewertungen“ (samt Punkt in der Navigation), und
- * der Button im Band von „Auf einen Blick“ führt dorthin statt zu Google. Ohne Daten (noch kein
+ * Bewertungen. Mit Daten erscheint die Section „Bewertungen“ und ersetzt das Bewertungs-Band in
+ * „Auf einen Blick“, damit die Bewertung nicht zweimal hintereinander steht. Ohne Daten (noch kein
  * API-Schlüssel, Fehler) bleibt alles wie im HTML: Band mit Link auf Google.
  */
 function initReviews() {
@@ -779,14 +445,8 @@ function renderReviews(section, list, data) {
     }
 
     section.hidden = false;
-    document.querySelectorAll('[data-reviews-nav]').forEach(item => {
-        item.hidden = false;
-    });
     document.querySelectorAll('[data-reviews-fallback]').forEach(element => {
         element.hidden = true;
-    });
-    document.querySelectorAll('[data-reviews-teaser]').forEach(element => {
-        element.hidden = false;
     });
 
     // „Ganze Bewertung lesen“ nur bei gekürzten Texten, Pfeile nur, wenn es etwas zu blättern gibt
@@ -1243,21 +903,26 @@ function formatBookingDate(date) {
 // Room Gallery (Lightbox)
 // ===================================
 
-// FOTO-TODO: Sobald neue Zimmerfotos (mind. 1600×1067 px) vorliegen, hier ergänzen.
+// Zimmerfotos in 1600 px Breite (Originale in „Bilder Innen“, Export: scripts/image-converter/export_site_images.py).
+// Die Anzahl je Zimmer steht auch auf den Zimmerkarten („4 Fotos“ usw.) und muss dazu passen.
+// FOTO-TODO: Weiteres Doppelzimmer-Foto ergänzen, sobald vorhanden.
 const roomGalleries = {
     einzelzimmer: [
-        { src: 'images/zimmer/Zimmer_EZ_small.jpg', caption: 'Einzelzimmer – ruhig und gemütlich' },
-        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche und WC' }
+        { src: 'images/zimmer/einzelzimmer-1-1600.jpg', caption: 'Einzelzimmer – ruhig und gemütlich' },
+        { src: 'images/zimmer/einzelzimmer-2-1600.jpg', caption: 'Einzelzimmer mit Tisch am Fenster' },
+        { src: 'images/zimmer/einzelzimmer-3-1600.jpg', caption: 'Einzelzimmer mit Tisch und Stuhl' },
+        { src: 'images/zimmer/bad-1-1600.jpg', caption: 'Badezimmer mit Dusche und WC' }
     ],
     doppelzimmer: [
-        { src: 'images/zimmer/wohnen_roessle_5.jpg', caption: 'Doppelzimmer – komfortabel für zwei' },
-        { src: 'images/zimmer/Zimmer_DZ_small.jpg', caption: 'Doppelzimmer' },
-        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche und WC' }
+        { src: 'images/zimmer/doppelzimmer-1-1600.jpg', caption: 'Doppelzimmer – komfortabel für zwei' },
+        { src: 'images/zimmer/bad-1-1600.jpg', caption: 'Badezimmer mit Dusche und WC' }
     ],
     familienzimmer: [
-        { src: 'images/zimmer/wohnen_roessle4.jpg', caption: 'Familienzimmer – Platz für bis zu 4 Personen' },
-        { src: 'images/zimmer/Zimmer_FZ_small.jpg', caption: 'Familienzimmer mit Sitzecke' },
-        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche und WC' }
+        { src: 'images/zimmer/familienzimmer-1-1600.jpg', caption: 'Familienzimmer – Platz für bis zu 4 Personen' },
+        { src: 'images/zimmer/familienzimmer-2-1600.jpg', caption: 'Familienzimmer mit Doppelbett, zwei Einzelbetten und Sitzecke' },
+        { src: 'images/zimmer/familienzimmer-3-1600.jpg', caption: 'Familienzimmer mit Sitzecke' },
+        { src: 'images/zimmer/familienzimmer-4-1600.jpg', caption: 'Familienzimmer mit Sitzecke und TV' },
+        { src: 'images/zimmer/bad-1-1600.jpg', caption: 'Badezimmer mit Dusche und WC' }
     ],
     apartment: [
         { src: 'images/apartment/apartment-wohnraum.jpg', caption: 'Apartment – Wohn- und Schlafbereich mit Sitzecke' },

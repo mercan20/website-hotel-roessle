@@ -107,27 +107,16 @@
     --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* Tablet und Desktop: Abstände richten sich nach der Bildschirmhöhe, damit jede Section auf einen Schirm passt */
-@media (min-width: 768px) and (min-height: 600px) {
+/* Tablet und Desktop: mehr Luft zwischen den Sections, jede ist so hoch wie ihr Inhalt */
+@media (min-width: 768px) {
     :root {
-        --section-y: clamp(1.75rem, 5vh, 4rem);
-        --head-gap: clamp(1.25rem, 3.5vh, 2.5rem);
-        --block-gap: clamp(1.25rem, 3.5vh, 2.5rem);
+        --section-y: clamp(4rem, 2rem + 4vw, 6.5rem);
+        --head-gap: clamp(1.75rem, 1rem + 2vw, 3rem);
+        --block-gap: clamp(1.75rem, 1rem + 2vw, 3rem);
     }
 }
 
-/* Niedrige Fenster (z. B. Laptop mit Browserleisten): Startseite mit knapperen Abständen,
-   damit jede Section weiterhin auf einen Bildschirm passt und glatt einrastet */
-@media (min-width: 768px) and (min-height: 600px) and (max-height: 760px) {
-    :root:has(.section-nav) {
-        --section-y: clamp(1.25rem, 4vh, 2rem);
-        --head-gap: clamp(1rem, 2.5vh, 1.5rem);
-        --block-gap: clamp(1rem, 2.5vh, 1.5rem);
-        --fs-h2: clamp(1.75rem, 1.2rem + 2vw, 2.25rem);
-    }
-}
-
-/* Ab Tablet (Bildschirm-Sections) und ab 900px gibt es keine Aktionsleiste unten */
+/* Ab Tablet (der Header bleibt oben stehen) und ab 900px gibt es keine Aktionsleiste unten */
 @media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
     :root {
         --mobile-cta-h: 0px;
@@ -166,10 +155,11 @@ html {
     }
 }
 
-/* Startseite: Das Einrasten der Sections steuert JavaScript (initSectionSnap), damit es der
-   Scroll-Richtung folgt. Sprünge zu einer Section beginnen direkt an der Fensterkante. */
-html:has(.section-nav) {
-    scroll-padding-top: 0;
+/* Mit stehendem Header beginnen Sprünge zu einer Section direkt unter ihm */
+@media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
+    html {
+        scroll-padding-top: var(--header-h);
+    }
 }
 
 body {
@@ -401,16 +391,6 @@ strong {
 /* Jede Section hat denselben Abstand oben und unten */
 .section {
     padding-block: var(--section-y);
-}
-
-/* Tablet und Desktop: jede Section füllt genau einen Bildschirm, der Inhalt sitzt mittig */
-@media (min-width: 768px) and (min-height: 600px) {
-    main > .section {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        min-height: 100svh;
-    }
 }
 
 .section-sand {
@@ -666,7 +646,8 @@ strong {
 
 /* ---------- Header / Navigation ---------- */
 /* Basis: Smartphone mit Menü-Button; ab 1100px liegt das Menü in der Leiste.
-   Der Header ist nur am Seitenanfang zu sehen: Er gehört zum ersten Bildschirm und scrollt mit weg. */
+   Auf dem Smartphone scrollt der Header mit weg (unten gibt es die Aktionsleiste), ab Tablet bleibt er
+   oben stehen, damit Navigation und „Zimmer anfragen“ immer erreichbar sind. */
 .site-header {
     position: relative;
     z-index: 1000;
@@ -678,10 +659,25 @@ strong {
     top: 0;
 }
 
-/* Kein backdrop-filter auf dem Smartphone: Er würde das fixierte Menü auf die Navbar-Höhe begrenzen */
+@media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
+    .site-header {
+        position: sticky;
+        top: 0;
+    }
+}
+
+/* Kein backdrop-filter und kein transform auf dem Header: Beides würde das fixierte Mobilmenü
+   auf die Navbar-Höhe begrenzen */
 .navbar {
     background: var(--cream);
     border-bottom: 1px solid transparent;
+    transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+/* Gescrollt (JS): Linie und leichter Schatten trennen den stehenden Header vom Inhalt */
+.navbar.is-scrolled {
+    border-bottom-color: var(--line);
+    box-shadow: 0 6px 24px rgba(31, 27, 22, 0.06);
 }
 
 .nav-container {
@@ -986,9 +982,11 @@ body:has(.nav-menu.active) {
     height: 100%;
 }
 
+/* Das Erdgeschoss mit den Bogenfenstern liegt im unteren Teil des Fotos: Auf breiten, flachen
+   Bildschirmen wird deshalb eher oben als unten abgeschnitten */
 .hero-media img {
     object-fit: cover;
-    object-position: 62% 50%;
+    object-position: 62% 60%;
 }
 
 .hero-media::after {
@@ -1216,10 +1214,11 @@ body:has(.nav-menu.active) {
     }
 }
 
-/* Der Hero füllt mit dem Header genau den ersten Bildschirm */
+/* Der Hero füllt fast den ersten Bildschirm, ist aber höchstens 760px hoch: Unten schaut die nächste
+   Section hervor (zeigt, dass es weitergeht), und das Fassadenfoto wird weniger stark vergrößert */
 @media (min-width: 768px) and (min-height: 600px) {
     .hero {
-        min-height: calc(100svh - var(--header-h));
+        min-height: min(calc(100svh - var(--header-h)), 760px);
     }
 }
 
@@ -1596,23 +1595,6 @@ body:has(.nav-menu.active) {
     }
 }
 
-/* Bildschirm-Sections: Fotos und Abstände so, dass Kopf und Karten auf einen Schirm passen */
-@media (min-width: 900px) and (min-height: 600px) {
-    .rooms-grid .room-image {
-        aspect-ratio: auto;
-        height: clamp(8.5rem, 22vh, 16rem);
-    }
-
-    .rooms-grid .room-content {
-        padding: var(--space-md) var(--space-lg) var(--space-lg);
-    }
-
-    .rooms-grid .room-features {
-        gap: 0.3rem;
-        margin-bottom: var(--space-md);
-    }
-}
-
 /* ---------- Apartment ---------- */
 .apartment-intro {
     max-width: 40rem;
@@ -1892,13 +1874,6 @@ body:has(.nav-menu.active) {
     .leisure-grid {
         grid-auto-columns: calc((100% - 3 * var(--grid-gap)) / 3.3);
         gap: var(--grid-gap);
-    }
-}
-
-@media (min-width: 768px) and (min-height: 600px) {
-    .leisure-image {
-        aspect-ratio: auto;
-        height: clamp(8rem, 20vh, 13rem);
     }
 }
 
@@ -2319,11 +2294,12 @@ body:has(.nav-menu.active) {
     text-align: center;
 }
 
+/* Steht im HTML vor dem Zähler, damit die Zähler aller Karten unten auf einer Linie sitzen */
 .booking-option {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    margin-top: var(--space-sm);
+    margin-bottom: var(--space-sm);
     font-size: var(--fs-sm);
     font-weight: 600;
     cursor: pointer;
@@ -2379,6 +2355,7 @@ body:has(.nav-menu.active) {
     .booking-option {
         grid-area: option;
         margin-top: var(--space-2xs);
+        margin-bottom: 0;
     }
 }
 
@@ -2907,7 +2884,7 @@ body:has(.nav-menu.active) {
 
     .faq-head {
         position: sticky;
-        top: var(--space-xl);
+        top: calc(var(--header-h) + var(--space-xl));
         margin-bottom: 0;
     }
 }
@@ -2940,7 +2917,8 @@ body:has(.nav-menu.active) {
 /* Kontaktdaten zweispaltig, sobald Platz ist */
 .contact-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    /* 13rem: Auch bei 90 % Grundgröße höchstens zwei Spalten in der Karte, sonst brechen Telefon und Zeiten um */
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
     gap: var(--space-md) var(--space-lg);
     list-style: none;
     margin-bottom: var(--space-lg);
@@ -3013,12 +2991,6 @@ body:has(.nav-menu.active) {
     .contact-grid {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         align-items: stretch;
-    }
-}
-
-@media (min-width: 768px) and (min-height: 600px) {
-    .contact-aside .map-consent {
-        min-height: clamp(7rem, 18vh, 12rem);
     }
 }
 
@@ -3213,125 +3185,6 @@ body:has(.nav-menu.active) {
     text-decoration: underline;
 }
 
-/* ---------- Abschnitts-Navigation (Punkte rechts) ---------- */
-/* Dunkle Leiste, damit die Punkte auf hellen und dunklen Sections gleich gut sichtbar sind.
-   Smartphone: schmal im Seitenrand; jeder Punkt hat trotzdem 24px Abstand zum nächsten (Tippziel). */
-.section-nav {
-    position: fixed;
-    top: 50%;
-    right: 2px;
-    z-index: 950; /* unter Header, Cookie-Banner und Galerie */
-    translate: 0 -50%;
-}
-
-.section-nav ol {
-    display: flex;
-    flex-direction: column;
-    padding-block: 6px;
-    list-style: none;
-    background: rgba(31, 27, 22, 0.72);
-    border-radius: 999px;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-}
-
-.section-nav-link {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 18px;
-    height: 24px;
-    text-decoration: none;
-}
-
-.section-nav-link::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: rgba(250, 246, 238, 0.5);
-    transition: height 0.3s var(--ease), background-color 0.3s var(--ease);
-}
-
-/* Aktive Section: der Punkt wird zur Ocker-Linie */
-.section-nav-link[aria-current='true']::before {
-    height: 18px;
-    background: var(--ochre);
-}
-
-.section-nav-link:focus-visible {
-    outline-color: var(--ochre);
-    outline-offset: 0;
-}
-
-/* Beschriftung erscheint links neben dem Punkt bei Hover oder Tastaturfokus */
-.section-nav-label {
-    position: absolute;
-    top: 50%;
-    right: calc(100% + 10px);
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    background: var(--ink);
-    color: var(--on-dark);
-    font-size: var(--fs-xs);
-    font-weight: 600;
-    line-height: 1.3;
-    white-space: nowrap;
-    opacity: 0;
-    translate: 4px -50%;
-    pointer-events: none;
-    transition: opacity 0.2s var(--ease), translate 0.2s var(--ease);
-}
-
-.section-nav-link:focus-visible .section-nav-label {
-    opacity: 1;
-    translate: 0 -50%;
-}
-
-@media (hover: hover) {
-    .section-nav-link:hover::before {
-        background: var(--on-dark);
-    }
-
-    .section-nav-link[aria-current='true']:hover::before {
-        background: var(--ochre);
-    }
-
-    .section-nav-link:hover .section-nav-label {
-        opacity: 1;
-        translate: 0 -50%;
-    }
-}
-
-body:has(.nav-menu.active) .section-nav,
-body:has(.gallery-modal.active) .section-nav {
-    display: none;
-}
-
-@media (min-width: 900px) {
-    .section-nav {
-        right: 10px;
-    }
-
-    .section-nav ol {
-        padding-block: 8px;
-    }
-
-    .section-nav-link {
-        width: 28px;
-        height: 28px;
-    }
-
-    .section-nav-link::before {
-        width: 8px;
-        height: 8px;
-    }
-
-    .section-nav-link[aria-current='true']::before {
-        height: 22px;
-    }
-}
-
 /* ---------- Mobile Aktionsleiste ---------- */
 .mobile-cta {
     position: fixed;
@@ -3348,6 +3201,16 @@ body:has(.gallery-modal.active) .section-nav {
     box-shadow: 0 -8px 24px rgba(31, 27, 22, 0.08);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    transition: translate 0.3s var(--ease), visibility 0s linear;
+}
+
+/* Solange die Buttons im Hero zu sehen sind, wartet die Leiste unter dem Bildschirmrand (JS).
+   visibility nimmt ihre Links dann auch aus der Tab-Reihenfolge. Ohne JS ist sie immer da. */
+.js .mobile-cta:not(.is-visible) {
+    translate: 0 100%;
+    visibility: hidden;
+    box-shadow: none;
+    transition: translate 0.3s var(--ease), visibility 0s linear 0.3s;
 }
 
 .mobile-cta .btn-primary,
@@ -3362,7 +3225,7 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
     display: none;
 }
 
-/* Ab Tablet würde die Leiste den unteren Rand der Bildschirm-Sections verdecken */
+/* Ab Tablet steht der Header mit „Zimmer anfragen“ oben, die Leiste wäre doppelt */
 @media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
     .mobile-cta {
         display: none;
@@ -3762,33 +3625,5 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
     *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
-    }
-}
-
-/* ---------- Niedrige Fenster: Feinschliff für die Bildschirm-Sections ---------- */
-/* Ergänzt die kompakteren Abstände oben (gleiche Bedingung): Fotos, Karte und Textfeld etwas flacher */
-@media (min-width: 768px) and (min-height: 600px) and (max-height: 760px) {
-    .rooms-grid .room-image {
-        height: clamp(6.5rem, 17vh, 16rem);
-    }
-
-    .booking-room-image-container {
-        aspect-ratio: 5 / 2;
-    }
-
-    .contact-aside .map-consent {
-        min-height: clamp(5rem, 13vh, 12rem);
-    }
-
-    .contact-form textarea {
-        min-height: 5rem;
-    }
-
-    .faq-item summary {
-        padding-block: 0.85rem;
-    }
-
-    .reviews-list {
-        --review-lines: 5;
     }
 }
