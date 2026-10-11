@@ -116,6 +116,18 @@
     }
 }
 
+/* Niedrige Fenster (z. B. Laptop mit Browserleisten): Startseite etwas kompakter,
+   damit jede Section weiterhin auf einen Bildschirm passt und glatt einrastet */
+@media (min-width: 768px) and (min-height: 600px) and (max-height: 760px) {
+    :root:has(.section-nav) {
+        font-size: 93.75%;
+        --section-y: clamp(1.25rem, 4vh, 2rem);
+        --head-gap: clamp(1rem, 2.5vh, 1.5rem);
+        --block-gap: clamp(1rem, 2.5vh, 1.5rem);
+        --fs-h2: clamp(1.75rem, 1.2rem + 2vw, 2.25rem);
+    }
+}
+
 /* Ab Tablet (Bildschirm-Sections) und ab 900px gibt es keine Aktionsleiste unten */
 @media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
     :root {
@@ -142,7 +154,7 @@
 }
 
 html {
-    scroll-padding-top: calc(var(--header-h) + 1rem);
+    scroll-padding-top: 1rem;
     -webkit-text-size-adjust: 100%;
 }
 
@@ -153,8 +165,7 @@ html {
 }
 
 /* Startseite: Das Einrasten der Sections steuert JavaScript (initSectionSnap), damit es der
-   Scroll-Richtung folgt. Der Header blendet sich beim Runterscrollen aus, deshalb beginnen
-   Sprünge zu einer Section direkt an der Fensterkante. */
+   Scroll-Richtung folgt. Sprünge zu einer Section beginnen direkt an der Fensterkante. */
 html:has(.section-nav) {
     scroll-padding-top: 0;
 }
@@ -652,34 +663,23 @@ strong {
 }
 
 /* ---------- Header / Navigation ---------- */
-/* Basis: Smartphone mit Menü-Button; ab 1100px liegt das Menü in der Leiste */
+/* Basis: Smartphone mit Menü-Button; ab 1100px liegt das Menü in der Leiste.
+   Der Header ist nur am Seitenanfang zu sehen: Er gehört zum ersten Bildschirm und scrollt mit weg. */
 .site-header {
+    position: relative;
+    z-index: 1000;
+}
+
+/* Offenes Mobilmenü: Der Header bleibt oben stehen, damit das Menü direkt darunter anschließt */
+.site-header:has(.nav-menu.active) {
     position: sticky;
     top: 0;
-    z-index: 1000;
-    transition: transform 0.3s var(--ease);
-}
-
-/* Beim Runterscrollen ausgeblendet (JS). transform nur in diesem Zustand: Sonst würde der Header
-   zum Bezugsrahmen des fixierten Mobilmenüs und es wäre nur so hoch wie die Leiste. */
-.site-header.is-hidden {
-    transform: translateY(-100%);
-}
-
-.site-header.is-hidden .navbar {
-    box-shadow: none;
 }
 
 /* Kein backdrop-filter auf dem Smartphone: Er würde das fixierte Menü auf die Navbar-Höhe begrenzen */
 .navbar {
     background: var(--cream);
     border-bottom: 1px solid transparent;
-    transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
-}
-
-.navbar.is-scrolled {
-    border-bottom-color: var(--line);
-    box-shadow: 0 6px 24px rgba(31, 27, 22, 0.06);
 }
 
 .nav-container {
@@ -2763,7 +2763,7 @@ body:has(.nav-menu.active) {
 
     .faq-head {
         position: sticky;
-        top: calc(var(--header-h) + var(--space-xl));
+        top: var(--space-xl);
         margin-bottom: 0;
     }
 }
@@ -3618,5 +3618,29 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
     *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
+    }
+}
+
+/* ---------- Niedrige Fenster: Feinschliff für die Bildschirm-Sections ---------- */
+/* Ergänzt die kompakteren Abstände oben (gleiche Bedingung): Fotos, Karte und Textfeld etwas flacher */
+@media (min-width: 768px) and (min-height: 600px) and (max-height: 760px) {
+    .rooms-grid .room-image {
+        height: clamp(6.5rem, 17vh, 16rem);
+    }
+
+    .booking-room-image-container {
+        aspect-ratio: 5 / 2;
+    }
+
+    .contact-aside .map-consent {
+        min-height: clamp(5rem, 13vh, 12rem);
+    }
+
+    .contact-form textarea {
+        min-height: 5rem;
+    }
+
+    .faq-item summary {
+        padding-block: 0.85rem;
     }
 }

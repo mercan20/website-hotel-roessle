@@ -112,15 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initConsent();
     initStatsOptout();
 
-    // Navbar Scroll Effect
-    const navbar = document.querySelector('.navbar');
-
-    if (navbar) {
-        const updateNavbar = () => navbar.classList.toggle('is-scrolled', window.scrollY > 8);
-        updateNavbar();
-        window.addEventListener('scroll', updateNavbar, { passive: true });
-    }
-
     // Active Navigation Link on Scroll
     const sections = document.querySelectorAll('section[id]');
 
@@ -146,9 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    const headerControl = initAutoHideHeader();
     initSectionNav();
-    initSectionSnap(headerControl);
+    initSectionSnap();
     initRails();
     initBookingWizard();
 
@@ -258,98 +248,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * Header beim Runterscrollen ausblenden, beim Hochscrollen wieder zeigen.
- * Die Richtung kommt aus der Eingabe (Mausrad, Wischen, Tasten, Link-Sprung), nicht aus dem
- * Scroll-Ereignis: Das Einrasten der Sections verschiebt die Seite selbst ein Stück und soll
- * den Header nicht hin- und herschalten. Rastet eine Section ein, bleibt der Header weg,
- * damit sie den ganzen Bildschirm nutzt; am Desktop holt ihn die Maus am oberen Rand zurück.
- * Gibt eine Steuerung zurück, über die das Einrasten den Header ausblendet.
- */
-function initAutoHideHeader() {
-    const header = document.querySelector('.site-header');
-    const menu = document.querySelector('.nav-menu');
-    if (!header) {
-        return null;
-    }
-
-    let wantsHidden = false;
-
-    // Am Seitenanfang und bei offenem Mobilmenü bleibt der Header immer sichtbar
-    const apply = () => {
-        const atTop = window.scrollY <= header.offsetHeight;
-        const menuOpen = Boolean(menu) && menu.classList.contains('active');
-        header.classList.toggle('is-hidden', wantsHidden && !atTop && !menuOpen);
-    };
-
-    const setHidden = hidden => {
-        wantsHidden = hidden;
-        apply();
-    };
-
-    window.addEventListener('scroll', apply, { passive: true });
-
-    window.addEventListener('wheel', event => {
-        if (event.deltaY !== 0) {
-            setHidden(event.deltaY > 0);
-        }
-    }, { passive: true });
-
-    let touchY = null;
-    window.addEventListener('touchstart', event => {
-        touchY = event.touches[0].clientY;
-    }, { passive: true });
-    window.addEventListener('touchmove', event => {
-        if (touchY === null) {
-            return;
-        }
-        const deltaY = event.touches[0].clientY - touchY;
-        if (Math.abs(deltaY) > 10) {
-            // Finger nach oben = Seite scrollt nach unten
-            setHidden(deltaY < 0);
-            touchY = event.touches[0].clientY;
-        }
-    }, { passive: true });
-
-    document.addEventListener('keydown', event => {
-        if (event.target.closest('input, textarea, select, [contenteditable="true"]')) {
-            return;
-        }
-        if (event.key === ' ' && event.target.closest('a, button, summary')) {
-            return;
-        }
-        if (['ArrowDown', 'PageDown', 'End'].includes(event.key) || (event.key === ' ' && !event.shiftKey)) {
-            setHidden(true);
-        } else if (['ArrowUp', 'PageUp', 'Home'].includes(event.key) || (event.key === ' ' && event.shiftKey)) {
-            setHidden(false);
-        }
-    });
-
-    // Sprung über einen Link: Header ausblenden, damit die Section oben bündig sitzt
-    // (am Seitenanfang bleibt er trotzdem sichtbar)
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-        link.addEventListener('click', () => {
-            if (link.getAttribute('href').length > 1) {
-                setHidden(true);
-            }
-        });
-    });
-
-    // Tastaturfokus im Header: wieder einblenden
-    header.addEventListener('focusin', () => setHidden(false));
-
-    // Desktop: Maus an den oberen Fensterrand holt den Header zurück
-    if (window.matchMedia('(hover: hover)').matches) {
-        document.addEventListener('mousemove', event => {
-            if (event.clientY <= 8 && wantsHidden) {
-                setHidden(false);
-            }
-        }, { passive: true });
-    }
-
-    return { hide: () => setHidden(true) };
-}
-
-/**
  * Punkte-Navigation rechts: markiert die Section, die gerade die Bildschirmmitte kreuzt.
  */
 function initSectionNav() {
@@ -388,156 +286,168 @@ function initSectionNav() {
 }
 
 /**
- * Sections rasten in Scroll-Richtung ein (nur Startseite, nicht bei „Bewegung reduzieren“).
- * - Mausrad und Tasten: Schon ein kleiner Schritt startet eine weiche Fahrt zur nächsten Section.
- * - Touch: Nach dem Loslassen gleitet die Seite in Wischrichtung zur nächsten Section weiter.
- * - Sections, die höher als das Fenster sind, lassen sich darin frei scrollen; an ihrem
- *   Anfang bzw. Ende wird kurz angehalten, der nächste Schritt führt dann weiter.
+ * Sections rasten in Scroll-Richtung ein. Nur im Bildschirm-Layout (Tablet und Desktop, dieselbe
+ * Bedingung wie im CSS), nicht auf dem Smartphone und nicht bei „Bewegung reduzieren“.
+ * Der Header spielt dabei keine Rolle: Er gehört zum ersten Bildschirm und scrollt mit dem Hero weg.
+ * - Mausrad und Trackpad: Eine Geste (Impulse ohne Pause, samt Nachlauf) führt genau einen Schritt weiter.
+ * - Tasten: Jeder Druck führt einen Schritt weiter.
+ * - Touch: Der Browser scrollt selbst; nach dem Ausrollen gleitet die Seite in Wischrichtung weiter.
+ * - Ist eine Section höher als das Fenster (z. B. bei geöffneten Fragen), scrollt man darin frei.
+ *   An ihrem Anfang und Ende hält die Seite an, die nächste Geste führt dann weiter.
  * Andere Scrollbewegungen (Links, Tastaturfokus, Formular-Fehler) lösen nichts aus.
  */
-function initSectionSnap(headerControl) {
+function initSectionSnap() {
     const sections = [...document.querySelectorAll('main > section')];
     if (!document.querySelector('.section-nav') || !sections.length) {
         return;
     }
 
-    // Erst ab dieser Überhöhe gilt eine Section als „lang“ (frei scrollbar mit Halt am Ende);
-    // ein paar Pixel mehr als der Bildschirm sollen keinen Mini-Schritt erzeugen
+    // So viel darf eine Section höher als das Fenster sein, ohne als „lang“ zu gelten
     const TALL_TOLERANCE = 24;
-    const isTall = (b, viewport) => b.bottom - b.top > viewport + TALL_TOLERANCE;
+    // So lange ohne Mausrad-Impuls, dann ist eine Geste zu Ende
+    const GESTURE_GAP = 180;
 
     const root = document.documentElement;
+    const screenLayout = window.matchMedia('(min-width: 768px) and (min-height: 600px)');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let animation = null;       // laufende Fahrt (requestAnimationFrame-ID)
-    let lockUntil = 0;          // schluckt nachlaufende Trackpad-Impulse nach einer Fahrt
+
+    let motion = null;          // laufende Fahrt: { kind: 'snap' | 'free', dir, target, frame }
+    let gesture = null;         // aktuelle Mausrad-Geste: { dir, last, mode, limit, minAbs }
     let settledY = window.scrollY;
-    let userScrolled = false;   // nur echte Scroll-Eingaben lösen das Einrasten aus
+    let userScrolled = false;   // nur echtes Wischen löst nach dem Ausrollen das Einrasten aus
     let touchActive = false;
     let touchStartY = 0;
     let settleTimer = null;
 
+    const isActive = () => screenLayout.matches
+        && !reduceMotion.matches
+        && document.body.style.overflow !== 'hidden'                       // Galerie offen
+        && document.querySelector('.nav-menu.active') === null             // Mobilmenü offen
+        && !(window.visualViewport && window.visualViewport.scale > 1.01); // hineingezoomt
+
     const maxScroll = () => root.scrollHeight - window.innerHeight;
-    const clamp = y => Math.min(Math.max(y, 0), maxScroll());
 
-    const isBlocked = () => reduceMotion.matches
-        || document.body.style.overflow === 'hidden'                 // Galerie offen
-        || document.querySelector('.nav-menu.active') !== null       // Mobilmenü offen
-        || (window.visualViewport && window.visualViewport.scale > 1.01); // hineingezoomt
-
-    // Section-Grenzen im Dokument; der Hero beginnt am Seitenanfang
-    const bounds = () => sections.map((section, index) => {
-        const rect = section.getBoundingClientRect();
-        return {
-            top: index === 0 ? 0 : Math.round(rect.top + window.scrollY),
-            bottom: Math.round(rect.bottom + window.scrollY),
-        };
-    });
-
-    // Rastpunkt für Position y in Richtung dir, oder null, wenn die Position frei bleiben darf
-    const targetFor = (y, dir) => {
+    // Haltepunkte (Anfang jeder Section, Ende langer Sections, Seitenende) und die Strecken,
+    // auf denen man innerhalb einer langen Section frei scrollt
+    const layout = () => {
         const viewport = window.innerHeight;
         const max = maxScroll();
-        if ((dir > 0 && y >= max - 1) || (dir < 0 && y <= 1)) {
-            return null;
-        }
-        const list = bounds();
-        const index = list.findIndex(b => y >= b.top - 1 && y < b.bottom - 1);
-        if (index === -1) {
-            return null; // im Footer
-        }
-        const current = list[index];
-        if (Math.abs(y - current.top) <= 1 || (isTall(current, viewport) && current.bottom - y >= viewport)) {
-            return null; // an einer Section-Kante oder ganz innerhalb einer langen Section
-        }
-        if (dir > 0) {
-            const next = list[index + 1];
-            return Math.min(next ? next.top : max, max);
-        }
-        // Hoch: eine lange Section ab ihrem Ende zeigen, eine kurze ab ihrem Anfang
-        return isTall(current, viewport) ? current.bottom - viewport : current.top;
+        const stops = [0, max];
+        const free = [];
+        sections.forEach((section, index) => {
+            const rect = section.getBoundingClientRect();
+            const top = index === 0 ? 0 : Math.round(rect.top + window.scrollY); // Hero samt Header
+            const bottom = Math.round(rect.bottom + window.scrollY);
+            stops.push(Math.min(top, max));
+            if (bottom - top > viewport + TALL_TOLERANCE) {
+                const end = Math.min(bottom - viewport, max);
+                stops.push(end);
+                free.push({ start: top, end });
+            }
+        });
+        return { stops: [...new Set(stops)].sort((a, b) => a - b), free };
     };
 
-    // Ziel für einen Schritt (Mausrad, Taste) von der aktuellen Position aus – höchstens eine Section weit
-    const stepTarget = delta => {
-        const y = window.scrollY;
-        const dir = Math.sign(delta);
-        const next = clamp(y + delta);
-        const viewport = window.innerHeight;
-        const list = bounds();
-        // Haltepunkte: Anfang jeder Section, bei langen Sections zusätzlich ihr Ende
-        const stops = list.flatMap(b => (isTall(b, viewport) ? [b.top, b.bottom - viewport] : [b.top]));
-        if (dir > 0) {
-            const nearest = Math.min(...stops.filter(stop => stop > y + 1), maxScroll());
-            if (next >= nearest) {
-                return nearest;
-            }
-        } else {
-            const nearest = Math.max(...stops.filter(stop => stop < y - 1), 0);
-            if (next <= nearest) {
-                return nearest;
-            }
+    // Nächster Schritt von y aus: innerhalb einer langen Section frei bis zu ihrer Kante scrollen,
+    // sonst zum nächsten Haltepunkt fahren (null: in diese Richtung geht es nicht weiter)
+    const nextStep = (y, dir) => {
+        const { stops, free } = layout();
+        const region = free.find(r => (dir > 0
+            ? y >= r.start - 1 && y < r.end - 1
+            : y > r.start + 1 && y <= r.end + 1));
+        if (region) {
+            return { mode: 'free', limit: dir > 0 ? region.end : region.start };
         }
-        // Der Schritt bleibt vor dem nächsten Haltepunkt: frei scrollen oder (bei Zwischenlage) einrasten
-        return targetFor(next, dir);
+        const to = dir > 0
+            ? stops.find(stop => stop > y + 1)
+            : [...stops].reverse().find(stop => stop < y - 1);
+        return to === undefined ? null : { mode: 'snap', to };
     };
 
+    const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
     const easeInOutCubic = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-    const stopAnimation = () => {
-        if (animation !== null) {
-            cancelAnimationFrame(animation);
-            animation = null;
-            root.style.scrollBehavior = '';
-            settledY = window.scrollY;
+    const finishMotion = () => {
+        motion = null;
+        root.style.scrollBehavior = '';
+        settledY = window.scrollY;
+        userScrolled = false;
+    };
+
+    const stopMotion = () => {
+        if (motion !== null) {
+            cancelAnimationFrame(motion.frame);
+            finishMotion();
         }
     };
 
-    const animateTo = target => {
-        stopAnimation();
-        if (headerControl && target > 0) {
-            headerControl.hide(); // eingerastete Section nutzt den ganzen Bildschirm
-        }
-        const start = window.scrollY;
-        const distance = target - start;
-        if (Math.abs(distance) < 2) {
-            settledY = target;
+    // Fahrt zu einem Haltepunkt. CSS-„smooth“ würde jeden Einzelschritt erneut animieren.
+    const snapTo = (to, ease = easeOutQuart) => {
+        stopMotion();
+        const from = window.scrollY;
+        const distance = to - from;
+        if (Math.abs(distance) < 1) {
+            settledY = from;
             return;
         }
-        const duration = Math.min(900, Math.max(280, 300 + Math.abs(distance) * 0.4));
-        const startTime = performance.now();
-        // CSS-„smooth“ würde jeden Einzelschritt erneut animieren
+        const duration = Math.min(850, Math.max(380, 360 + Math.abs(distance) * 0.35));
+        const start = performance.now();
+        const current = { kind: 'snap', dir: Math.sign(distance), target: to, frame: 0 };
         root.style.scrollBehavior = 'auto';
         const step = now => {
-            const progress = Math.min(1, (now - startTime) / duration);
-            window.scrollTo(0, start + distance * easeInOutCubic(progress));
+            const progress = Math.min(1, (now - start) / duration);
+            window.scrollTo(0, from + distance * ease(progress));
             if (progress < 1) {
-                animation = requestAnimationFrame(step);
+                current.frame = requestAnimationFrame(step);
             } else {
-                animation = null;
-                root.style.scrollBehavior = '';
-                settledY = window.scrollY;
-                userScrolled = false;
+                finishMotion();
             }
         };
-        animation = requestAnimationFrame(step);
+        motion = current;
+        current.frame = requestAnimationFrame(step);
     };
 
-    // Mausrad/Taste: Liegt die Position nach diesem Schritt nicht frei, direkt zur Section fahren
-    const handleStep = (event, delta) => {
-        const now = performance.now();
-        if (animation !== null || now < lockUntil) {
-            event.preventDefault();
-            lockUntil = now + 140;
+    // Freies Scrollen in einer langen Section: weich hinter dem Ziel herlaufen
+    const glideTo = target => {
+        if (motion !== null && motion.kind === 'free') {
+            motion.target = target;
             return;
         }
-        const target = stepTarget(delta);
-        if (target === null) {
-            userScrolled = true; // frei scrollen, der Browser übernimmt
-            return;
+        stopMotion();
+        const current = { kind: 'free', dir: 0, target, frame: 0, pos: window.scrollY, time: performance.now() };
+        root.style.scrollBehavior = 'auto';
+        const step = now => {
+            const elapsed = Math.min(64, now - current.time);
+            current.time = now;
+            current.pos += (current.target - current.pos) * (1 - Math.pow(0.8, elapsed / 16.7));
+            if (Math.abs(current.target - current.pos) < 0.5) {
+                window.scrollTo(0, current.target);
+                finishMotion();
+                return;
+            }
+            window.scrollTo(0, current.pos);
+            current.frame = requestAnimationFrame(step);
+        };
+        motion = current;
+        current.frame = requestAnimationFrame(step);
+    };
+
+    // Ausgangspunkt für den nächsten Schritt: beim freien Scrollen das Ziel, sonst die Position
+    const currentY = () => (motion !== null && motion.kind === 'free' ? motion.target : window.scrollY);
+
+    const freeStep = (delta, limit) => {
+        const target = currentY() + delta;
+        glideTo(delta > 0 ? Math.min(target, limit) : Math.max(target, limit));
+    };
+
+    const startGesture = (dir, delta, now) => {
+        const step = nextStep(currentY(), dir);
+        gesture = { dir, last: now, mode: step ? step.mode : 'snap', limit: step ? step.limit : 0, minAbs: Infinity };
+        if (step && step.mode === 'free') {
+            freeStep(delta, step.limit);
+        } else if (step) {
+            snapTo(step.to);
         }
-        event.preventDefault();
-        lockUntil = now + 140;
-        animateTo(target);
     };
 
     // Inneres Element (z. B. Textfeld, Cookie-Banner), das in diese Richtung selbst noch scrollen kann
@@ -557,7 +467,7 @@ function initSectionSnap(headerControl) {
     };
 
     window.addEventListener('wheel', event => {
-        if (event.ctrlKey || isBlocked() || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+        if (event.ctrlKey || !isActive() || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
             return;
         }
         let delta = event.deltaY;
@@ -566,14 +476,46 @@ function initSectionSnap(headerControl) {
         } else if (event.deltaMode === 2) {
             delta *= window.innerHeight;
         }
-        if (delta === 0 || scrollsInside(event.target, Math.sign(delta))) {
+        const dir = Math.sign(delta);
+        if (dir === 0 || scrollsInside(event.target, dir)) {
             return;
         }
-        handleStep(event, delta);
+        if (!event.cancelable) {
+            userScrolled = true; // der Browser scrollt selbst, danach wird eingerastet
+            return;
+        }
+        event.preventDefault();
+
+        const now = performance.now();
+        const abs = Math.abs(delta);
+        const continues = gesture !== null && gesture.dir === dir && now - gesture.last < GESTURE_GAP;
+
+        // Während einer Fahrt in dieselbe Richtung zählt jeder Impuls zur laufenden Geste
+        if (motion !== null && motion.kind === 'snap' && motion.dir === dir) {
+            if (!continues) {
+                gesture = { dir, mode: 'snap', limit: 0, minAbs: Infinity };
+            }
+            gesture.last = now;
+            return;
+        }
+
+        if (continues) {
+            gesture.last = now;
+            if (gesture.mode === 'free') {
+                freeStep(delta, gesture.limit);
+                return;
+            }
+            // Nach der Fahrt: Nachlauf schlucken. Erst ein deutlich stärkerer Impuls ist ein neuer Wisch.
+            if (abs <= Math.max(gesture.minAbs * 2, 12)) {
+                gesture.minAbs = Math.min(gesture.minAbs, abs);
+                return;
+            }
+        }
+        startGesture(dir, delta, now);
     }, { passive: false });
 
     document.addEventListener('keydown', event => {
-        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || isBlocked()) {
+        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || !isActive()) {
             return;
         }
         if (event.target.closest('input, textarea, select, [contenteditable="true"]')) {
@@ -587,15 +529,34 @@ function initSectionSnap(headerControl) {
             }
             delta = event.shiftKey ? -page : page;
         }
-        if (delta !== undefined) {
-            handleStep(event, delta);
+        if (delta === undefined) {
+            return;
+        }
+        event.preventDefault();
+        const dir = Math.sign(delta);
+        if (motion !== null && motion.kind === 'snap' && motion.dir === dir) {
+            return; // Fahrt läuft schon, auch bei gehaltener Taste
+        }
+        const step = nextStep(currentY(), dir);
+        if (step && step.mode === 'free') {
+            freeStep(delta, step.limit);
+        } else if (step) {
+            snapTo(step.to);
         }
     });
 
-    // Touch: der Browser scrollt selbst (inkl. Ausrollen); danach in Wischrichtung einrasten
+    // Ein Link-Sprung übernimmt das Scrollen selbst
+    document.addEventListener('click', event => {
+        if (event.target.closest('a[href^="#"]')) {
+            stopMotion();
+        }
+    });
+
+    // Touch: Nach dem Ausrollen in Wischrichtung zum nächsten Haltepunkt, außer die Seite steht
+    // schon an einer Kante oder innerhalb einer langen Section
     const onSettle = () => {
         settleTimer = null;
-        if (touchActive || animation !== null) {
+        if (touchActive || motion !== null) {
             return;
         }
         const y = window.scrollY;
@@ -603,12 +564,18 @@ function initSectionSnap(headerControl) {
         const intended = userScrolled;
         userScrolled = false;
         settledY = y;
-        if (!intended || dir === 0 || isBlocked()) {
+        if (!intended || dir === 0 || !isActive()) {
             return;
         }
-        const target = targetFor(y, dir);
-        if (target !== null) {
-            animateTo(target);
+        const { stops, free } = layout();
+        if (stops.some(stop => Math.abs(stop - y) <= 1) || free.some(r => y > r.start && y < r.end)) {
+            return;
+        }
+        const to = dir > 0
+            ? stops.find(stop => stop > y)
+            : [...stops].reverse().find(stop => stop < y);
+        if (to !== undefined) {
+            snapTo(to, easeInOutCubic);
         }
     };
 
@@ -618,7 +585,7 @@ function initSectionSnap(headerControl) {
     };
 
     window.addEventListener('scroll', () => {
-        if (animation === null) {
+        if (motion === null) {
             scheduleSettle();
         }
     }, { passive: true });
@@ -626,7 +593,7 @@ function initSectionSnap(headerControl) {
     window.addEventListener('touchstart', event => {
         touchActive = true;
         touchStartY = event.touches[0].clientY;
-        stopAnimation(); // Finger greift: laufende Fahrt sofort anhalten
+        stopMotion(); // Finger greift: laufende Fahrt sofort anhalten
     }, { passive: true });
 
     window.addEventListener('touchmove', event => {
