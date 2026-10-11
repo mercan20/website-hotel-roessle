@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSectionNav();
     initSectionSnap();
     initRails();
+    initReviews();
     initBookingWizard();
 
     // Form Submission Handling
@@ -335,6 +336,9 @@ function initSectionSnap() {
         const stops = [0, max];
         const free = [];
         sections.forEach((section, index) => {
+            if (section.hidden) {
+                return; // z. B. „Bewertungen“, solange keine Daten da sind
+            }
             const rect = section.getBoundingClientRect();
             const top = index === 0 ? 0 : Math.round(rect.top + window.scrollY); // Hero samt Header
             const bottom = Math.round(rect.bottom + window.scrollY);
@@ -638,6 +642,170 @@ function initRails() {
         window.addEventListener('resize', update);
         update();
     });
+}
+
+/**
+ * Google-Bewertungen: reviews.php liefert die höchstens einmal am Tag bei Google abgeholten
+ * Bewertungen. Mit Daten erscheint die Section „Bewertungen“ (samt Punkt in der Navigation), und
+ * der Button im Band von „Auf einen Blick“ führt dorthin statt zu Google. Ohne Daten (noch kein
+ * API-Schlüssel, Fehler) bleibt alles wie im HTML: Band mit Link auf Google.
+ */
+function initReviews() {
+    const section = document.querySelector('[data-reviews]');
+    const list = document.getElementById('reviewsList');
+    if (!section || !list || !window.fetch) {
+        return;
+    }
+    fetch('reviews.php', { headers: { Accept: 'application/json' } })
+        .then(response => (response.ok ? response.json() : null))
+        .then(data => {
+            if (data && Array.isArray(data.reviews) && data.reviews.length) {
+                renderReviews(section, list, data);
+            }
+        })
+        .catch(() => {}); // Hinweis mit Link bleibt stehen
+}
+
+const STAR_ICONS = '<svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>'.repeat(5);
+
+const formatRating = value => value.toLocaleString('de-DE', { maximumFractionDigits: 1 });
+
+function createStars(rating) {
+    const stars = document.createElement('span');
+    stars.className = 'stars';
+    stars.style.setProperty('--rating', String(rating));
+    stars.setAttribute('role', 'img');
+    stars.setAttribute('aria-label', `${formatRating(rating)} von 5 Sternen`);
+    stars.innerHTML = `${STAR_ICONS}<span class="stars-fill" aria-hidden="true">${STAR_ICONS}</span>`;
+    return stars;
+}
+
+const externalLink = (href, text, hint) => {
+    const link = document.createElement('a');
+    link.href = href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = text;
+    const note = document.createElement('span');
+    note.className = 'visually-hidden';
+    note.textContent = ` (${hint})`;
+    link.append(note);
+    return link;
+};
+
+function createReviewCard(review, dateFormat) {
+    const item = document.createElement('li');
+    item.className = 'review-card';
+    const figure = document.createElement('figure');
+
+    const meta = document.createElement('div');
+    meta.className = 'review-meta';
+    meta.append(createStars(review.rating));
+    const published = new Date(review.published);
+    if (!Number.isNaN(published.getTime())) {
+        const time = document.createElement('time');
+        time.dateTime = review.published.slice(0, 10);
+        time.textContent = dateFormat.format(published);
+        meta.append(time);
+    }
+
+    // Text im Original, auf einige Zeilen gekürzt; der ganze Text steht bei Google
+    const quote = document.createElement('blockquote');
+    quote.className = 'review-text';
+    if (review.lang) {
+        quote.lang = review.lang;
+    }
+    quote.textContent = review.text;
+
+    const caption = document.createElement('figcaption');
+    caption.className = 'review-author';
+    const author = review.author || 'Gast bei Google';
+    const avatar = document.createElement('span');
+    avatar.className = 'review-avatar';
+    avatar.setAttribute('aria-hidden', 'true');
+    avatar.textContent = author.trim().charAt(0).toUpperCase();
+    caption.append(avatar, review.authorUri
+        ? externalLink(review.authorUri, author, 'Profil bei Google Maps, öffnet in neuem Fenster')
+        : author);
+
+    figure.append(meta, quote);
+    if (review.uri) {
+        const more = externalLink(review.uri, 'Ganze Bewertung lesen', 'bei Google Maps, öffnet in neuem Fenster');
+        more.className = 'review-more';
+        more.hidden = true;
+        figure.append(more);
+    }
+    figure.append(caption);
+    item.append(figure);
+    return item;
+}
+
+function renderReviews(section, list, data) {
+    // Gesamtbewertung überall auf der Seite aktualisieren (Hero und Bewertungen)
+    if (typeof data.rating === 'number') {
+        const rating = formatRating(data.rating);
+        document.querySelectorAll('[data-review-rating]').forEach(element => {
+            element.textContent = rating;
+        });
+        document.querySelectorAll('[data-review-stars]').forEach(element => {
+            element.style.setProperty('--rating', String(data.rating));
+            if (element.hasAttribute('aria-label')) {
+                element.setAttribute('aria-label', `${rating} von 5 Sternen`);
+            }
+        });
+    }
+    if (typeof data.count === 'number') {
+        const count = data.count.toLocaleString('de-DE');
+        document.querySelectorAll('[data-review-count]').forEach(element => {
+            element.textContent = element.dataset.reviewCount === 'short'
+                ? `${count} Google-Bewertungen`
+                : `aus ${count} Bewertungen auf Google Maps`;
+        });
+    }
+    if (data.mapsUri) {
+        document.querySelectorAll('[data-reviews-link]').forEach(link => {
+            link.href = data.mapsUri;
+        });
+    }
+
+    const dateFormat = new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' });
+    list.replaceChildren(...data.reviews.map(review => createReviewCard(review, dateFormat)));
+
+    // Pflichtangabe zur Herkunft und Auswahl der Bewertungen (§ 5b Abs. 3 UWG)
+    const note = document.getElementById('reviewsNote');
+    if (note) {
+        const selection = data.minRating > 1 ? ` Angezeigt werden Bewertungen mit mindestens ${data.minRating} Sternen.` : '';
+        note.textContent = `Die Bewertungen stammen von Google Maps und werden täglich übernommen.${selection} Wir prüfen nicht, ob sie von Gästen stammen, die bei uns übernachtet haben.`;
+    }
+
+    section.hidden = false;
+    document.querySelectorAll('[data-reviews-nav]').forEach(item => {
+        item.hidden = false;
+    });
+    document.querySelectorAll('[data-reviews-fallback]').forEach(element => {
+        element.hidden = true;
+    });
+    document.querySelectorAll('[data-reviews-teaser]').forEach(element => {
+        element.hidden = false;
+    });
+
+    // „Ganze Bewertung lesen“ nur bei gekürzten Texten, Pfeile nur, wenn es etwas zu blättern gibt
+    const controls = section.querySelector('[data-rail-controls]');
+    const refresh = () => {
+        list.querySelectorAll('.review-card').forEach(card => {
+            const quote = card.querySelector('.review-text');
+            const more = card.querySelector('.review-more');
+            if (quote && more) {
+                more.hidden = quote.scrollHeight <= quote.clientHeight + 1;
+            }
+        });
+        if (controls) {
+            controls.hidden = list.scrollWidth <= list.clientWidth + 2;
+        }
+        list.dispatchEvent(new Event('scroll')); // Zustand der Pfeil-Buttons aktualisieren
+    };
+    refresh();
+    window.addEventListener('resize', refresh);
 }
 
 // ===================================
