@@ -998,9 +998,11 @@ body:has(.nav-menu.active) {
     height: 100%;
 }
 
+/* Bogenfenster und Fahrräder liegen in der unteren Hälfte des Fotos: Auf breiten, flachen
+   Bildschirmen wird deshalb eher oben als unten abgeschnitten */
 .hero-media img {
     object-fit: cover;
-    object-position: 62% 50%;
+    object-position: 62% 60%;
 }
 
 .hero-media::after {
@@ -2374,11 +2376,12 @@ body:has(.nav-menu.active) {
     text-align: center;
 }
 
+/* Steht im HTML vor dem Zähler, damit die Zähler aller Karten unten auf einer Linie sitzen */
 .booking-option {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    margin-top: var(--space-sm);
+    margin-bottom: var(--space-sm);
     font-size: var(--fs-sm);
     font-weight: 600;
     cursor: pointer;
@@ -2434,6 +2437,7 @@ body:has(.nav-menu.active) {
     .booking-option {
         grid-area: option;
         margin-top: var(--space-2xs);
+        margin-bottom: 0;
     }
 }
 
@@ -2995,7 +2999,8 @@ body:has(.nav-menu.active) {
 /* Kontaktdaten zweispaltig, sobald Platz ist */
 .contact-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    /* 13rem: Auch bei 90 % Grundgröße höchstens zwei Spalten in der Karte, sonst brechen Telefon und Zeiten um */
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
     gap: var(--space-md) var(--space-lg);
     list-style: none;
     margin-bottom: var(--space-lg);
@@ -3403,6 +3408,16 @@ body:has(.gallery-modal.active) .section-nav {
     box-shadow: 0 -8px 24px rgba(31, 27, 22, 0.08);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    transition: translate 0.3s var(--ease), visibility 0s linear;
+}
+
+/* Solange die Buttons im Hero zu sehen sind, wartet die Leiste unter dem Bildschirmrand (JS).
+   visibility nimmt ihre Links dann auch aus der Tab-Reihenfolge. Ohne JS ist sie immer da. */
+.js .mobile-cta:not(.is-visible) {
+    translate: 0 100%;
+    visibility: hidden;
+    box-shadow: none;
+    transition: translate 0.3s var(--ease), visibility 0s linear 0.3s;
 }
 
 .mobile-cta .btn-primary,

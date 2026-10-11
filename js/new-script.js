@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     initSectionNav();
     initSectionSnap();
+    initMobileCta();
     initRails();
     initReviews();
     initBookingWizard();
@@ -614,6 +615,25 @@ function initSectionSnap() {
     };
     window.addEventListener('touchend', onTouchEnd, { passive: true });
     window.addEventListener('touchcancel', onTouchEnd, { passive: true });
+}
+
+/**
+ * Aktionsleiste auf dem Smartphone: Sie erscheint erst, wenn die Buttons im Hero aus dem Bild sind,
+ * damit oben nicht dieselben Aktionen doppelt zu sehen sind. Seiten ohne Hero zeigen sie sofort.
+ */
+function initMobileCta() {
+    const bar = document.querySelector('.mobile-cta');
+    if (!bar) {
+        return;
+    }
+    const heroActions = document.querySelector('.hero-actions');
+    if (!heroActions || !('IntersectionObserver' in window)) {
+        bar.classList.add('is-visible');
+        return;
+    }
+    new IntersectionObserver(entries => {
+        entries.forEach(entry => bar.classList.toggle('is-visible', !entry.isIntersecting));
+    }).observe(heroActions);
 }
 
 /**
@@ -1318,21 +1338,26 @@ function formatBookingDate(date) {
 // Room Gallery (Lightbox)
 // ===================================
 
-// FOTO-TODO: Sobald neue Zimmerfotos (mind. 1600×1067 px) vorliegen, hier ergänzen.
+// Zimmerfotos in 1600 px Breite (Originale in „Bilder Innen“, Export: scripts/image-converter/export_site_images.py).
+// Die Anzahl je Zimmer steht auch auf den Zimmerkarten („4 Fotos“ usw.) und muss dazu passen.
+// FOTO-TODO: Weiteres Doppelzimmer-Foto ergänzen, sobald vorhanden.
 const roomGalleries = {
     einzelzimmer: [
-        { src: 'images/zimmer/Zimmer_EZ_small.jpg', caption: 'Einzelzimmer – ruhig und gemütlich' },
-        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche und WC' }
+        { src: 'images/zimmer/einzelzimmer-1-1600.jpg', caption: 'Einzelzimmer – ruhig und gemütlich' },
+        { src: 'images/zimmer/einzelzimmer-2-1600.jpg', caption: 'Einzelzimmer mit Tisch am Fenster' },
+        { src: 'images/zimmer/einzelzimmer-3-1600.jpg', caption: 'Einzelzimmer mit Tisch und Stuhl' },
+        { src: 'images/zimmer/bad-1-1600.jpg', caption: 'Badezimmer mit Dusche und WC' }
     ],
     doppelzimmer: [
-        { src: 'images/zimmer/wohnen_roessle_5.jpg', caption: 'Doppelzimmer – komfortabel für zwei' },
-        { src: 'images/zimmer/Zimmer_DZ_small.jpg', caption: 'Doppelzimmer' },
-        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche und WC' }
+        { src: 'images/zimmer/doppelzimmer-1-1600.jpg', caption: 'Doppelzimmer – komfortabel für zwei' },
+        { src: 'images/zimmer/bad-1-1600.jpg', caption: 'Badezimmer mit Dusche und WC' }
     ],
     familienzimmer: [
-        { src: 'images/zimmer/wohnen_roessle4.jpg', caption: 'Familienzimmer – Platz für bis zu 4 Personen' },
-        { src: 'images/zimmer/Zimmer_FZ_small.jpg', caption: 'Familienzimmer mit Sitzecke' },
-        { src: 'images/zimmer/wohnen_roessle2.jpg', caption: 'Badezimmer mit Dusche und WC' }
+        { src: 'images/zimmer/familienzimmer-1-1600.jpg', caption: 'Familienzimmer – Platz für bis zu 4 Personen' },
+        { src: 'images/zimmer/familienzimmer-2-1600.jpg', caption: 'Familienzimmer mit Doppelbett, zwei Einzelbetten und Sitzecke' },
+        { src: 'images/zimmer/familienzimmer-3-1600.jpg', caption: 'Familienzimmer mit Sitzecke' },
+        { src: 'images/zimmer/familienzimmer-4-1600.jpg', caption: 'Familienzimmer mit Sitzecke und TV' },
+        { src: 'images/zimmer/bad-1-1600.jpg', caption: 'Badezimmer mit Dusche und WC' }
     ],
     apartment: [
         { src: 'images/apartment/apartment-wohnraum.jpg', caption: 'Apartment – Wohn- und Schlafbereich mit Sitzecke' },

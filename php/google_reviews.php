@@ -285,7 +285,9 @@ function reviews_public(array $cache, array $config): array
         static fn (array $review): bool => $review['rating'] >= $minRating
             && !in_array($lower($review['author']), $excluded, true)
     ));
-    usort($reviews, static fn (array $a, array $b): int => (int) !str_starts_with($a['lang'], 'de') <=> (int) !str_starts_with($b['lang'], 'de'));
+    // Deutsche Bewertungen zuerst, innerhalb davon die neuesten vorn (publishTime ist ISO 8601, also als Text sortierbar)
+    usort($reviews, static fn (array $a, array $b): int => [(int) !str_starts_with($a['lang'], 'de'), $b['published']]
+        <=> [(int) !str_starts_with($b['lang'], 'de'), $a['published']]);
 
     return [
         'rating' => $data['rating'],
