@@ -309,7 +309,7 @@ function initSectionSnap() {
     const GESTURE_GAP = 180;
 
     const root = document.documentElement;
-    const screenLayout = window.matchMedia('(min-width: 768px) and (min-height: 600px)');
+    const screenLayout = window.matchMedia('(min-width: 768px) and (min-height: 520px)');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     let motion = null;          // laufende Fahrt: { kind: 'snap' | 'free', dir, target, frame }

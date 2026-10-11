@@ -108,7 +108,7 @@
 }
 
 /* Tablet und Desktop: Abstände richten sich nach der Bildschirmhöhe, damit jede Section auf einen Schirm passt */
-@media (min-width: 768px) and (min-height: 600px) {
+@media (min-width: 768px) and (min-height: 520px) {
     :root {
         --section-y: clamp(1.75rem, 5vh, 4rem);
         --head-gap: clamp(1.25rem, 3.5vh, 2.5rem);
@@ -118,7 +118,7 @@
 
 /* Niedrige Fenster (z. B. Laptop mit Browserleisten): Startseite mit knapperen Abständen,
    damit jede Section weiterhin auf einen Bildschirm passt und glatt einrastet */
-@media (min-width: 768px) and (min-height: 600px) and (max-height: 760px) {
+@media (min-width: 768px) and (min-height: 520px) and (max-height: 760px) {
     :root:has(.section-nav) {
         --section-y: clamp(1.25rem, 4vh, 2rem);
         --head-gap: clamp(1rem, 2.5vh, 1.5rem);
@@ -127,8 +127,20 @@
     }
 }
 
+/* Sehr niedrige Fenster (z. B. Laptop mit 150 % Windows-Skalierung): noch knapper, damit das Einrasten
+   auch hier mit ganzen Sections arbeitet. Ergänzt die Stufe darüber (siehe auch Ende der Datei). */
+@media (min-width: 768px) and (min-height: 520px) and (max-height: 639px) {
+    :root:has(.section-nav) {
+        --section-y: clamp(1rem, 3.5vh, 1.5rem);
+        --head-gap: 0.85rem;
+        --block-gap: 0.85rem;
+        --fs-h2: clamp(1.6rem, 1rem + 2vw, 2rem);
+        --fs-h1: clamp(2rem, 1.2rem + 3vw, 3rem);
+    }
+}
+
 /* Ab Tablet (Bildschirm-Sections) und ab 900px gibt es keine Aktionsleiste unten */
-@media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
+@media (min-width: 768px) and (min-height: 520px), (min-width: 900px) {
     :root {
         --mobile-cta-h: 0px;
     }
@@ -404,7 +416,7 @@ strong {
 }
 
 /* Tablet und Desktop: jede Section füllt genau einen Bildschirm, der Inhalt sitzt mittig */
-@media (min-width: 768px) and (min-height: 600px) {
+@media (min-width: 768px) and (min-height: 520px) {
     main > .section {
         display: flex;
         flex-direction: column;
@@ -1181,7 +1193,7 @@ body:has(.nav-menu.active) {
 }
 
 /* Tablet und Desktop: Foto im Hintergrund, Text darüber */
-@media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
+@media (min-width: 768px) and (min-height: 520px), (min-width: 900px) {
     .hero {
         display: flex;
         align-items: center;
@@ -1217,7 +1229,7 @@ body:has(.nav-menu.active) {
 }
 
 /* Der Hero füllt mit dem Header genau den ersten Bildschirm */
-@media (min-width: 768px) and (min-height: 600px) {
+@media (min-width: 768px) and (min-height: 520px) {
     .hero {
         min-height: calc(100svh - var(--header-h));
     }
@@ -1597,7 +1609,7 @@ body:has(.nav-menu.active) {
 }
 
 /* Bildschirm-Sections: Fotos und Abstände so, dass Kopf und Karten auf einen Schirm passen */
-@media (min-width: 900px) and (min-height: 600px) {
+@media (min-width: 900px) and (min-height: 520px) {
     .rooms-grid .room-image {
         aspect-ratio: auto;
         height: clamp(8.5rem, 22vh, 16rem);
@@ -1895,7 +1907,7 @@ body:has(.nav-menu.active) {
     }
 }
 
-@media (min-width: 768px) and (min-height: 600px) {
+@media (min-width: 768px) and (min-height: 520px) {
     .leisure-image {
         aspect-ratio: auto;
         height: clamp(8rem, 20vh, 13rem);
@@ -3016,7 +3028,7 @@ body:has(.nav-menu.active) {
     }
 }
 
-@media (min-width: 768px) and (min-height: 600px) {
+@media (min-width: 768px) and (min-height: 520px) {
     .contact-aside .map-consent {
         min-height: clamp(7rem, 18vh, 12rem);
     }
@@ -3363,7 +3375,7 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
 }
 
 /* Ab Tablet würde die Leiste den unteren Rand der Bildschirm-Sections verdecken */
-@media (min-width: 768px) and (min-height: 600px), (min-width: 900px) {
+@media (min-width: 768px) and (min-height: 520px), (min-width: 900px) {
     .mobile-cta {
         display: none;
     }
@@ -3767,7 +3779,7 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
 
 /* ---------- Niedrige Fenster: Feinschliff für die Bildschirm-Sections ---------- */
 /* Ergänzt die kompakteren Abstände oben (gleiche Bedingung): Fotos, Karte und Textfeld etwas flacher */
-@media (min-width: 768px) and (min-height: 600px) and (max-height: 760px) {
+@media (min-width: 768px) and (min-height: 520px) and (max-height: 760px) {
     .rooms-grid .room-image {
         height: clamp(6.5rem, 17vh, 16rem);
     }
@@ -3781,6 +3793,7 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
     }
 
     .contact-form textarea {
+        height: 5rem; /* statt der drei Zeilen aus dem HTML */
         min-height: 5rem;
     }
 
@@ -3790,5 +3803,42 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
 
     .reviews-list {
         --review-lines: 5;
+    }
+}
+
+/* Sehr niedrige Fenster: Bildschirm-Sections ohne Überzeile, Buchungskarten ohne Foto, flachere Felder.
+   Die Karte im Kontakt entfällt hier (Route planen bleibt). */
+@media (min-width: 768px) and (min-height: 520px) and (max-height: 639px) {
+    main > .section .eyebrow {
+        display: none;
+    }
+
+    .rooms-grid .room-image {
+        height: clamp(5.5rem, 15vh, 16rem);
+    }
+
+    .booking-room-image-container {
+        display: none;
+    }
+
+    .contact-aside .map-consent {
+        display: none;
+    }
+
+    .contact-form textarea {
+        height: 4rem;
+        min-height: 4rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        min-height: 40px;
+        padding-block: 0.45rem;
+        line-height: 1.35;
+    }
+
+    .faq-item summary {
+        padding-block: 0.55rem;
     }
 }
