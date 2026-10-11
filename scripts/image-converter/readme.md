@@ -74,3 +74,15 @@ CSV-Log gespeichert unter: conversion_log.csv
 ## 💡 Hinweis
 
 Für beste Ergebnisse sollten die Originalbilder bereits zugeschnitten und in geeigneter Auflösung vorliegen.
+
+## 📐 Website-Bilder aus den Originalfotos (`export_site_images.py`)
+
+Hero, Gaststube und Zimmerfotos werden direkt aus den Originalen in
+`G:\Hotel Rössle\Allgemein\Bilder\Bilder Aussen` und `...\Bilder Innen` erzeugt: fester Ausschnitt je Foto,
+mehrere Breiten (für `srcset`), jeweils JPG sowie WebP und AVIF unter `images/optimized/`.
+
+```
+python scripts/image-converter/export_site_images.py "G:\Hotel Rössle\Allgemein\Bilder" .
+```
+
+Mit `--preview <Ordner>` entsteht nur eine Vorschau der Ausschnitte. Ausschnitte und Breiten stehen im Skript (`IMAGES`).
