@@ -246,49 +246,6 @@
         <div class="container">
             <h2 id="glance-title" class="visually-hidden">Auf einen Blick</h2>
 
-            <div class="reviews-band" data-reviews>
-                <div class="reviews-score">
-                    <span class="reviews-score-value" data-review-rating>4,5</span>
-                    <span class="stars" style="--rating: 4.5;" role="img" aria-label="4,5 von 5 Sternen" data-review-stars>
-                        <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
-                        <span class="stars-fill" aria-hidden="true"><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg></span>
-                    </span>
-                    <span class="reviews-score-source" data-review-count>Google-Bewertungen</span>
-                    <!-- Hinweis zu Herkunft und Auswahl der Bewertungen, per JS gefüllt, sobald welche angezeigt werden -->
-                    <button type="button" class="reviews-info" aria-expanded="false" aria-controls="reviews-note" hidden>
-                        <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
-                        <span class="visually-hidden">Hinweis zu den Bewertungen</span>
-                    </button>
-                    <p class="reviews-note" id="reviews-note" hidden></p>
-                </div>
-                <div class="reviews-text">
-                    <h3>Unsere Gäste fühlen sich wohl</h3>
-                    <p class="reviews-intro">Gäste bewerten das Hotel Rössle bei Google mit durchschnittlich <span data-review-rating>4,5</span> von 5 Sternen. Lesen Sie selbst, was sie über ihren Aufenthalt schreiben.</p>
-                    <!-- Bewertungstexte von Google (reviews.php, einmal am Tag geholt): eine Karte nach der anderen,
-                         per JS eingesetzt. Ohne Daten bleibt der Text oben stehen. -->
-                    <div class="review-rotator" role="region" aria-roledescription="Karussell" aria-label="Bewertungen von Google Maps" hidden>
-                        <button type="button" class="review-arrow" data-review-dir="-1" aria-label="Vorherige Bewertung">
-                            <svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg>
-                        </button>
-                        <div class="review-slides" aria-live="off"></div>
-                        <button type="button" class="review-arrow" data-review-dir="1" aria-label="Nächste Bewertung">
-                            <svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg>
-                        </button>
-                        <div class="review-controls">
-                            <button type="button" class="review-toggle" aria-label="Wechsel anhalten">
-                                <svg class="icon icon-fill" aria-hidden="true"><use href="#i-pause"/></svg>
-                            </button>
-                            <div class="review-dots"></div>
-                        </div>
-                    </div>
-                </div>
-                <a class="btn-secondary" data-reviews-link href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20R%C3%B6ssle%20Tuttlingen" target="_blank" rel="noopener noreferrer">
-                    Alle Bewertungen
-                    <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg>
-                    <span class="visually-hidden">(öffnet Google Maps in neuem Fenster)</span>
-                </a>
-            </div>
-
             <div class="glance-group">
                 <h3 class="glance-label">Lage &amp; Ausstattung</h3>
                 <ul class="glance-list" role="list">
@@ -390,6 +347,47 @@
                     </li>
                 </ul>
             </div>
+        </div>
+    </section>
+
+    <!-- Bewertungen von Google: die Texte als Karten (per JS aus reviews.php, einmal am Tag bei Google geholt).
+         Ohne Daten bleiben Gesamtbewertung, kurzer Text und Link auf Google. -->
+    <section id="bewertungen" class="section section-reviews" aria-labelledby="reviews-title" data-reviews>
+        <div class="container reviews-head">
+            <p class="eyebrow">Bewertungen</p>
+            <h2 id="reviews-title" class="section-title">Unsere Gäste fühlen sich wohl&nbsp;– <em>und erzählen es weiter.</em></h2>
+            <!-- Bewertung laut Google-Profil (Stand: Oktober 2026); wird per JS aus reviews.php aktualisiert -->
+            <div class="reviews-summary">
+                <span class="stars" style="--rating: 4.5;" aria-hidden="true" data-review-stars>
+                    <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg><svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                    <span class="stars-fill" aria-hidden="true"><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg><svg class="icon icon-fill"><use href="#i-star"/></svg></span>
+                </span>
+                <span><strong data-review-rating>4,5</strong> von 5 · <span data-review-count>Google-Bewertungen</span></span>
+                <!-- Hinweis zu Herkunft und Auswahl der Bewertungen, per JS gefüllt, sobald welche angezeigt werden -->
+                <button type="button" class="reviews-info" aria-expanded="false" aria-controls="reviews-note" hidden>
+                    <svg class="icon" aria-hidden="true"><use href="#i-info"/></svg>
+                    <span class="visually-hidden">Hinweis zu den Bewertungen</span>
+                </button>
+                <p class="reviews-note" id="reviews-note" hidden></p>
+            </div>
+            <p class="reviews-lead">Gäste bewerten das Hotel Rössle bei Google mit durchschnittlich <span data-review-rating>4,5</span> von 5 Sternen. Lesen Sie selbst, was sie über ihren Aufenthalt schreiben.</p>
+        </div>
+
+        <!-- Karten per JS. Die zweite Reihe (nur im Laufband) wiederholt die erste und ist für Screenreader ausgeblendet. -->
+        <div class="reviews-wall" hidden>
+            <div class="reviews-row"></div>
+            <div class="reviews-row" aria-hidden="true"></div>
+        </div>
+
+        <div class="container reviews-actions">
+            <button type="button" class="rail-btn reviews-pause" aria-label="Laufband anhalten" hidden>
+                <svg class="icon icon-fill" aria-hidden="true"><use href="#i-pause"/></svg>
+            </button>
+            <a class="btn-secondary" data-reviews-link href="https://www.google.com/maps/search/?api=1&amp;query=Hotel%20R%C3%B6ssle%20Tuttlingen" target="_blank" rel="noopener noreferrer">
+                Alle Bewertungen bei Google
+                <svg class="icon" aria-hidden="true"><use href="#i-external"/></svg>
+                <span class="visually-hidden">(öffnet Google Maps in neuem Fenster)</span>
+            </a>
         </div>
     </section>
 
@@ -1257,7 +1255,8 @@
     <nav class="section-nav" aria-label="Abschnitte der Seite">
         <ol>
             <li><a href="#home" class="section-nav-link" aria-current="true"><span class="section-nav-label">Start</span></a></li>
-            <li><a href="#auf-einen-blick" class="section-nav-link"><span class="section-nav-label">Auf einen Blick &amp; Bewertungen</span></a></li>
+            <li><a href="#auf-einen-blick" class="section-nav-link"><span class="section-nav-label">Auf einen Blick</span></a></li>
+            <li><a href="#bewertungen" class="section-nav-link"><span class="section-nav-label">Bewertungen</span></a></li>
             <li><a href="#ueber-uns" class="section-nav-link"><span class="section-nav-label">Über uns</span></a></li>
             <li><a href="#zimmer" class="section-nav-link"><span class="section-nav-label">Zimmer &amp; Preise</span></a></li>
             <li><a href="#apartment" class="section-nav-link"><span class="section-nav-label">Apartment</span></a></li>

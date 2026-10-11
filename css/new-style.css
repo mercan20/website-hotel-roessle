@@ -340,7 +340,6 @@ strong {
 
 /* Kleine Beschriftungen: eine Schreibweise für alle, keine Versalien */
 .hero-card-label,
-.reviews-score-source,
 .date-item-label,
 .contact-item h4,
 .footer-heading,
@@ -1260,8 +1259,8 @@ body:has(.nav-menu.active) {
     border-top: 1px solid var(--line);
 }
 
-/* Die erste Gruppe (nach den Bewertungen) ohne Linie, die letzte ohne Abstand unten */
-.glance-group:nth-child(1 of .glance-group) {
+/* Die erste Gruppe ohne Linie, die letzte ohne Abstand unten */
+.glance-group:first-of-type {
     padding-top: 0;
     border-top: 0;
 }
@@ -1297,10 +1296,6 @@ body:has(.nav-menu.active) {
     font-size: var(--fs-sm);
     line-height: 1.45;
     color: var(--muted);
-}
-
-.glance .reviews-band {
-    margin-bottom: var(--block-gap);
 }
 
 @media (min-width: 768px) {
@@ -1712,120 +1707,58 @@ body:has(.nav-menu.active) {
 }
 
 /* ---------- Bewertungen ---------- */
-.reviews-band {
-    display: grid;
-    gap: var(--space-lg);
-    justify-items: start;
-    padding: var(--panel-pad);
+/* Eigene Section mit mittigem Kopf. Smartphone und Tablet: eine Reihe Karten zum Wischen.
+   Ab 900px (wenn Bewegung erlaubt ist) ein Laufband: Die Reihe läuft von selbst, die Ränder blenden aus,
+   in hohen Fenstern läuft eine zweite Reihe in Gegenrichtung. Ohne Daten bleiben Kopf, Text und Link. */
+.section-reviews {
+    --review-lines: 6;
+    --review-card-w: min(82vw, 21rem);
+    --reviews-inset: max(var(--gutter), (100% - var(--container)) / 2); /* Inhaltskante, bezogen auf die Reihe */
     background: var(--white);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
 }
 
-.reviews-score {
+.reviews-head {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    margin-bottom: var(--head-gap);
+    text-align: center;
 }
 
-.reviews-score-value {
-    font-family: var(--font-display);
-    font-size: clamp(3.5rem, 3rem + 2vw, 4.75rem);
-    font-weight: 450;
-    line-height: 1;
+.reviews-head .section-title {
+    max-width: 48rem;
 }
 
-.reviews-score .stars {
-    font-size: 1.35rem;
-    margin-block: 0.5rem 0.35rem;
+.reviews-head .section-title em {
+    display: block;
+    font-style: italic;
 }
 
-.reviews-text h3 {
-    font-size: var(--fs-h3);
-    margin-bottom: var(--space-xs);
-}
-
-.reviews-text p {
+/* Gesamtbewertung unter der Überschrift; das ⓘ klappt den Hinweis zu den Bewertungen auf */
+.reviews-summary {
+    position: relative;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    font-size: var(--fs-sm);
     color: var(--muted);
 }
 
-@media (min-width: 768px) {
-    .reviews-band {
-        grid-template-columns: auto minmax(0, 1fr) auto;
-        align-items: center;
-        gap: clamp(1.5rem, 4vw, 3.5rem);
-    }
-
-    .reviews-score {
-        align-items: center;
-        text-align: center;
-    }
+.reviews-summary strong {
+    color: var(--ink);
 }
 
-/* Bewertungen von Google (per JS, sobald Daten da sind): eine Karte mit dem Zitat, dahinter zwei
-   angedeutete Karten als Stapel, links und rechts Pfeile. Darüber Gesamtbewertung und Link zu Google.
-   Das Band selbst ist dann keine Fläche mehr. Die Überschrift bleibt für Screenreader erhalten. */
-.reviews-band.has-reviews {
-    --arrow-size: 44px;
-    --stage-gap: 3.5rem; /* Pfeil → Karte, mit Platz für den Stapel dahinter */
-    grid-template-areas:
-        "score"
-        "text"
-        "action";
-    justify-items: stretch;
-    gap: var(--space-lg);
-    max-width: 62rem;
-    margin-inline: auto;
-    padding: 0;
-    background: none;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-.reviews-band.has-reviews .reviews-intro {
-    display: none;
-}
-
-/* Gesamtbewertung kompakt: Zahl links, Sterne und Anzahl daneben, hinter der Anzahl das ⓘ zum Hinweis */
-.reviews-band.has-reviews .reviews-score {
-    grid-area: score;
-    position: relative; /* für den aufgeklappten Hinweis */
-    display: grid;
-    grid-template-columns: auto auto auto;
-    justify-content: start;
-    align-items: center;
-    column-gap: var(--space-2xs);
-    text-align: start;
-}
-
-.reviews-band.has-reviews .reviews-score-value {
-    grid-row: span 2;
-    margin-inline-end: var(--space-xs);
-    font-size: clamp(2.25rem, 2rem + 0.8vw, 2.75rem);
-}
-
-.reviews-band.has-reviews .reviews-score .stars {
-    grid-column: span 2;
-    align-self: end;
-    justify-self: start; /* nur so breit wie die Sterne, sonst stimmt der halbe Stern nicht */
-    margin: 0;
+.reviews-summary .stars {
     font-size: 1.1rem;
 }
 
-.reviews-band.has-reviews .reviews-score-source {
-    align-self: start;
-}
-
-/* Trefferfläche 24px, ragt aber nicht über die Zeile hinaus */
 .reviews-info {
-    align-self: start;
     display: grid;
     place-items: center;
     width: 24px;
     height: 24px;
-    margin-block: -4px;
     padding: 0;
     border: 0;
     border-radius: 50%;
@@ -1844,12 +1777,13 @@ body:has(.nav-menu.active) {
     color: var(--ink);
 }
 
-/* Der aufgeklappte Hinweis legt sich über die Karte darunter */
+/* Der aufgeklappte Hinweis legt sich über die Karten darunter */
 .reviews-note {
     position: absolute;
     z-index: 3;
     top: calc(100% + var(--space-xs));
-    left: 0;
+    left: 50%;
+    translate: -50% 0;
     width: min(24rem, calc(100vw - 2 * var(--gutter)));
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius);
@@ -1858,121 +1792,96 @@ body:has(.nav-menu.active) {
     box-shadow: var(--shadow-lg);
     font-size: var(--fs-sm);
     line-height: 1.45;
+    text-align: left;
 }
 
-.reviews-band.has-reviews .reviews-text {
-    grid-area: text;
+/* Allgemeiner Text nur, solange keine Bewertungstexte da sind */
+.reviews-lead {
+    max-width: 36rem;
+    margin-top: var(--space-md);
+    color: var(--muted);
 }
 
-.reviews-band.has-reviews > .btn-secondary {
-    grid-area: action;
-    justify-self: start;
+.section-reviews.has-reviews .reviews-lead {
+    display: none;
 }
 
-/* Auf dem Smartphone die Pfeile unter der Karte, zwischen ihnen Pause und Punkte */
-.review-rotator {
-    --review-lines: 6;
-    isolation: isolate; /* der Stapel liegt hinter der Karte, aber vor dem Hintergrund der Section */
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-areas:
-        "slides slides slides"
-        "prev controls next";
-    align-items: center;
-    gap: var(--space-sm);
+/* Feste Breite: In den Bildschirm-Sections (Flexbox) würde sie sich sonst nach den Karten richten */
+.reviews-wall {
+    width: 100%;
 }
 
-/* Die Karte. Alle Bewertungen liegen darin übereinander: Sie ist so hoch wie die längste und springt beim Wechsel nicht */
-.review-slides {
-    grid-area: slides;
+/* Eine Reihe zum Wischen, bis an den Fensterrand; die erste Karte steht an der Inhaltskante.
+   „position“, damit die Reihe auch die versteckten Linktexte (.visually-hidden) abschneidet. */
+.reviews-row {
     position: relative;
-    display: grid;
-    margin-bottom: 2rem; /* Platz für den Stapel darunter */
-    padding: clamp(1.25rem, 0.9rem + 1.2vw, 2rem);
-    background: var(--white);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--reviews-inset);
+    scrollbar-width: none;
 }
 
-/* Zwei angedeutete Karten dahinter: auf dem Smartphone nach unten versetzt, ab 768px zu beiden Seiten */
-.review-slides::before,
-.review-slides::after {
-    content: '';
-    position: absolute;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    background: var(--white);
-    box-shadow: var(--shadow-sm);
+.reviews-row::-webkit-scrollbar {
+    display: none;
 }
 
-.review-slides::before {
-    z-index: -1;
-    inset: 0.75rem 0.75rem -0.6rem;
-    opacity: 0.7;
+/* Zweite Reihe und Kopien gibt es nur im Laufband */
+.reviews-row + .reviews-row,
+.reviews-list + .reviews-list {
+    display: none;
 }
 
-.review-slides::after {
-    z-index: -2;
-    inset: 1.5rem 1.5rem -1.2rem;
-    opacity: 0.4;
+.reviews-track {
+    display: flex;
+    width: max-content;
+    padding: 0 var(--reviews-inset) var(--space-xs);
 }
 
-.review-slide {
-    grid-area: 1 / 1;
+.reviews-list {
+    display: flex;
+    gap: var(--space-md);
+    list-style: none;
+}
+
+.reviews-list > li {
+    display: flex;
+    flex: 0 0 var(--review-card-w);
+    scroll-snap-align: start;
+}
+
+.review-card {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* der Name steht unten in der Karte, auch bei kurzen Texten */
-    gap: var(--space-md);
-    opacity: 0;
-    visibility: hidden;
-    translate: 0 6px;
-    transition: opacity 0.35s var(--ease), translate 0.35s var(--ease), visibility 0s linear 0.35s;
+    gap: var(--space-sm);
+    padding: clamp(1.25rem, 1rem + 0.6vw, 1.5rem);
+    border-radius: var(--radius-lg);
+    background: var(--cream);
 }
 
-/* Erst blendet die alte Bewertung aus, dann die neue ein */
-.review-slide.is-active {
-    opacity: 1;
-    visibility: visible;
-    translate: 0 0;
-    transition: opacity 0.5s var(--ease) 0.35s, translate 0.5s var(--ease) 0.35s, visibility 0s linear 0.35s;
+.review-card > .stars {
+    font-size: 1.15rem;
 }
 
-/* Zitat im Original mit den Anführungszeichen seiner Sprache, auf wenige Zeilen gekürzt;
-   „Ganze Bewertung lesen“ führt zu Google */
+/* Text im Original, auf wenige Zeilen gekürzt; „Weiterlesen“ führt zu Google */
 .review-text {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: var(--review-lines);
     line-clamp: var(--review-lines);
     overflow: hidden;
-    quotes: '“' '”';
-    font-family: var(--font-display);
-    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
-    line-height: 1.45;
-    color: var(--ink);
+    color: var(--ink-soft);
+    line-height: 1.6;
     overflow-wrap: anywhere;
 }
 
-.review-text:lang(de) {
-    quotes: '„' '“';
-}
-
-.review-text::before {
-    content: open-quote;
-}
-
-.review-text::after {
-    content: close-quote;
-}
-
+/* Name und Monat immer unten in der Karte, „Weiterlesen“ rechts daneben */
 .review-meta {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-sm) var(--space-md);
-    font-size: var(--fs-sm);
-    color: var(--muted);
+    gap: var(--space-sm);
+    margin-top: auto;
 }
 
 /* Anfangsbuchstabe an der Stelle eines Profilbilds */
@@ -1980,8 +1889,8 @@ body:has(.nav-menu.active) {
     flex: none;
     display: grid;
     place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 50%;
     background: var(--ochre-soft);
     color: var(--bronze);
@@ -1993,12 +1902,10 @@ body:has(.nav-menu.active) {
 
 .review-byline {
     display: grid;
-    gap: 0.1rem;
-    margin-inline-end: auto; /* „Ganze Bewertung lesen“ rechts, bei wenig Platz darunter */
+    min-width: 0;
 }
 
 .review-author {
-    font-size: var(--fs-base);
     font-weight: 600;
     line-height: 1.3;
     color: var(--ink);
@@ -2008,104 +1915,35 @@ body:has(.nav-menu.active) {
     color: inherit;
 }
 
-.review-details {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-}
-
-.review-details .stars {
-    font-size: 0.85rem;
+.review-byline time {
+    font-size: var(--fs-sm);
+    color: var(--muted);
 }
 
 .review-more {
+    margin-inline-start: auto;
+    font-size: var(--fs-sm);
     font-weight: 600;
+    white-space: nowrap;
 }
 
-.review-arrow {
-    display: grid;
-    place-items: center;
-    width: var(--arrow-size);
-    height: var(--arrow-size);
-    border: 1px solid var(--line);
-    border-radius: 50%;
-    background: var(--white);
-    color: var(--ink);
-    box-shadow: var(--shadow-sm);
-    transition: background-color 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
-}
-
-.review-arrow[data-review-dir='-1'] {
-    grid-area: prev;
-}
-
-.review-arrow[data-review-dir='1'] {
-    grid-area: next;
-}
-
-.review-arrow:focus-visible {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--on-dark);
-}
-
-.review-controls {
-    grid-area: controls;
-    justify-self: center;
+.reviews-actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-xs);
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-top: var(--block-gap);
 }
 
-.review-toggle {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border: 1.5px solid var(--line-strong);
-    border-radius: 50%;
-    background: transparent;
-    color: var(--ink);
-    transition: background-color 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+/* Pause-Taste nur im Laufband */
+.reviews-pause {
+    display: none;
 }
 
-.review-toggle .icon {
-    width: 12px;
-    height: 12px;
-}
-
-.review-toggle:focus-visible {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--on-dark);
-}
-
-.review-dots {
-    display: flex;
-}
-
-/* Trefferfläche 24px, sichtbar ein kleiner Punkt; der aktuelle wird zum Strich */
-.review-dot {
-    display: grid;
-    place-items: center;
-    width: 24px;
-    height: 24px;
-    border: 0;
-    background: transparent;
-}
-
-.review-dot::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    background: var(--line-strong);
-    transition: width 0.3s var(--ease), background-color 0.2s var(--ease);
-}
-
-.review-dot[aria-current='true']::before {
-    width: 18px;
-    background: var(--ochre);
+.reviews-pause .icon {
+    width: 14px;
+    height: 14px;
 }
 
 @media (hover: hover) {
@@ -2113,61 +1951,73 @@ body:has(.nav-menu.active) {
         color: var(--bronze);
     }
 
-    .review-arrow:hover,
-    .review-toggle:hover {
-        background: var(--ink);
-        border-color: var(--ink);
-        color: var(--on-dark);
-    }
-
-    .review-dot:hover::before {
-        background: var(--ink);
-    }
-
     .reviews-info:hover {
         color: var(--ink);
     }
 }
 
-/* Ab Tablet die Pfeile links und rechts neben der Karte, der Stapel ragt zu beiden Seiten heraus.
-   Gesamtbewertung und Link stehen darüber, bündig mit der Karte. */
-@media (min-width: 768px) {
-    .reviews-band.has-reviews {
-        grid-template-columns: minmax(0, 1fr) auto;
-        grid-template-areas:
-            "score action"
-            "text text";
-        align-items: center;
-        gap: var(--space-md);
+@media (min-width: 900px) {
+    .section-reviews {
+        --review-lines: 5;
+        --review-card-w: clamp(18rem, 24vw, 25rem);
     }
 
-    .reviews-band.has-reviews .reviews-score {
-        margin-inline-start: calc(var(--arrow-size) + var(--stage-gap));
+    .reviews-list {
+        gap: var(--grid-gap);
+    }
+}
+
+/* Laufband: Die Liste liegt mehrfach in der Reihe und wandert um eine Länge weiter, dann beginnt es
+   unbemerkt von vorn. Maus oder Tastaturfokus auf den Karten halten es an, ebenso die Pause-Taste. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+    .reviews-wall:not(.is-static) {
+        display: grid;
+        gap: var(--grid-gap);
+        max-width: 100rem;
+        margin-inline: auto;
     }
 
-    .reviews-band.has-reviews > .btn-secondary {
-        justify-self: end;
-        margin-inline-end: calc(var(--arrow-size) + var(--stage-gap));
+    .reviews-wall:not(.is-static) .reviews-row {
+        overflow: hidden;
+        scroll-snap-type: none;
+        mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
     }
 
-    .review-rotator {
-        --review-lines: 3;
-        grid-template-areas:
-            "prev slides next"
-            ". controls .";
-        gap: var(--space-xs) var(--stage-gap);
+    .reviews-wall:not(.is-static) .reviews-list + .reviews-list {
+        display: flex;
     }
 
-    .review-slides {
-        margin-bottom: var(--space-sm);
+    .reviews-wall:not(.is-static) .reviews-track {
+        gap: var(--grid-gap);
+        padding: 0;
+        animation: reviews-marquee var(--marquee-duration, 60s) linear infinite;
     }
 
-    .review-slides::before {
-        inset: 0.9rem -1.25rem;
+    .reviews-wall:hover .reviews-track,
+    .reviews-wall:focus-within .reviews-track,
+    .reviews-wall.is-paused .reviews-track {
+        animation-play-state: paused;
     }
 
-    .review-slides::after {
-        inset: 1.8rem -2.5rem;
+    .reviews-wall:not(.is-static) ~ .reviews-actions .reviews-pause {
+        display: grid;
+    }
+}
+
+/* Hohe Fenster: eine zweite Reihe läuft in Gegenrichtung */
+@media (min-width: 900px) and (min-height: 860px) and (prefers-reduced-motion: no-preference) {
+    .reviews-wall:not(.is-static) .reviews-row + .reviews-row {
+        display: block;
+    }
+
+    .reviews-row + .reviews-row .reviews-track {
+        animation-direction: reverse;
+    }
+}
+
+@keyframes reviews-marquee {
+    to {
+        translate: calc((-100% - var(--grid-gap)) / var(--marquee-copies, 2)) 0;
     }
 }
 
@@ -4089,16 +3939,8 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
         padding-block: 0.85rem;
     }
 
-    .review-rotator {
-        --review-lines: 3;
-    }
-
-    .reviews-band {
-        padding-block: clamp(1rem, 3vh, 2.25rem);
-    }
-
-    .reviews-score-value {
-        font-size: clamp(2.75rem, 7vh, 4.75rem);
+    .section-reviews {
+        --review-lines: 4;
     }
 }
 
@@ -4142,8 +3984,8 @@ body:has(.consent-banner:not([hidden])) .mobile-cta {
         padding-block: 0.55rem;
     }
 
-    .review-rotator {
-        --review-lines: 2;
+    .section-reviews {
+        --review-lines: 3;
     }
 
     .glance-group {

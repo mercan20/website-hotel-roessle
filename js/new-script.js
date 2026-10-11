@@ -668,21 +668,21 @@ function initRails() {
 
 /**
  * Google-Bewertungen: reviews.php liefert die höchstens einmal am Tag bei Google abgeholten
- * Bewertungen. Mit Daten zeigt das Band in „Auf einen Blick“ eine Bewertung nach der anderen
- * (aus- und einblenden) statt des allgemeinen Texts. Ohne Daten (noch kein API-Schlüssel,
- * Fehler) bleibt alles wie im HTML: Text und Link auf Google.
+ * Bewertungen. Mit Daten zeigt die Section „Bewertungen“ die Texte als Karten: auf dem Smartphone
+ * eine Reihe zum Wischen, ab 900px als Laufband (siehe CSS). Ohne Daten (noch kein API-Schlüssel,
+ * Fehler) bleibt alles wie im HTML: Gesamtbewertung, Text und Link auf Google.
  */
 function initReviews() {
-    const band = document.querySelector('[data-reviews]');
-    const rotator = band ? band.querySelector('.review-rotator') : null;
-    if (!rotator || !window.fetch) {
+    const section = document.querySelector('[data-reviews]');
+    const wall = section ? section.querySelector('.reviews-wall') : null;
+    if (!wall || !window.fetch) {
         return;
     }
     fetch('reviews.php', { headers: { Accept: 'application/json' } })
         .then(response => (response.ok ? response.json() : null))
         .then(data => {
             if (data && Array.isArray(data.reviews) && data.reviews.length) {
-                renderReviews(band, rotator, data);
+                renderReviews(section, wall, data);
             }
         })
         .catch(() => {}); // Text mit Link bleibt stehen
@@ -715,14 +715,11 @@ const externalLink = (href, text, hint) => {
     return link;
 };
 
-// Eine Bewertung: Zitat im Original (auf wenige Zeilen gekürzt), darunter Anfangsbuchstabe,
-// Name sowie Sterne und Monat
-function createReviewSlide(review, position, total, dateFormat) {
-    const slide = document.createElement('figure');
-    slide.className = 'review-slide';
-    slide.setAttribute('role', 'group');
-    slide.setAttribute('aria-roledescription', 'Bewertung');
-    slide.setAttribute('aria-label', `${position} von ${total}`);
+// Eine Bewertung als Karte: Sterne, Text im Original (auf wenige Zeilen gekürzt),
+// unten Anfangsbuchstabe, Name und Monat, bei gekürztem Text „Weiterlesen“
+function createReviewCard(review, dateFormat) {
+    const card = document.createElement('figure');
+    card.className = 'review-card';
 
     const quote = document.createElement('blockquote');
     quote.className = 'review-text';
@@ -730,9 +727,8 @@ function createReviewSlide(review, position, total, dateFormat) {
         quote.lang = review.lang;
     }
     quote.textContent = review.text;
+    card.append(createStars(review.rating), quote);
 
-    const caption = document.createElement('figcaption');
-    caption.className = 'review-meta';
     const author = review.author || 'Gast bei Google';
 
     // Statt des Profilbilds (das nicht von Google übernommen wird) der erste Buchstabe des Namens
@@ -747,34 +743,52 @@ function createReviewSlide(review, position, total, dateFormat) {
         ? externalLink(review.authorUri, author, 'Profil bei Google Maps, öffnet in neuem Fenster')
         : author);
 
-    const details = document.createElement('span');
-    details.className = 'review-details';
-    details.append(createStars(review.rating));
+    const byline = document.createElement('span');
+    byline.className = 'review-byline';
+    byline.append(name);
     const published = new Date(review.published);
     if (!Number.isNaN(published.getTime())) {
         const time = document.createElement('time');
         time.dateTime = review.published.slice(0, 10);
         time.textContent = dateFormat.format(published);
-        details.append(time);
+        byline.append(time);
     }
 
-    const byline = document.createElement('span');
-    byline.className = 'review-byline';
-    byline.append(name, details);
+    const caption = document.createElement('figcaption');
+    caption.className = 'review-meta';
     caption.append(avatar, byline);
     if (review.uri) {
-        const more = externalLink(review.uri, 'Ganze Bewertung lesen', 'bei Google Maps, öffnet in neuem Fenster');
+        const more = externalLink(review.uri, 'Weiterlesen', 'ganze Bewertung bei Google Maps, öffnet in neuem Fenster');
         more.className = 'review-more';
         more.hidden = true; // nur bei gekürztem Text
         caption.append(more);
     }
-
-    slide.append(quote, caption);
-    return slide;
+    card.append(caption);
+    return card;
 }
 
-function renderReviews(band, rotator, data) {
-    // Gesamtbewertung überall auf der Seite aktualisieren (Hero und Band)
+// Eine Liste mit Karten. Kopien fürs Laufband sind für Screenreader ausgeblendet und per Tab nicht
+// erreichbar; mit der Maus lassen sich ihre Links trotzdem anklicken.
+function createReviewList(cards, copy) {
+    const list = document.createElement('ul');
+    list.className = 'reviews-list';
+    list.setAttribute('role', 'list');
+    list.append(...cards.map(card => {
+        const item = document.createElement('li');
+        item.append(card);
+        return item;
+    }));
+    if (copy) {
+        list.setAttribute('aria-hidden', 'true');
+        list.querySelectorAll('a').forEach(link => {
+            link.tabIndex = -1;
+        });
+    }
+    return list;
+}
+
+function renderReviews(section, wall, data) {
+    // Gesamtbewertung überall auf der Seite aktualisieren (Hero und Section)
     if (typeof data.rating === 'number') {
         const rating = formatRating(data.rating);
         document.querySelectorAll('[data-review-rating]').forEach(element => {
@@ -798,28 +812,10 @@ function renderReviews(band, rotator, data) {
         });
     }
 
-    const slidesBox = rotator.querySelector('.review-slides');
-    const dotsBox = rotator.querySelector('.review-dots');
-    const toggle = rotator.querySelector('.review-toggle');
-    const arrows = rotator.querySelectorAll('[data-review-dir]');
-    const total = data.reviews.length;
-    const dateFormat = new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' });
-    const slides = data.reviews.map((review, index) => createReviewSlide(review, index + 1, total, dateFormat));
-    slidesBox.replaceChildren(...slides);
-
-    const dots = slides.map((slide, index) => {
-        const dot = document.createElement('button');
-        dot.type = 'button';
-        dot.className = 'review-dot';
-        dot.setAttribute('aria-label', `Bewertung ${index + 1} von ${total} zeigen`);
-        return dot;
-    });
-    dotsBox.replaceChildren(...dots);
-
     // Pflichtangabe zu Herkunft und Auswahl der Bewertungen (§ 5b Abs. 3 UWG): hinter dem ⓘ neben
     // der Anzahl. Klick öffnet und schließt, Escape oder ein Klick daneben schließt.
-    const note = band.querySelector('.reviews-note');
-    const info = band.querySelector('.reviews-info');
+    const note = section.querySelector('.reviews-note');
+    const info = section.querySelector('.reviews-info');
     if (note && info) {
         const selection = data.minRating > 1 ? `, nur ${data.minRating} und 5 Sterne` : '';
         note.textContent = `Von Google Maps übernommen${selection}. Wir prüfen nicht, ob sie von Gästen stammen, die bei uns übernachtet haben.`;
@@ -841,123 +837,64 @@ function renderReviews(band, rotator, data) {
         });
     }
 
-    band.classList.add('has-reviews');
-    const heading = band.querySelector('.reviews-text h3');
-    if (heading) {
-        heading.classList.add('visually-hidden'); // bleibt für Screenreader die Überschrift
-    }
-    rotator.hidden = false;
-    if (total < 2) {
-        rotator.querySelector('.review-controls').hidden = true;
-        arrows.forEach(arrow => {
-            arrow.hidden = true;
+    // Karten: Die erste Reihe enthält jede Bewertung einmal, dazu Kopien, damit das Laufband auch
+    // breite Fenster füllt. Die zweite Reihe (nur im Laufband) beginnt in der Mitte der Liste.
+    // Bei weniger als drei Bewertungen gibt es kein Laufband, nur die Reihe zum Wischen.
+    const reviews = data.reviews;
+    const total = reviews.length;
+    const copies = 1 + Math.ceil(5 / total);
+    const half = Math.floor(total / 2);
+    const orders = [reviews, [...reviews.slice(half), ...reviews.slice(0, half)]];
+    const dateFormat = new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' });
+    const rows = [...wall.querySelectorAll('.reviews-row')];
+    rows.forEach((row, rowIndex) => {
+        const track = document.createElement('div');
+        track.className = 'reviews-track';
+        for (let i = 0; i < copies; i++) {
+            const cards = orders[rowIndex].map(review => createReviewCard(review, dateFormat));
+            track.append(createReviewList(cards, rowIndex > 0 || i > 0));
+        }
+        row.replaceChildren(track);
+    });
+    wall.style.setProperty('--marquee-copies', String(copies));
+    wall.style.setProperty('--marquee-duration', `${total * 9}s`); // gleiches Tempo, egal wie viele
+    wall.classList.toggle('is-static', total < 3);
+    section.classList.add('has-reviews');
+    wall.hidden = false;
+
+    // Pause-Taste fürs Laufband (nur dort zu sehen, siehe CSS)
+    const pause = section.querySelector('.reviews-pause');
+    if (pause) {
+        pause.hidden = false;
+        pause.addEventListener('click', () => {
+            const paused = wall.classList.toggle('is-paused');
+            pause.setAttribute('aria-label', paused ? 'Laufband fortsetzen' : 'Laufband anhalten');
+            pause.querySelector('use').setAttribute('href', paused ? '#i-play' : '#i-pause');
         });
     }
 
-    // Wechsel alle paar Sekunden. Er pausiert, solange Maus oder Tastaturfokus im Band sind, das Band
-    // nicht zu sehen ist oder der Tab im Hintergrund liegt. Bei „Bewegung reduzieren“ startet er nicht
-    // von selbst; die Pause-Taste und die Punkte funktionieren immer.
-    const INTERVAL = 8000;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let current = 0;
-    let timer = null;
-    let stopped = reduceMotion.matches;
-    let held = false;
-    let inView = false;
-
-    const show = (index, announce) => {
-        current = (index + total) % total;
-        slides.forEach((slide, i) => slide.classList.toggle('is-active', i === current));
-        dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === current)));
-        slidesBox.setAttribute('aria-live', announce ? 'polite' : 'off');
-    };
-
-    const schedule = () => {
-        clearTimeout(timer);
-        if (!stopped && !held && inView && !document.hidden && total > 1) {
-            timer = setTimeout(() => {
-                show(current + 1, false);
-                schedule();
-            }, INTERVAL);
+    // Per Tab fokussierte Links schiebt der Browser im Laufband in den sichtbaren Bereich. Verlässt der
+    // Fokus die Karten, beginnt die Reihe wieder an ihrem Anfang (die Wischreihe bleibt, wo sie ist).
+    wall.addEventListener('focusout', event => {
+        if (!wall.contains(event.relatedTarget)) {
+            rows.forEach(row => {
+                if (getComputedStyle(row).overflowX === 'hidden') {
+                    row.scrollLeft = 0;
+                }
+            });
         }
-    };
-
-    const setStopped = value => {
-        stopped = value;
-        toggle.setAttribute('aria-label', stopped ? 'Wechsel fortsetzen' : 'Wechsel anhalten');
-        toggle.querySelector('use').setAttribute('href', stopped ? '#i-play' : '#i-pause');
-        schedule();
-    };
-
-    // Pfeile, Punkte und Wischen wählen eine Bewertung; die bleibt dann stehen
-    const choose = index => {
-        show(index, true);
-        setStopped(true);
-    };
-
-    toggle.addEventListener('click', () => setStopped(!stopped));
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => choose(index));
-    });
-    arrows.forEach(arrow => {
-        arrow.addEventListener('click', () => choose(current + Number(arrow.dataset.reviewDir)));
     });
 
-    let touchStart = null;
-    slidesBox.addEventListener('touchstart', event => {
-        touchStart = event.touches.length === 1 ? event.touches[0] : null;
-    }, { passive: true });
-    slidesBox.addEventListener('touchend', event => {
-        const touch = event.changedTouches[0];
-        if (touchStart && total > 1) {
-            const dx = touch.clientX - touchStart.clientX;
-            const dy = touch.clientY - touchStart.clientY;
-            if (Math.abs(dx) > 40 && Math.abs(dx) > 1.5 * Math.abs(dy)) {
-                choose(current + (dx < 0 ? 1 : -1));
-            }
-        }
-        touchStart = null;
-    }, { passive: true });
-
-    band.addEventListener('mouseenter', () => {
-        held = true;
-        schedule();
-    });
-    band.addEventListener('mouseleave', () => {
-        held = band.contains(document.activeElement);
-        schedule();
-    });
-    band.addEventListener('focusin', () => {
-        held = true;
-        schedule();
-    });
-    band.addEventListener('focusout', event => {
-        held = band.contains(event.relatedTarget) || band.matches(':hover');
-        schedule();
-    });
-    document.addEventListener('visibilitychange', schedule);
-    if ('IntersectionObserver' in window) {
-        new IntersectionObserver(entries => {
-            inView = entries[entries.length - 1].isIntersecting;
-            schedule();
-        }, { threshold: 0.5 }).observe(band);
-    } else {
-        inView = true;
-    }
-
-    // „Ganze Bewertung lesen“ nur bei gekürzten Texten
+    // „Weiterlesen“ nur bei gekürzten Texten
     const markShortened = () => {
-        slides.forEach(slide => {
-            const quote = slide.querySelector('.review-text');
-            const more = slide.querySelector('.review-more');
+        wall.querySelectorAll('.review-card').forEach(card => {
+            const quote = card.querySelector('.review-text');
+            const more = card.querySelector('.review-more');
             if (more) {
                 more.hidden = quote.scrollHeight <= quote.clientHeight + 1;
             }
         });
     };
-
-    show(0, false);
-    setStopped(stopped);
     markShortened();
     window.addEventListener('resize', markShortened);
 }
